@@ -26,12 +26,17 @@ export default function LoginPage() {
   async function handleLogin(formData: FormData) {
     setIsPending(true);
     setError(null);
-    const result = await login(formData);
-    if (result?.error) {
-      setError(result.error);
+    try {
+      const result = await login(formData);
+      if (result?.error) {
+        setError(result.error);
+        setIsPending(false);
+      } else if (result?.success) {
+        window.location.href = "/dashboard";
+      }
+    } catch (e: any) {
+      setError(e.message || "An unexpected error occurred during login.");
       setIsPending(false);
-    } else if (result?.success) {
-      window.location.href = "/dashboard";
     }
   }
 
