@@ -8,10 +8,11 @@ import {
   FileText,
   Users,
   Settings,
-  CreditCard
+  CreditCard,
+  Shield
 } from "lucide-react";
 
-export function Sidebar({ orgSlug }: { orgSlug: string }) {
+export function Sidebar({ orgSlug, isSuperAdmin }: { orgSlug: string; isSuperAdmin?: boolean }) {
   const pathname = usePathname();
 
   const routes = [
@@ -46,6 +47,15 @@ export function Sidebar({ orgSlug }: { orgSlug: string }) {
       active: pathname === `/dashboard/${orgSlug}/settings`,
     },
   ];
+
+  if (isSuperAdmin) {
+    routes.push({
+      href: "/dashboard/admin",
+      label: "Super Admin Panel",
+      icon: Shield,
+      active: pathname === "/dashboard/admin",
+    });
+  }
 
   return (
     <div className="hidden border-r bg-muted/20 lg:block lg:w-64 shrink-0 h-[calc(100vh-4rem)]">
