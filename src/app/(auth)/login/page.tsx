@@ -31,8 +31,7 @@ export default function LoginPage() {
       setError(result.error);
       setIsPending(false);
     } else if (result?.success) {
-      router.push("/dashboard");
-      router.refresh(); // Force a refresh to ensure layout catches the new auth state
+      window.location.href = "/dashboard";
     }
   }
 
