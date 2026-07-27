@@ -43,7 +43,7 @@ function DraggableField({ type, label, icon }: { type: FieldType; label: string;
 
 export function BuilderSidebar() {
   return (
-    <div className="w-64 border-r bg-muted/20 flex flex-col">
+    <div className="hidden md:flex w-64 border-r bg-muted/20 flex-col">
       <div className="p-4 border-b">
         <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">Form Elements</h3>
       </div>

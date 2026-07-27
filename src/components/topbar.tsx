@@ -126,6 +126,17 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
               </div>
             </div>
             <DropdownMenuSeparator />
+            {isSuperAdmin && (
+              <>
+                <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0">
+                  <Link href="/dashboard/admin" className="flex items-center w-full px-2 py-1.5">
+                    <Shield className="mr-2 h-4 w-4" />
+                    <span>Super Admin Panel</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
+            )}
             <DropdownMenuItem className="cursor-pointer">
               <UserIcon className="mr-2 h-4 w-4" />
               <span>Profile</span>
