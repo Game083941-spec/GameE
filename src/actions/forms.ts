@@ -35,6 +35,16 @@ export async function saveForm(
   // Real app: We'd use a form ID. We'll generate a slug based on title + random.
   const formSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).substring(2, 6);
 
+  // Find if there's any IMAGE field to use as the form's banner_url
+  let bannerUrl = null;
+  for (const section of sections) {
+    const imageField = section.fields.find(f => f.type === "IMAGE" && f.options?.[0]?.value);
+    if (imageField) {
+      bannerUrl = imageField.options![0].value;
+      break;
+    }
+  }
+
   const { data: formData, error: formError } = await supabase
     .from("forms")
     .insert({
@@ -42,6 +52,7 @@ export async function saveForm(
       title,
       slug: formSlug,
       description,
+      banner_url: bannerUrl,
       is_published: true,
     })
     .select("id")
