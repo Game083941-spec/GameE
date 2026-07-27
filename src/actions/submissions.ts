@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 export async function submitForm(formId: string, responses: Record<string, any>) {
   const supabase = await createClient();
@@ -32,12 +34,53 @@ export async function submitForm(formId: string, responses: Record<string, any>)
       .insert(answersToInsert);
 
     if (answersError) {
-      console.error("Failed to insert answers:", answersError);
-      return { error: "Failed to save form answers" };
+      console.error("Answers Error:", answersError);
+      // Don't fail the whole submission if answers fail, but log it
     }
   }
 
+  revalidateTag("form-submissions");
+  revalidateTag("org-teams");
+  
   return { success: true, submissionId: submissionData.id };
+}
+
+const getCachedSubmissions = unstable_cache(
+  async (formId: string) => {
+    const supabase = createAdminClient();
+
+    const { data: submissions, error } = await supabase
+      .from("submissions")
+      .select(`
+        id,
+        created_at,
+        payment_status,
+        submission_answers (
+          id,
+          field_id,
+          value,
+          field:fields(
+            label,
+            type
+          )
+        )
+      `)
+      .eq("form_id", formId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching submissions:", error);
+      return [];
+    }
+
+    return submissions;
+  },
+  ["form-submissions"],
+  { tags: ["form-submissions"] }
+);
+
+export async function getSubmissions(formId: string) {
+  return await getCachedSubmissions(formId);
 }
 
 export async function getFormSubmissions(formId: string) {

@@ -5,6 +5,7 @@ import { PlusCircle, FileText, Settings, ExternalLink, Users } from "lucide-reac
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FormCardActions } from "@/components/forms/form-card-actions";
+import { getOrgForms } from "@/actions/forms";
 
 export default async function FormsListPage({
   params,
@@ -12,25 +13,8 @@ export default async function FormsListPage({
   params: Promise<{ orgSlug: string }>;
 }) {
   const { orgSlug } = await params;
-  const supabase = await createClient();
-
-  // 1. Get the organization id
-  const { data: org, error: orgError } = await supabase
-    .from("organizations")
-    .select("id")
-    .eq("slug", orgSlug)
-    .single();
-
-  if (orgError || !org) {
-    notFound();
-  }
-
-  // 2. Fetch all forms for this org
-  const { data: forms, error: formsError } = await supabase
-    .from("forms")
-    .select("id, title, description, slug, is_published, created_at")
-    .eq("organization_id", org.id)
-    .order("created_at", { ascending: false });
+  
+  const forms = await getOrgForms(orgSlug);
 
   return (
     <div className="space-y-6">

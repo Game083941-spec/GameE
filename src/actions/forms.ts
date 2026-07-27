@@ -1,8 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { FormSection } from "@/lib/store/form-builder";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
 export async function saveForm(
   orgSlug: string,
@@ -126,6 +127,7 @@ export async function saveForm(
     }
   }
 
+  revalidateTag("org-forms");
   revalidatePath(`/dashboard/${orgSlug}/forms`);
   return { success: true };
 }
@@ -145,6 +147,54 @@ export async function deleteForm(orgSlug: string, formId: string) {
     return { error: error.message || "Failed to delete form" };
   }
 
+  revalidateTag("org-forms");
   revalidatePath(`/dashboard/${orgSlug}/forms`);
   return { success: true };
+}
+
+const getCachedOrgForms = unstable_cache(
+  async (orgSlug: string) => {
+    const supabase = createAdminClient();
+
+    // 1. Get org ID
+    const { data: orgData, error: orgError } = await supabase
+      .from("organizations")
+      .select("id")
+      .eq("slug", orgSlug)
+      .single();
+
+    if (orgError || !orgData) {
+      return [];
+    }
+
+    // 2. Fetch forms
+    const { data: forms, error: formsError } = await supabase
+      .from("forms")
+      .select(`
+        id,
+        title,
+        slug,
+        is_published,
+        created_at,
+        submissions ( count )
+      `)
+      .eq("organization_id", orgData.id)
+      .order("created_at", { ascending: false });
+
+    if (formsError || !forms) {
+      return [];
+    }
+
+    // Transform count
+    return forms.map((f: any) => ({
+      ...f,
+      submissions_count: f.submissions[0]?.count || 0
+    }));
+  },
+  ["org-forms"],
+  { tags: ["org-forms"] }
+);
+
+export async function getOrgForms(orgSlug: string) {
+  return await getCachedOrgForms(orgSlug);
 }
