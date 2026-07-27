@@ -101,8 +101,8 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
         {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-full h-9 w-9 ring-2 ring-transparent hover:ring-primary/20 transition-all outline-none">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src={user?.user_metadata?.avatar_url} />
+            <Avatar className="h-9 w-9 overflow-hidden bg-zinc-900 border border-zinc-800">
+              <AvatarImage src={user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${user?.email || 'gamer'}&backgroundColor=18181b`} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
               </AvatarFallback>
