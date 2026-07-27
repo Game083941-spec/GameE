@@ -88,19 +88,6 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
     },
   ];
 
-  const event = {
-    name: "Demo Event",
-    date: "July 30, 2026 6:00 PM",
-    location: "Online",
-    description: "Join us for a live tournament and showcase your skills.",
-    organizer: "EsportHub Team",
-    registerLink: "/register",
-    notes: [
-      "Bring your best gear.",
-      "Follow the tournament rules.",
-      "Stay tuned for prize announcements."
-    ]
-  };
 
   if (isSuperAdmin) {
     routes.push({
@@ -175,7 +162,6 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
             );
           })}
         </nav>
-        <EventBanner event={event} />
       </div>
 
       {/* ── Logout — always pinned at the bottom ── */}

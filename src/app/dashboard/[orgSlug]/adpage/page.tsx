@@ -77,7 +77,7 @@ export default function AdPagesList({
                 </CardTitle>
                 <CardDescription className="flex items-center gap-1.5">
                   <Clock className="h-3 w-3" />
-                  Created {ad.createdAt}
+                  Created {new Date(ad.created_at).toLocaleDateString()}
                 </CardDescription>
               </div>
               <DropdownMenu>
@@ -88,23 +88,22 @@ export default function AdPagesList({
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem render={<button onClick={() => alert("Edit functionality coming soon!")} />}>
                     <Edit className="mr-2 h-4 w-4" /> Edit Page
                   </DropdownMenuItem>
-                  {ad.status === "published" ? (
-                    <DropdownMenuItem onClick={() => {
-                      navigator.clipboard.writeText(`https://esporthub.com/ad/${ad.id}`);
-                      alert("Link copied to clipboard!");
-                    }}>
-                      <Copy className="mr-2 h-4 w-4" /> Copy Link
-                    </DropdownMenuItem>
-                  ) : (
-                    <DropdownMenuItem onClick={() => handlePublish(ad.id)}>
+                  <DropdownMenuItem render={<button onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/ad/${ad.id}`);
+                    alert("Link copied to clipboard!");
+                  }} />}>
+                    <Copy className="mr-2 h-4 w-4" /> Copy Link
+                  </DropdownMenuItem>
+                  {ad.status !== "published" && (
+                    <DropdownMenuItem render={<button onClick={() => handlePublish(ad.id)} />}>
                       <Globe className="mr-2 h-4 w-4" /> Publish
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleDelete(ad.id)} className="text-destructive focus:text-destructive">
+                  <DropdownMenuItem className="text-destructive focus:text-destructive" render={<button onClick={() => handleDelete(ad.id)} />}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -123,19 +122,17 @@ export default function AdPagesList({
                     </span>
                   )}
                 </div>
-                {ad.status === "published" && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-7 text-xs px-2 gap-1.5 text-muted-foreground hover:text-foreground"
-                    onClick={() => {
-                      navigator.clipboard.writeText(`https://esporthub.com/ad/${ad.id}`);
-                      alert("Link copied to clipboard!");
-                    }}
-                  >
-                    <ExternalLink className="h-3 w-3" /> Get Link
-                  </Button>
-                )}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-xs px-2 gap-1.5 text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/ad/${ad.id}`);
+                    alert("Link copied to clipboard!");
+                  }}
+                >
+                  <ExternalLink className="h-3 w-3" /> Get Link
+                </Button>
               </div>
             </CardContent>
             <CardFooter className="mt-auto pt-4 flex items-center justify-between border-t text-sm text-muted-foreground bg-muted/20">
