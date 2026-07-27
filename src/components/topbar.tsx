@@ -32,7 +32,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
   return (
     <header className="sticky top-0 z-40 flex h-16 w-full items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
       <Sheet>
-        <SheetTrigger render={<Button variant="outline" size="icon" className="shrink-0 lg:hidden" />}>
+        <SheetTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground h-9 w-9 shrink-0 lg:hidden">
           <Menu className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </SheetTrigger>
