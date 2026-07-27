@@ -119,7 +119,7 @@ const getCachedOrgTeams = unstable_cache(
     // Fetch ALL Teams from teams table
     const { data: allTeams } = await supabase
       .from("teams")
-      .select("*")
+      .select("id, name, contact_email, contact_phone, source, created_at")
       .eq("organization_id", orgData.id)
       .order("created_at", { ascending: false });
 

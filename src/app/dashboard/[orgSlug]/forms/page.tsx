@@ -7,6 +7,9 @@ import { notFound } from "next/navigation";
 import { FormCardActions } from "@/components/forms/form-card-actions";
 import { getOrgForms } from "@/actions/forms";
 
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default async function FormsListPage({
   params,
 }: {
@@ -14,8 +17,6 @@ export default async function FormsListPage({
 }) {
   const { orgSlug } = await params;
   
-  const forms = await getOrgForms(orgSlug);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -33,6 +34,40 @@ export default async function FormsListPage({
         </Link>
       </div>
 
+      <Suspense fallback={<FormsSkeleton />}>
+        <FormsGrid orgSlug={orgSlug} />
+      </Suspense>
+    </div>
+  );
+}
+
+function FormsSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <Card key={i} className="flex flex-col h-[200px]">
+          <CardHeader className="pb-4">
+            <Skeleton className="h-6 w-3/4 mb-2" />
+            <Skeleton className="h-4 w-full" />
+          </CardHeader>
+          <CardContent className="mt-auto pb-4">
+            <Skeleton className="h-4 w-24 mb-4" />
+            <div className="flex items-center gap-2 pt-4 border-t">
+              <Skeleton className="h-8 flex-1" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+async function FormsGrid({ orgSlug }: { orgSlug: string }) {
+  const forms = await getOrgForms(orgSlug);
+
+  return (
+    <>
       {!forms || forms.length === 0 ? (
         <Card className="flex flex-col items-center justify-center p-12 text-center border-dashed">
           <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -94,6 +129,6 @@ export default async function FormsListPage({
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }

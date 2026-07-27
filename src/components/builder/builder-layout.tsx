@@ -3,9 +3,17 @@
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
 import { useState, useEffect } from "react";
 import { useFormBuilderStore, FieldType } from "@/lib/store/form-builder";
-import { BuilderSidebar } from "./sidebar";
 import { BuilderCanvas } from "./canvas";
-import { PropertiesPanel } from "./properties-panel";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const BuilderSidebar = dynamic(() => import("./sidebar").then(mod => mod.BuilderSidebar), {
+  loading: () => <Skeleton className="w-64 h-full rounded-none" />
+});
+
+const PropertiesPanel = dynamic(() => import("./properties-panel").then(mod => mod.PropertiesPanel), {
+  loading: () => <Skeleton className="w-80 h-full rounded-none" />
+});
 
 export function BuilderLayout() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null);

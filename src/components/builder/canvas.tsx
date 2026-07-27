@@ -2,6 +2,7 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { useFormBuilderStore } from "@/lib/store/form-builder";
+import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,8 +10,8 @@ import { PlusCircle, Trash2, Edit2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function Section({ sectionId }: { sectionId: string }) {
-  const section = useFormBuilderStore((state) =>
-    state.sections.find((s) => s.id === sectionId)
+  const section = useFormBuilderStore(
+    useShallow((state) => state.sections.find((s) => s.id === sectionId))
   );
   const { setNodeRef, isOver } = useDroppable({
     id: sectionId,
@@ -106,7 +107,9 @@ function Section({ sectionId }: { sectionId: string }) {
 }
 
 export function BuilderCanvas() {
-  const sections = useFormBuilderStore((state) => state.sections);
+  const sectionIds = useFormBuilderStore(
+    useShallow((state) => state.sections.map((s) => s.id))
+  );
   const addSection = useFormBuilderStore((state) => state.addSection);
 
   const formTitle = useFormBuilderStore((state) => state.formTitle);
@@ -133,8 +136,8 @@ export function BuilderCanvas() {
           />
         </div>
 
-        {sections.map((section) => (
-          <Section key={section.id} sectionId={section.id} />
+        {sectionIds.map((id) => (
+          <Section key={id} sectionId={id} />
         ))}
 
         <Button

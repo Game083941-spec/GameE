@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormBuilderStore } from "@/lib/store/form-builder";
+import { useShallow } from "zustand/react/shallow";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -9,24 +10,27 @@ import { Trash2, Upload, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export function PropertiesPanel() {
-  const activeFieldId = useFormBuilderStore((state) => state.activeFieldId);
-  const sections = useFormBuilderStore((state) => state.sections);
+  const activeFieldData = useFormBuilderStore(
+    useShallow((state) => {
+      if (!state.activeFieldId) return null;
+      for (const section of state.sections) {
+        const field = section.fields.find((f) => f.id === state.activeFieldId);
+        if (field) {
+          return { activeField: field, activeSectionId: section.id };
+        }
+      }
+      return null;
+    })
+  );
+  
   const updateField = useFormBuilderStore((state) => state.updateField);
   const removeField = useFormBuilderStore((state) => state.removeField);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Find the active field across all sections
-  let activeField = null;
-  let activeSectionId = null;
+  const activeField = activeFieldData?.activeField;
+  const activeSectionId = activeFieldData?.activeSectionId;
 
-  for (const section of sections) {
-    const field = section.fields.find((f) => f.id === activeFieldId);
-    if (field) {
-      activeField = field;
-      activeSectionId = section.id;
-      break;
-    }
-  }
+
 
   if (!activeField || !activeSectionId) {
     return (
