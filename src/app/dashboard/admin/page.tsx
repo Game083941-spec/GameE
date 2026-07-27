@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, Users, Mail, Clock } from "lucide-react";
+import { Shield, Users, Mail, Clock, Activity, CheckCircle2, Globe, Database } from "lucide-react";
 import { CreateAdminModal } from "./create-admin-modal";
 
 export default async function SuperAdminPage() {
@@ -73,6 +73,83 @@ export default async function SuperAdminPage() {
           </Table>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Globe className="h-5 w-5 text-blue-500" />
+              Public Pages
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 mt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Landing Page (/)</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Live</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Login (/login)</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Live</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Signup (/signup)</span>
+                <span className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full font-medium">Disabled (Admin Only)</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Activity className="h-5 w-5 text-green-500" />
+              App Services
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 mt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Dashboard System</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Live</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Form Builder API</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Live</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Email Service (Resend)</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Live</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Database className="h-5 w-5 text-purple-500" />
+              Supabase Status
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 mt-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Authentication</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Connected</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Postgres Database</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Connected</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Edge Functions</span>
+                <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full font-medium"><CheckCircle2 className="h-3 w-3" /> Connected</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

@@ -58,7 +58,7 @@ export default function LoginPage() {
               id="email"
               name="email"
               type="email"
-              placeholder="name@example.com"
+              placeholder="rahul@example.com"
               required
               disabled={isPending}
             />

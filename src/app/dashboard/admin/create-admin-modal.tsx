@@ -60,7 +60,7 @@ export function CreateAdminModal() {
               <Input
                 id="full_name"
                 name="full_name"
-                placeholder="Jane Doe"
+                placeholder="Rahul Sharma"
                 required
               />
             </div>
@@ -70,7 +70,7 @@ export function CreateAdminModal() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="jane@example.com"
+                placeholder="rahul@example.com"
                 required
               />
             </div>
