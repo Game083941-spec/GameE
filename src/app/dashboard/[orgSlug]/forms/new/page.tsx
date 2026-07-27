@@ -1,7 +1,8 @@
 import { BuilderLayout } from "@/components/builder/builder-layout";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { SaveFormButton } from "@/components/builder/save-form-button";
 import { getUserOrganizations } from "@/actions/organizations";
 import { redirect } from "next/navigation";
 
@@ -35,10 +36,7 @@ export default async function NewFormPage({
         </div>
         
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/${orgSlug}/forms`} className={buttonVariants({ variant: "default" })}>
-            Next
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Link>
+          <SaveFormButton orgSlug={orgSlug} />
         </div>
       </div>
 
