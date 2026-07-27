@@ -13,6 +13,7 @@ import {
   Gamepad2,
   Trophy,
   LogOut
+} from "lucide-react";
 import { logout } from "@/actions/auth";
 import Image from "next/image";
 
