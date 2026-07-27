@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ESportHub
 
-## Getting Started
+ESportHub is a modern, full-stack platform designed specifically for managing Esports tournaments and gaming events. It provides organizers with a powerful dashboard to create custom registration forms, manage teams, track payments securely via Razorpay, and automatically send customized email notifications to players.
 
-First, run the development server:
+## 🚀 Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+*   **Multi-Tenant Architecture:** Create and manage multiple organizations securely under one account.
+*   **Dynamic Form Builder:** A drag-and-drop form builder allowing organizers to create custom registration forms with text, email, number, BGMI UID, and secure Payment fields.
+*   **Integrated Payments (Razorpay):** Secure checkout for tournament entry fees, supporting UPI, Cards, Netbanking, and Wallets. Forms seamlessly convert into paid gateways.
+*   **Automated Team Management:** Upon successful payment or free registration, submissions are automatically parsed and inserted directly into a unified Teams dashboard.
+*   **Custom Email Notifications (Resend):** Automatically send professional HTML email receipts and registration confirmations to players the moment they register. Organizers can also blast custom notifications to all registered teams.
+*   **Real-time Dashboard:** A responsive, dark-mode first dashboard to view submissions, track revenue, and manage members.
+*   **Secure by Default:** Built with Supabase Row Level Security (RLS) to ensure organizations can only see and edit their own data.
+
+## 🛠️ Technology Stack
+
+*   **Framework:** [Next.js 15](https://nextjs.org/) (App Router & Server Actions)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **Database & Auth:** [Supabase](https://supabase.com/) (PostgreSQL, GoTrue, Row Level Security)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **UI Components:** [shadcn/ui](https://ui.shadcn.com/) & [Lucide Icons](https://lucide.dev/)
+*   **State Management:** [Zustand](https://zustand-demo.pmnd.rs/) (Used in the Form Builder)
+*   **Payments:** [Razorpay Checkout](https://razorpay.com/)
+*   **Emails:** [Resend](https://resend.com/)
+
+## 📁 File Structure
+
+The project follows a standard Next.js App Router structure with dedicated modules for server actions and core logic.
+
+```text
+├── src/
+│   ├── actions/               # Next.js Server Actions (Backend Logic)
+│   │   ├── admin.ts           # Super Admin logic
+│   │   ├── auth.ts            # Supabase Authentication actions
+│   │   ├── email.ts           # Resend email triggering logic
+│   │   ├── forms.ts           # Form creation & updating logic
+│   │   ├── organizations.ts   # Multi-tenant org logic
+│   │   ├── payment.ts         # Razorpay order creation & verification
+│   │   ├── submissions.ts     # Form submission handling
+│   │   └── teams.ts           # Teams parsing & caching logic
+│   │
+│   ├── app/                   # Next.js App Router Pages
+│   │   ├── (auth)/            # Login & Signup pages
+│   │   ├── dashboard/         # Core Dashboard Layout & Pages
+│   │   │   └── [orgSlug]/     # Dynamic Organization Routes (Forms, Teams, Billing)
+│   │   ├── f/                 # Public facing dynamic forms (/f/[formId])
+│   │   ├── onboarding/        # Organization setup flow
+│   │   ├── globals.css        # Global CSS & Tailwind Directives
+│   │   └── layout.tsx         # Root Layout
+│   │
+│   ├── components/            # React UI Components
+│   │   ├── builder/           # The drag-and-drop Form Builder components
+│   │   ├── forms/             # Public form renderer
+│   │   ├── notifications/     # Bulk email notification UI
+│   │   ├── teams/             # Teams manager data tables
+│   │   └── ui/                # Reusable shadcn/ui components (Buttons, Inputs, etc.)
+│   │
+│   ├── lib/                   # Utility Functions & Integrations
+│   │   ├── store/             # Zustand state stores
+│   │   ├── supabase/          # Supabase client initializers (Client, Server, Admin)
+│   │   ├── templates/         # HTML Email Templates for Resend
+│   │   └── utils.ts           # Tailwind cn() utility
+│   │
+│   └── middleware.ts          # Edge middleware for route protection
+│
+├── supabase/
+│   └── schema.sql             # Full PostgreSQL Database Schema & RLS Policies
+│
+├── .env.local                 # Environment Variables (Not committed)
+└── package.json               # Project Dependencies
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Local Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.  **Clone the repository**
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Environment Variables:** Create a `.env.local` file with the following keys:
+    ```env
+    # Supabase (Database & Auth)
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    # Razorpay (Payments)
+    NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_test_key_id
+    RAZORPAY_KEY_SECRET=your_razorpay_test_key_secret
 
-## Learn More
+    # Resend (Emails)
+    RESEND_API_KEY=your_resend_api_key
 
-To learn more about Next.js, take a look at the following resources:
+    # App Config
+    NEXT_PUBLIC_APP_URL=http://localhost:3000
+    SUPER_ADMIN_EMAIL=your_email@example.com
+    ```
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+5.  Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔒 Security Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- This project heavily utilizes **Row Level Security (RLS)** in Supabase. Anonymous users can securely submit to the `submissions` table, but reading and managing data requires authentication and explicit organizational membership.
+- Payment verification is strictly handled on the backend via Server Actions using the `SUPABASE_SERVICE_ROLE_KEY` to securely bypass RLS and finalize payment statuses.
