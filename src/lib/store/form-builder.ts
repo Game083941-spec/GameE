@@ -34,6 +34,7 @@ interface FormBuilderState {
   removeField: (sectionId: string, fieldId: string) => void;
   moveField: (sectionId: string, oldIndex: number, newIndex: number) => void;
   setActiveField: (fieldId: string | null) => void;
+  loadTemplate: (title: string, description: string, sections: FormSection[]) => void;
 }
 
 export const useFormBuilderStore = create<FormBuilderState>((set) => ({
@@ -140,4 +141,12 @@ export const useFormBuilderStore = create<FormBuilderState>((set) => ({
     })),
 
   setActiveField: (fieldId) => set({ activeFieldId: fieldId }),
+  
+  loadTemplate: (title, description, sections) =>
+    set({
+      formTitle: title,
+      formDescription: description,
+      sections,
+      activeFieldId: null,
+    }),
 }));
