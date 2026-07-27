@@ -13,11 +13,13 @@ import {
   Gamepad2,
   Trophy,
   LogOut,
-  Bell
+  Bell,
+  Megaphone,
 } from "lucide-react";
 import { logout } from "@/actions/auth";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { EventBanner } from "@/components/EventBanner";
 
 export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string; isSuperAdmin?: boolean; userEmail?: string }) {
   const pathname = usePathname();
@@ -34,6 +36,12 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
       label: "Forms",
       icon: FileText,
       active: pathname === `/dashboard/${orgSlug}/forms`,
+    },
+    {
+      href: `/dashboard/${orgSlug}/adpage`,
+      label: "Ad Page",
+      icon: Megaphone,
+      active: pathname === `/dashboard/${orgSlug}/adpage`,
     },
     {
       href: `/dashboard/${orgSlug}/members`,
@@ -71,7 +79,28 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
       icon: Settings,
       active: pathname === `/dashboard/${orgSlug}/settings`,
     },
+    {
+      href: `/dashboard/${orgSlug}/event-registration`,
+      label: "Event Registration",
+      icon: Megaphone,
+      active: pathname === `/dashboard/${orgSlug}/event-registration`,
+      highlight: true,
+    },
   ];
+
+  const event = {
+    name: "Demo Event",
+    date: "July 30, 2026 6:00 PM",
+    location: "Online",
+    description: "Join us for a live tournament and showcase your skills.",
+    organizer: "EsportHub Team",
+    registerLink: "/register",
+    notes: [
+      "Bring your best gear.",
+      "Follow the tournament rules.",
+      "Stay tuned for prize announcements."
+    ]
+  };
 
   if (isSuperAdmin) {
     routes.push({
@@ -83,41 +112,79 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
   }
 
   return (
-    <div className="hidden border-r bg-muted/20 lg:flex lg:flex-col lg:w-64 shrink-0 h-[calc(100vh-4rem)]">
-      <div className="p-4 border-b border-border/50">
+    <div className="hidden border-r bg-muted/20 lg:flex lg:flex-col lg:w-64 shrink-0 h-screen">
+      {/* ── Logo ── */}
+      <div className="p-4 border-b border-border/50 shrink-0">
         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-lg">
           <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
           ESportHub
         </Link>
       </div>
-      
-      <div className="flex-1 overflow-auto py-6">
+
+      {/* ── Nav links — scrollable middle section ── */}
+      <div className="flex-1 overflow-y-auto py-6 min-h-0">
         <nav className="grid items-start px-4 text-sm font-medium space-y-1.5">
-          {routes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              prefetch={true}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                route.active
-                  ? "bg-primary/10 text-primary shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-            >
-              <route.icon className={cn("h-4 w-4", route.active ? "text-primary" : "text-muted-foreground")} />
-              {route.label}
-            </Link>
-          ))}
+          {routes.map((route) => {
+            const isHighlight = (route as any).highlight;
+            return (
+              <Link
+                key={route.href}
+                href={route.href}
+                prefetch={true}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                  route.active && !isHighlight
+                    ? "bg-primary/10 text-primary shadow-sm"
+                    : isHighlight
+                    ? route.active
+                      ? "text-white shadow-md"
+                      : "text-violet-300 hover:text-white"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                )}
+                style={
+                  isHighlight
+                    ? {
+                        background: route.active
+                          ? "linear-gradient(135deg,#7c3aed,#06b6d4)"
+                          : "linear-gradient(135deg,rgba(124,58,237,0.15),rgba(6,182,212,0.15))",
+                        border: "1px solid rgba(124,58,237,0.4)",
+                      }
+                    : undefined
+                }
+              >
+                <route.icon
+                  className={cn(
+                    "h-4 w-4",
+                    isHighlight
+                      ? "text-violet-400"
+                      : route.active
+                      ? "text-primary"
+                      : "text-muted-foreground"
+                  )}
+                />
+                {route.label}
+                {isHighlight && (
+                  <span
+                    className="ml-auto text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full"
+                    style={{ background: "rgba(124,58,237,0.35)", color: "#c4b5fd" }}
+                  >
+                    New
+                  </span>
+                )}
+              </Link>
+            );
+          })}
         </nav>
+        <EventBanner event={event} />
       </div>
 
-      <div className="p-4 border-t border-border/50 bg-muted/10">
+      {/* ── Logout — always pinned at the bottom ── */}
+      <div className="p-4 border-t border-border/50 bg-muted/10 shrink-0">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg overflow-hidden bg-zinc-900 border border-zinc-800 shrink-0">
-            <img 
-              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${userEmail || 'gamer'}&backgroundColor=18181b`} 
-              alt="User Avatar" 
+            <img
+              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${userEmail || 'gamer'}&backgroundColor=18181b`}
+              alt="User Avatar"
               className="h-full w-full object-cover"
             />
           </div>
@@ -130,7 +197,7 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
             </p>
           </div>
           <ThemeToggle />
-          <button 
+          <button
             onClick={() => logout()}
             className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors shrink-0"
             title="Log Out"

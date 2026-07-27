@@ -5,7 +5,8 @@ import Link from "next/link";
 import { logout } from "@/actions/auth";
 import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield, LayoutDashboard, FileText, Users, Trophy, Gamepad2, CreditCard, Bell } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,11 +32,9 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
   return (
     <header className="sticky top-0 z-40 flex h-16 w-full items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
       <Sheet>
-        <SheetTrigger className="shrink-0 lg:hidden">
-          <Button variant="outline" size="icon">
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
+        <SheetTrigger render={<Button variant="outline" size="icon" className="shrink-0 lg:hidden" />}>
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Toggle navigation menu</span>
         </SheetTrigger>
         <SheetContent side="left" className="w-[280px]">
           <nav className="grid gap-4 text-lg font-medium">

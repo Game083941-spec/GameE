@@ -31,24 +31,24 @@ export default async function DashboardOrgLayout({
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <div className="flex flex-1">
-        <Sidebar 
-          orgSlug={orgSlug} 
-          isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL} 
-          userEmail={user?.email}
+    <div className="flex h-screen w-full overflow-hidden bg-muted/40">
+      {/* Sidebar — fixed height, never scrolls */}
+      <Sidebar 
+        orgSlug={orgSlug} 
+        isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL} 
+        userEmail={user?.email}
+      />
+      {/* Main area — scrolls independently */}
+      <div className="flex flex-col flex-1 h-screen overflow-hidden">
+        <Topbar 
+          user={user} 
+          organizations={organizations} 
+          currentOrgSlug={orgSlug} 
+          isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL}
         />
-        <div className="flex flex-col flex-1 sm:gap-4 sm:py-4">
-          <Topbar 
-            user={user} 
-            organizations={organizations} 
-            currentOrgSlug={orgSlug} 
-            isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL}
-          />
-          <main className="flex-1 items-start p-4 sm:px-6 sm:py-0 md:gap-8">
-            {children}
-          </main>
-        </div>
+        <main className="flex-1 overflow-y-auto p-4 sm:px-6 sm:py-4 md:gap-8">
+          {children}
+        </main>
       </div>
     </div>
   );

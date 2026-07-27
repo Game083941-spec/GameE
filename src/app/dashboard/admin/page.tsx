@@ -1,5 +1,7 @@
 import { getAllUsers, isSuperAdmin } from "@/actions/admin";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Shield, Users, Mail, Clock, Activity, CheckCircle2, Globe, Database } from "lucide-react";
@@ -24,7 +26,14 @@ export default async function SuperAdminPage() {
             Manage platform administrators and settings.
           </p>
         </div>
-        <CreateAdminModal />
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard">
+            <Button variant="outline">
+              Go to Dashboard
+            </Button>
+          </Link>
+          <CreateAdminModal />
+        </div>
       </div>
 
       <Card>

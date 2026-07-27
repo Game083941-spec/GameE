@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, CreditCard, FormInput, Users } from "lucide-react";
+import { PromoBanner } from "@/components/promo-banner";
 
 export default async function OrgDashboardPage({
   params,
@@ -10,6 +11,7 @@ export default async function OrgDashboardPage({
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-12">
+      <PromoBanner />
       <div>
         <h2 className="text-3xl font-semibold tracking-tight">Overview</h2>
         <p className="text-muted-foreground mt-1 text-sm">
