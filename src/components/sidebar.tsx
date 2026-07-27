@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { logout } from "@/actions/auth";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string; isSuperAdmin?: boolean; userEmail?: string }) {
   const pathname = usePathname();
@@ -128,6 +129,7 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
               {userEmail || 'Player'}
             </p>
           </div>
+          <ThemeToggle />
           <button 
             onClick={() => logout()}
             className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors shrink-0"
