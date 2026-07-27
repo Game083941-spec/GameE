@@ -12,6 +12,7 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .from("submissions")
     .insert({
       form_id: formId,
+      responses: responses,
       payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
     })
     .select("id")
@@ -37,6 +38,12 @@ export async function submitForm(formId: string, responses: Record<string, any>,
       console.error("Answers Error:", answersError);
       // Don't fail the whole submission if answers fail, but log it
     }
+  }
+
+  // 3. If no payment required, insert into teams immediately
+  if (!paymentRequired) {
+    const { insertTeamFromSubmission } = await import("./teams");
+    await insertTeamFromSubmission(submissionData.id);
   }
 
   revalidateTag("form-submissions", {});

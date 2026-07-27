@@ -66,7 +66,11 @@ export async function verifyPayment(
 
     if (updateError) throw updateError;
 
-    // 3. Invalidate cache
+    // 3. Insert into teams table physically
+    const { insertTeamFromSubmission } = await import("./teams");
+    await insertTeamFromSubmission(submissionId);
+
+    // 4. Invalidate cache
     const { revalidateTag } = await import("next/cache");
     revalidateTag("form-submissions", {});
     revalidateTag("org-teams", {});

@@ -4,6 +4,65 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidateTag, unstable_cache } from "next/cache";
 
+export async function insertTeamFromSubmission(submissionId: string) {
+  const adminSupabase = createAdminClient();
+
+  // 1. Fetch submission and form details
+  const { data: subData } = await adminSupabase
+    .from("submissions")
+    .select(`*, form:forms(organization_id, title)`)
+    .eq("id", submissionId)
+    .single();
+
+  if (!subData) return;
+
+  // 2. Fetch answers with field labels
+  const { data: answers } = await adminSupabase
+    .from("submission_answers")
+    .select(`value, field:fields(label)`)
+    .eq("submission_id", submissionId);
+
+  let teamName = "Unknown Team";
+  let contact = "";
+  let contactEmail = "";
+
+  if (answers) {
+    answers.forEach((ans: any) => {
+      const label = ans.field?.label?.toLowerCase() || "";
+      if (label.includes("team")) {
+        teamName = ans.value;
+      }
+      if (label.includes("email")) {
+        contactEmail = ans.value;
+      }
+      if (label.includes("name") && !label.includes("team")) {
+        contact = ans.value;
+      }
+    });
+  }
+
+  if (teamName === "Unknown Team" && contact !== "") {
+    teamName = contact;
+  } else if (teamName === "Unknown Team") {
+    teamName = "Individual Registration";
+  }
+
+  // 3. Insert into teams table
+  const { error: insertError } = await adminSupabase
+    .from("teams")
+    .insert({
+      organization_id: subData.form.organization_id,
+      name: teamName,
+      contact_email: contactEmail || contact,
+      contact_phone: "",
+      source: "FORM_SUBMISSION",
+    });
+
+  if (insertError) {
+    console.error("Error inserting team from submission:", insertError);
+  }
+}
+
 export async function addManualTeam(
   orgSlug: string,
   teamName: string,
@@ -57,93 +116,28 @@ const getCachedOrgTeams = unstable_cache(
 
     const teamsList: any[] = [];
 
-    // 1. Fetch Manual Teams from teams table
-    const { data: manualTeams } = await supabase
+    // Fetch ALL Teams from teams table
+    const { data: allTeams } = await adminSupabase
       .from("teams")
       .select("*")
       .eq("organization_id", orgData.id)
       .order("created_at", { ascending: false });
 
-    if (manualTeams) {
-      manualTeams.forEach(t => {
+    if (allTeams) {
+      allTeams.forEach(t => {
         teamsList.push({
           id: t.id,
           teamName: t.name,
           contact: t.contact_email || t.contact_phone || "No Contact",
           contactEmail: t.contact_email,
-          formName: "Manual Entry",
+          formName: t.source === "MANUAL" ? "Manual Entry" : "Form Submission",
           date: new Date(t.created_at).toLocaleDateString(),
-          source: "MANUAL"
+          source: t.source
         });
       });
     }
 
-    // 2. Fetch Form Submissions (Dynamic Teams)
-    const { data: forms } = await supabase
-      .from("forms")
-      .select("id, title")
-      .eq("organization_id", orgData.id);
-
-    if (forms && forms.length > 0) {
-      const formIds = forms.map(f => f.id);
-      
-      const { data: submissions } = await supabase
-        .from("submissions")
-        .select(`
-          id,
-          created_at,
-          form_id,
-          payment_status,
-          submission_answers(
-            field:fields(label),
-            value
-          )
-        `)
-        .in("form_id", formIds)
-        .in("payment_status", ["SUCCESS", "NOT_REQUIRED"])
-        .order("created_at", { ascending: false });
-
-      if (submissions) {
-        submissions.forEach(sub => {
-          let teamName = "Unknown Team";
-          let contact = "";
-          let contactEmail = "";
-          
-          sub.submission_answers?.forEach((ans: any) => {
-            const label = ans.field?.label?.toLowerCase() || "";
-            if (label.includes("team")) {
-              teamName = ans.value;
-            }
-            if (label.includes("email")) {
-              contactEmail = ans.value;
-            }
-            if (label.includes("name") && !label.includes("team")) {
-              contact = ans.value;
-            }
-          });
-
-          const formName = forms.find(f => f.id === sub.form_id)?.title;
-
-          if (teamName === "Unknown Team" && contact !== "") {
-            teamName = contact; // Fallback to their name
-          } else if (teamName === "Unknown Team") {
-            teamName = "Individual Registration";
-          }
-
-          teamsList.push({
-            id: sub.id,
-            teamName,
-            contact: contactEmail || contact || "No Contact",
-            contactEmail: contactEmail,
-            formName: formName || "Unknown Form",
-            date: new Date(sub.created_at).toLocaleDateString(),
-            source: "FORM_SUBMISSION"
-          });
-        });
-      }
-    }
-
-    return teamsList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return teamsList;
   },
   ["org-teams"],
   { tags: ["org-teams"] }
