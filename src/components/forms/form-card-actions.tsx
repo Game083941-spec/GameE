@@ -35,14 +35,12 @@ export function FormCardActions({ orgSlug, formId }: { orgSlug: string; formId: 
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted" disabled={isDeleting}>
-          {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreVertical className="h-4 w-4 text-muted-foreground" />}
-        </Button>
+      <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-muted h-8 w-8 text-muted-foreground outline-none">
+        {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreVertical className="h-4 w-4" />}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <Link href={`/dashboard/${orgSlug}/forms/${formId}/edit`} className="cursor-pointer flex items-center">
+        <DropdownMenuItem className="cursor-pointer p-0">
+          <Link href={`/dashboard/${orgSlug}/forms/${formId}/edit`} className="flex items-center w-full px-2 py-1.5">
             <Edit className="mr-2 h-4 w-4" />
             Edit Form
           </Link>
