@@ -95,8 +95,8 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
                 <span className="opacity-50 text-xs">▼</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[220px]">
-                <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
                 <DropdownMenuGroup>
+                  <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
                   {organizations?.map((org) => (
                     <DropdownMenuItem key={org.id} className="cursor-pointer p-0" render={<Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full px-2 py-1.5" />}>
                       <div className="flex items-center gap-2">
