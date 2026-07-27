@@ -117,7 +117,7 @@ const getCachedOrgTeams = unstable_cache(
     const teamsList: any[] = [];
 
     // Fetch ALL Teams from teams table
-    const { data: allTeams } = await adminSupabase
+    const { data: allTeams } = await supabase
       .from("teams")
       .select("*")
       .eq("organization_id", orgData.id)
