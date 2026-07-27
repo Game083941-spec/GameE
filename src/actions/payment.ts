@@ -3,6 +3,7 @@
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
@@ -43,10 +44,10 @@ export async function verifyPayment(
       return { error: "Payment verification failed (invalid signature)" };
     }
 
-    const supabase = await createClient();
+    const adminSupabase = createAdminClient();
 
     // 1. Insert into payments table
-    const { error: paymentError } = await supabase.from("payments").insert({
+    const { error: paymentError } = await adminSupabase.from("payments").insert({
       razorpay_order_id: razorpayOrderId,
       razorpay_payment_id: razorpayPaymentId,
       razorpay_signature: razorpaySignature,
@@ -58,7 +59,7 @@ export async function verifyPayment(
     if (paymentError) throw paymentError;
 
     // 2. Update submission payment_status
-    const { error: updateError } = await supabase
+    const { error: updateError } = await adminSupabase
       .from("submissions")
       .update({ payment_status: "SUCCESS", payment_id: razorpayPaymentId })
       .eq("id", submissionId);
