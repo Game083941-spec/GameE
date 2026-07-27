@@ -46,8 +46,8 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('${bg_image}')` }}
       >
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-[4px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
 
       {/* Main Content Area */}
