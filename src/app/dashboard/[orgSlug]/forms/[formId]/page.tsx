@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { getFormSubmissions } from "@/actions/submissions";
 
 export default async function SubmissionsPage({
   params,
@@ -25,15 +26,7 @@ export default async function SubmissionsPage({
   }
 
   // 2. Fetch submissions
-  const { data: submissions, error: submissionsError } = await supabase
-    .from("submissions")
-    .select("*")
-    .eq("form_id", formId)
-    .order("created_at", { ascending: false });
-
-  if (submissionsError) {
-    console.error(submissionsError);
-  }
+  const submissions = await getFormSubmissions(formId);
 
   // 3. Fetch fields so we know the column headers
   const { data: sections } = await supabase
