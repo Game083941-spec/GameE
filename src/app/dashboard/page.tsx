@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
 import { getUserOrganizations } from "@/actions/organizations";
+import { isSuperAdmin } from "@/actions/admin";
 
 export default async function DashboardRoot() {
   const organizations = await getUserOrganizations() as any[];
+
+  if (await isSuperAdmin()) {
+    redirect("/dashboard/admin");
+  }
 
   if (!organizations || organizations.length === 0) {
     redirect("/onboarding");
