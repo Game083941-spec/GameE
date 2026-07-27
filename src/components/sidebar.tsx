@@ -11,7 +11,6 @@ import {
   CreditCard,
   Shield,
   Gamepad2,
-  Gamepad2,
   Trophy,
   LogOut
 } from "lucide-react";
