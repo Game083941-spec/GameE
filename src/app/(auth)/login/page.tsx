@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/actions/auth";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,6 +21,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   async function handleLogin(formData: FormData) {
     setIsPending(true);
@@ -27,8 +29,11 @@ export default function LoginPage() {
     const result = await login(formData);
     if (result?.error) {
       setError(result.error);
+      setIsPending(false);
+    } else if (result?.success) {
+      router.push("/dashboard");
+      router.refresh(); // Force a refresh to ensure layout catches the new auth state
     }
-    setIsPending(false);
   }
 
   return (
