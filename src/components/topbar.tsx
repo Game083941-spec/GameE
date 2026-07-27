@@ -137,18 +137,24 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
                 <DropdownMenuSeparator />
               </>
             )}
-            <DropdownMenuItem className="cursor-pointer">
-              <UserIcon className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+            <DropdownMenuItem className="cursor-pointer p-0">
+              <Link href="/dashboard/profile" className="flex items-center w-full px-2 py-1.5">
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>Profile</span>
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Account Settings</span>
+            <DropdownMenuItem className="cursor-pointer p-0">
+              <Link href="/dashboard/settings" className="flex items-center w-full px-2 py-1.5">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Account Settings</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <Code className="mr-2 h-4 w-4" />
-              <span>Developer API</span>
+            <DropdownMenuItem className="cursor-pointer p-0">
+              <Link href="/dashboard/api" className="flex items-center w-full px-2 py-1.5">
+                <Code className="mr-2 h-4 w-4" />
+                <span>Developer API</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <form action={logout}>
