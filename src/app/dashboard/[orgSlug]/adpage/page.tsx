@@ -80,63 +80,52 @@ export default function AdPagesList({
                   Created {new Date(ad.created_at).toLocaleDateString()}
                 </CardDescription>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem render={<button onClick={() => alert("Edit functionality coming soon!")} />}>
-                    <Edit className="mr-2 h-4 w-4" /> Edit Page
-                  </DropdownMenuItem>
-                  <DropdownMenuItem render={<button onClick={() => {
-                    const url = `${window.location.origin}/ad/${ad.id}`;
-                    navigator.clipboard.writeText(url);
-                    window.open(url, '_blank');
-                    alert("Link copied to clipboard and opened in new tab!");
-                  }} />}>
-                    <Copy className="mr-2 h-4 w-4" /> Copy Link
-                  </DropdownMenuItem>
-                  {ad.status !== "published" && (
-                    <DropdownMenuItem render={<button onClick={() => handlePublish(ad.id)} />}>
-                      <Globe className="mr-2 h-4 w-4" /> Publish
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive focus:text-destructive" render={<button onClick={() => handleDelete(ad.id)} />}>
-                    <Trash2 className="mr-2 h-4 w-4" /> Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {ad.status === "published" ? (
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25 border-emerald-500/20">
-                      <Globe className="mr-1 h-3 w-3" /> Live
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                      Draft
-                    </span>
-                  )}
+            <CardContent className="pb-2">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {ad.status === "published" ? (
+                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-emerald-500/15 text-emerald-500 border-emerald-500/20">
+                        <Globe className="mr-1 h-3 w-3" /> Live
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground">
+                        Draft
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-7 text-xs px-2 gap-1.5 text-muted-foreground hover:text-foreground"
-                  onClick={() => {
-                    const url = `${window.location.origin}/ad/${ad.id}`;
-                    navigator.clipboard.writeText(url);
-                    window.open(url, '_blank');
-                    alert("Link copied to clipboard and opened in new tab!");
-                  }}
-                >
-                  <ExternalLink className="h-3 w-3" /> Get Link
-                </Button>
+                
+                {/* Direct Action Buttons */}
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => alert("Edit functionality coming soon!")}>
+                    <Edit className="h-3 w-3 mr-1.5" /> Edit
+                  </Button>
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full text-xs"
+                    onClick={() => {
+                      const url = `${window.location.origin}/ad/${ad.id}`;
+                      navigator.clipboard.writeText(url);
+                      window.open(url, '_blank');
+                    }}
+                  >
+                    <ExternalLink className="h-3 w-3 mr-1.5" /> Link
+                  </Button>
+
+                  {ad.status !== "published" && (
+                    <Button variant="default" size="sm" className="w-full text-xs bg-indigo-600 hover:bg-indigo-700" onClick={() => handlePublish(ad.id)}>
+                      <Globe className="h-3 w-3 mr-1.5" /> Publish
+                    </Button>
+                  )}
+                  
+                  <Button variant="destructive" size="sm" className={`w-full text-xs ${ad.status === 'published' ? 'col-span-2' : ''}`} onClick={() => handleDelete(ad.id)}>
+                    <Trash2 className="h-3 w-3 mr-1.5" /> Delete
+                  </Button>
+                </div>
               </div>
             </CardContent>
             <CardFooter className="mt-auto pt-4 flex items-center justify-between border-t text-sm text-muted-foreground bg-muted/20">
