@@ -88,25 +88,21 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
               <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
               <DropdownMenuGroup>
                 {organizations?.map((org) => (
-                  <DropdownMenuItem key={org.id} className="cursor-pointer p-0">
-                    <Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full px-2 py-1.5">
-                      <div className="flex items-center gap-2">
-                        <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
-                           {org.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="truncate max-w-[120px]">{org.name}</span>
+                  <DropdownMenuItem key={org.id} className="cursor-pointer p-0" render={<Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full px-2 py-1.5" />}>
+                    <div className="flex items-center gap-2">
+                      <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
+                         {org.name.charAt(0).toUpperCase()}
                       </div>
-                      {org.slug === currentOrgSlug && <Check className="h-4 w-4 text-primary" />}
-                    </Link>
+                      <span className="truncate max-w-[120px]">{org.name}</span>
+                    </div>
+                    {org.slug === currentOrgSlug && <Check className="h-4 w-4 text-primary" />}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0">
-                <Link href="/onboarding" className="flex items-center w-full px-2 py-1.5">
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  <span>Create Organization</span>
-                </Link>
+              <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0" render={<Link href="/onboarding" className="flex items-center w-full px-2 py-1.5" />}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                <span>Create Organization</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -137,33 +133,25 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
             <DropdownMenuSeparator />
             {isSuperAdmin && (
               <>
-                <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0">
-                  <Link href="/dashboard/admin" className="flex items-center w-full px-2 py-1.5">
-                    <Shield className="mr-2 h-4 w-4" />
-                    <span>Super Admin Panel</span>
-                  </Link>
+                <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0" render={<Link href="/dashboard/admin" className="flex items-center w-full px-2 py-1.5" />}>
+                  <Shield className="mr-2 h-4 w-4" />
+                  <span>Super Admin Panel</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
-            <DropdownMenuItem className="cursor-pointer p-0">
-              <Link href="/dashboard/profile" className="flex items-center w-full px-2 py-1.5">
-                <UserIcon className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </Link>
+            <DropdownMenuItem className="cursor-pointer p-0" render={<Link href="/dashboard/profile" className="flex items-center w-full px-2 py-1.5" />}>
+              <UserIcon className="mr-2 h-4 w-4" />
+              <span>Profile</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer p-0">
-              <Link href="/dashboard/settings" className="flex items-center w-full px-2 py-1.5">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Account Settings</span>
-              </Link>
+            <DropdownMenuItem className="cursor-pointer p-0" render={<Link href="/dashboard/settings" className="flex items-center w-full px-2 py-1.5" />}>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Account Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer p-0">
-              <Link href="/dashboard/api" className="flex items-center w-full px-2 py-1.5">
-                <Code className="mr-2 h-4 w-4" />
-                <span>Developer API</span>
-              </Link>
+            <DropdownMenuItem className="cursor-pointer p-0" render={<Link href="/dashboard/api" className="flex items-center w-full px-2 py-1.5" />}>
+              <Code className="mr-2 h-4 w-4" />
+              <span>Developer API</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <form action={logout}>
