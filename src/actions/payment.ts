@@ -71,3 +71,46 @@ export async function verifyPayment(
     return { error: error.message || "Payment verification failed" };
   }
 }
+
+export async function getOrganizationPayments(orgSlug: string) {
+  const supabase = await createClient();
+
+  // Get org ID
+  const { data: orgData } = await supabase
+    .from("organizations")
+    .select("id")
+    .eq("slug", orgSlug)
+    .single();
+
+  if (!orgData) return [];
+
+  // Fetch payments joined with submissions and forms
+  const { data: payments, error } = await supabase
+    .from("payments")
+    .select(`
+      id,
+      amount,
+      status,
+      created_at,
+      razorpay_payment_id,
+      submission:submissions (
+        id,
+        form:forms (
+          id,
+          title,
+          organization_id
+        )
+      )
+    `)
+    .eq("status", "SUCCESS")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching payments:", error);
+    return [];
+  }
+
+  // Filter payments where the submission's form belongs to this org
+  // (PostgREST filtering on joined tables can be tricky, so we filter in memory or use inner joins if properly typed. Memory filter is fine for MVP)
+  return payments.filter((p: any) => p.submission?.form?.organization_id === orgData.id);
+}
