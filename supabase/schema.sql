@@ -257,3 +257,32 @@ CREATE POLICY "Org members can manage fields."
             AND members.profile_id = auth.uid()
         )
     );
+
+-- ==========================================
+-- PHASE 4 SCHEMA: Submissions
+-- ==========================================
+
+-- 7. Submissions Table
+CREATE TABLE public.submissions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    form_id UUID REFERENCES public.forms(id) ON DELETE CASCADE NOT NULL,
+    responses JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.submissions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can insert a submission"
+    ON public.submissions FOR INSERT
+    WITH CHECK ( true );
+
+CREATE POLICY "Org members can view submissions"
+    ON public.submissions FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.forms
+            JOIN public.members ON members.organization_id = forms.organization_id
+            WHERE forms.id = submissions.form_id
+            AND members.profile_id = auth.uid()
+        )
+    );
