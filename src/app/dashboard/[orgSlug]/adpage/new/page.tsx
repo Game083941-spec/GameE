@@ -407,18 +407,24 @@ export default function AdPageBuilder({
         {/* Content Preview */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 h-full max-w-4xl mx-auto space-y-8 pointer-events-none">
           
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/20 border border-violet-500/30 backdrop-blur-md">
-            <span className="flex h-2 w-2 rounded-full bg-violet-400 animate-pulse" />
-            <span className="text-sm font-medium text-violet-100 uppercase tracking-wider">{customData.badge}</span>
-          </div>
+          {customData.badge && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/20 border border-violet-500/30 backdrop-blur-md">
+              <span className="flex h-2 w-2 rounded-full bg-violet-400 animate-pulse" />
+              <span className="text-sm font-medium text-violet-100 uppercase tracking-wider">{customData.badge}</span>
+            </div>
+          )}
 
           <div className="space-y-4 w-full">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-violet-100 to-cyan-200 drop-shadow-lg tracking-tight">
-              {customData.title}
-            </h1>
-            <p className="text-lg md:text-xl text-violet-100/90 font-medium max-w-2xl mx-auto leading-relaxed">
-              {customData.subtitle}
-            </p>
+            {customData.title && (
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-violet-100 to-cyan-200 drop-shadow-lg tracking-tight">
+                {customData.title}
+              </h1>
+            )}
+            {customData.subtitle && (
+              <p className="text-lg md:text-xl text-violet-100/90 font-medium max-w-2xl mx-auto leading-relaxed">
+                {customData.subtitle}
+              </p>
+            )}
           </div>
 
           {/* Event Details Grid */}

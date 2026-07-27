@@ -63,12 +63,16 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
 
         {/* Headings */}
         <div className="space-y-6 max-w-4xl">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-violet-100 to-cyan-200 drop-shadow-xl tracking-tight leading-tight">
-            {title}
-          </h1>
-          <p className="text-xl md:text-2xl text-violet-100/90 font-medium max-w-3xl mx-auto leading-relaxed">
-            {subtitle}
-          </p>
+          {title && (
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-violet-100 to-cyan-200 drop-shadow-xl tracking-tight leading-tight">
+              {title}
+            </h1>
+          )}
+          {subtitle && (
+            <p className="text-xl md:text-2xl text-violet-100/90 font-medium max-w-3xl mx-auto leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* Feature Grid */}
