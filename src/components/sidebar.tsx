@@ -48,27 +48,21 @@ export function Sidebar({ orgSlug }: { orgSlug: string }) {
   ];
 
   return (
-    <div className="hidden border-r bg-muted/20 lg:block lg:w-64 shrink-0">
-      <div className="flex h-14 items-center border-b px-6">
-        <Link href={`/dashboard/${orgSlug}`} className="flex items-center gap-2 font-semibold">
-          <span className="h-6 w-6 rounded-md bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs">
-            GF
-          </span>
-          <span className="tracking-tight">GameFormHub</span>
-        </Link>
-      </div>
-      <div className="flex-1 overflow-auto py-4">
-        <nav className="grid items-start px-4 text-sm font-medium space-y-1">
+    <div className="hidden border-r bg-muted/20 lg:block lg:w-64 shrink-0 h-[calc(100vh-4rem)]">
+      <div className="flex-1 overflow-auto py-6">
+        <nav className="grid items-start px-4 text-sm font-medium space-y-1.5">
           {routes.map((route) => (
             <Link
               key={route.href}
               href={route.href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-all hover:text-foreground",
-                route.active ? "bg-muted text-foreground" : "hover:bg-muted"
+                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                route.active
+                  ? "bg-primary/10 text-primary shadow-sm"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              <route.icon className="h-4 w-4" />
+              <route.icon className={cn("h-4 w-4", route.active ? "text-primary" : "text-muted-foreground")} />
               {route.label}
             </Link>
           ))}

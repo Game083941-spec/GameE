@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/actions/auth";
-import { Menu, PlusCircle, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,132 +13,147 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
-
-interface Organization {
-  id: string;
-  name: string;
-  slug: string;
-  logo_url: string | null;
-}
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface TopbarProps {
-  userEmail: string;
-  organizations: Organization[];
-  currentOrg: Organization;
+  user: any;
+  organizations: any[];
+  currentOrgSlug?: string;
 }
 
-export function Topbar({ userEmail, organizations, currentOrg }: TopbarProps) {
+export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
   const pathname = usePathname();
-  const orgSlug = currentOrg.slug;
-
-  const routes = [
-    { href: `/dashboard/${orgSlug}`, label: "Overview" },
-    { href: `/dashboard/${orgSlug}/forms`, label: "Forms" },
-    { href: `/dashboard/${orgSlug}/members`, label: "Members" },
-    { href: `/dashboard/${orgSlug}/settings`, label: "Settings" },
-  ];
+  const currentOrg = organizations.find((o) => o.slug === currentOrgSlug);
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="sticky top-0 z-40 flex h-16 w-full items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="sm:hidden">
+          <Button variant="outline" size="icon" className="shrink-0 lg:hidden">
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
+            <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="sm:max-w-xs">
-          <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href={`/dashboard/${orgSlug}`}
-              className="flex items-center gap-4 px-2.5 font-bold"
-            >
-              GFHub
+        <SheetContent side="left" className="w-[280px]">
+          <nav className="grid gap-4 text-lg font-medium">
+            <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
+              <span className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm shadow-md">
+                GF
+              </span>
+              <span className="tracking-tight">GameFormHub</span>
             </Link>
-            {routes.map((route) => (
-              <Link
-                key={route.href}
-                href={route.href}
-                className={`flex items-center gap-4 px-2.5 ${
-                  pathname === route.href
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {route.label}
-              </Link>
-            ))}
+            <div className="grid gap-2 mt-4">
+              <Link href={`/dashboard/${currentOrgSlug}`} className="text-muted-foreground hover:text-foreground">Overview</Link>
+              <Link href={`/dashboard/${currentOrgSlug}/forms`} className="text-muted-foreground hover:text-foreground">Forms</Link>
+              <Link href={`/dashboard/${currentOrgSlug}/members`} className="text-muted-foreground hover:text-foreground">Members</Link>
+            </div>
           </nav>
         </SheetContent>
       </Sheet>
 
-      <div className="flex-1">
+      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+        {/* Organization Switcher & Branding */}
+        <div className="flex-1 flex items-center gap-4 sm:flex-initial sm:mr-auto">
+          <Link href="/" className="hidden lg:flex items-center gap-2 font-bold tracking-tight text-lg mr-4">
+             <span className="h-7 w-7 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-xs shadow-sm shadow-primary/20">
+                GF
+              </span>
+              GameFormHub
+          </Link>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-[220px] justify-between shadow-sm">
+                <div className="flex items-center gap-2 truncate">
+                  <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
+                    {currentOrg ? currentOrg.name.charAt(0).toUpperCase() : "O"}
+                  </div>
+                  <span className="truncate">{currentOrg ? currentOrg.name : "Select Organization"}</span>
+                </div>
+                <span className="opacity-50 text-xs">▼</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-[220px]">
+              <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
+              <DropdownMenuGroup>
+                {organizations.map((org) => (
+                  <DropdownMenuItem key={org.id} asChild className="cursor-pointer">
+                    <Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
+                           {org.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span className="truncate max-w-[120px]">{org.name}</span>
+                      </div>
+                      {org.slug === currentOrgSlug && <Check className="h-4 w-4 text-primary" />}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild className="cursor-pointer text-primary focus:text-primary">
+                <Link href="/onboarding">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  <span>Create Organization</span>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* User Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <span className="h-4 w-4 rounded bg-primary/20 flex items-center justify-center text-[10px] font-bold">
-                {currentOrg.name.charAt(0).toUpperCase()}
-              </span>
-              <span className="truncate max-w-[150px]">{currentOrg.name}</span>
+            <Button variant="secondary" size="icon" className="rounded-full h-9 w-9 ring-2 ring-transparent hover:ring-primary/20 transition-all">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src={user?.user_metadata?.avatar_url} />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                  {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuLabel>Your Organizations</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-56">
+            <div className="flex items-center justify-start gap-2 p-2">
+              <div className="flex flex-col space-y-1 leading-none">
+                {user?.user_metadata?.full_name && (
+                  <p className="font-medium text-sm">{user.user_metadata.full_name}</p>
+                )}
+                <p className="w-[200px] truncate text-xs text-muted-foreground">
+                  {user?.email}
+                </p>
+              </div>
+            </div>
             <DropdownMenuSeparator />
-            {organizations.map((org) => (
-              <DropdownMenuItem key={org.id} asChild>
-                <Link href={`/dashboard/${org.slug}`}>{org.name}</Link>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/onboarding" className="flex items-center cursor-pointer">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                <span>Create Organization</span>
-              </Link>
+            <DropdownMenuItem className="cursor-pointer">
+              <UserIcon className="mr-2 h-4 w-4" />
+              <span>Profile</span>
             </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Account Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer">
+              <Code className="mr-2 h-4 w-4" />
+              <span>Developer API</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <form action={logout}>
+              <DropdownMenuItem asChild className="cursor-pointer text-destructive focus:text-destructive">
+                <button type="submit" className="w-full flex items-center">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </button>
+              </DropdownMenuItem>
+            </form>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="" alt={userEmail} />
-              <AvatarFallback>{userEmail.substring(0, 2).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">Account</p>
-              <p className="text-xs leading-none text-muted-foreground">
-                {userEmail}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href="/account" className="flex items-center cursor-pointer">
-              <UserIcon className="mr-2 h-4 w-4" />
-              <span>Profile Settings</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <form action={logout}>
-              <button type="submit" className="flex w-full items-center">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </button>
-            </form>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
     </header>
   );
 }
