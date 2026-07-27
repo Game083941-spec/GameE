@@ -40,17 +40,30 @@ export function FormCardActions({ orgSlug, formId }: { orgSlug: string; formId: 
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem className="cursor-pointer p-0">
-          <Link href={`/dashboard/${orgSlug}/forms/${formId}/edit`} className="flex items-center w-full px-2 py-1.5">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/dashboard/${orgSlug}/forms/${formId}/edit`);
+            }}
+            className="flex items-center w-full px-2 py-1.5 text-left"
+          >
             <Edit className="mr-2 h-4 w-4" />
             Edit Form
-          </Link>
+          </button>
         </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={handleDelete}
-          className="cursor-pointer text-destructive focus:text-destructive flex items-center"
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete Form
+        <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive p-0">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleDelete();
+            }}
+            className="flex items-center w-full px-2 py-1.5"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Form
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
