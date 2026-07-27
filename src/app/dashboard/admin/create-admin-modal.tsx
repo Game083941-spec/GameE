@@ -38,12 +38,14 @@ export function CreateAdminModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Administrator
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger 
+        render={
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Add Administrator
+          </Button>
+        } 
+      />
       <DialogContent className="sm:max-w-[425px]">
         <form action={onSubmit}>
           <DialogHeader>

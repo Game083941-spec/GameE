@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { submitForm } from "@/actions/submissions";
 import { createRazorpayOrder, verifyPayment } from "@/actions/payment";
-import { sendPaymentConfirmationEmail } from "@/actions/email";
+import { sendPaymentConfirmationEmail, sendRegistrationEmail } from "@/actions/email";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import Script from "next/script";
 
@@ -98,12 +98,28 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
             // 4. Send Confirmation Email (Find email field if it exists)
             const emailField = fields.find(f => f.type === "EMAIL");
+            
             if (emailField && responses[emailField.id]) {
+              const teamNameField = fields.find((f: any) => f.label.toLowerCase().includes("team"));
+              const teamName = teamNameField ? responses[teamNameField.id] : "N/A";
+              const playerNameField = fields.find((f: any) => f.type === "TEXT" && f.label.toLowerCase().includes("name"));
+              const playerName = playerNameField ? responses[playerNameField.id] : "Player";
+
               await sendPaymentConfirmationEmail(
                 responses[emailField.id],
                 form.title,
                 amount,
-                response.razorpay_payment_id
+                response.razorpay_payment_id,
+                teamName
+              );
+
+              await sendRegistrationEmail(
+                responses[emailField.id],
+                playerName,
+                teamName,
+                form.title,
+                result.submissionId,
+                "Paid"
               );
             }
 
@@ -131,6 +147,23 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
     }
 
     // If no payment required
+    const emailField = fields.find(f => f.type === "EMAIL");
+    if (emailField && responses[emailField.id]) {
+      const teamNameField = fields.find((f: any) => f.label.toLowerCase().includes("team"));
+      const teamName = teamNameField ? responses[teamNameField.id] : "N/A";
+      const playerNameField = fields.find((f: any) => f.type === "TEXT" && f.label.toLowerCase().includes("name"));
+      const playerName = playerNameField ? responses[playerNameField.id] : "Player";
+
+      await sendRegistrationEmail(
+        responses[emailField.id],
+        playerName,
+        teamName,
+        form.title,
+        result.submissionId,
+        "Free / Not Required"
+      );
+    }
+
     setIsSuccess(true);
     setIsSubmitting(false);
   };
