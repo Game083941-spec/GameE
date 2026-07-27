@@ -6,6 +6,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { FormCardActions } from "@/components/forms/form-card-actions";
 import { getOrgForms } from "@/actions/forms";
+import { CopyLinkButton } from "@/components/copy-link-button";
 
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -118,11 +119,7 @@ async function FormsGrid({ orgSlug }: { orgSlug: string }) {
                        Submissions
                      </Button>
                   </Link>
-                  <Link href={`/f/${form.id}`} target="_blank">
-                     <Button variant="outline" size="icon" className="h-8 w-8" title="View Public Form">
-                       <ExternalLink className="h-3 w-3" />
-                     </Button>
-                  </Link>
+                  <CopyLinkButton url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/f/${form.id}`} />
                 </div>
               </CardContent>
             </Card>
