@@ -96,6 +96,7 @@ export default function LoginPage() {
             {isPending ? "Logging in..." : "Log in"}
           </Button>
         </form>
+      </CardContent>
     </Card>
   );
 }
