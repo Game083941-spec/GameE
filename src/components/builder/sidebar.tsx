@@ -5,7 +5,7 @@ import { FieldType } from "@/lib/store/form-builder";
 import { GripVertical, Type, Mail, Hash, Gamepad2, List, CircleDot, IndianRupee, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useFormBuilderStore, FormSection } from "@/lib/store/form-builder";
+import { useFormBuilderStore } from "@/lib/store/form-builder";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
