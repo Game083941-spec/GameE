@@ -92,8 +92,10 @@ export default function AdPagesList({
                     <Edit className="mr-2 h-4 w-4" /> Edit Page
                   </DropdownMenuItem>
                   <DropdownMenuItem render={<button onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/ad/${ad.id}`);
-                    alert("Link copied to clipboard!");
+                    const url = `${window.location.origin}/ad/${ad.id}`;
+                    navigator.clipboard.writeText(url);
+                    window.open(url, '_blank');
+                    alert("Link copied to clipboard and opened in new tab!");
                   }} />}>
                     <Copy className="mr-2 h-4 w-4" /> Copy Link
                   </DropdownMenuItem>
@@ -127,8 +129,10 @@ export default function AdPagesList({
                   size="sm" 
                   className="h-7 text-xs px-2 gap-1.5 text-muted-foreground hover:text-foreground"
                   onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/ad/${ad.id}`);
-                    alert("Link copied to clipboard!");
+                    const url = `${window.location.origin}/ad/${ad.id}`;
+                    navigator.clipboard.writeText(url);
+                    window.open(url, '_blank');
+                    alert("Link copied to clipboard and opened in new tab!");
                   }}
                 >
                   <ExternalLink className="h-3 w-3" /> Get Link
