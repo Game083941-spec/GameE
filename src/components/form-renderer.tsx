@@ -105,22 +105,26 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
               const playerNameField = fields.find((f: any) => f.type === "TEXT" && f.label.toLowerCase().includes("name"));
               const playerName = playerNameField ? responses[playerNameField.id] : "Player";
 
-              await sendPaymentConfirmationEmail(
-                responses[emailField.id],
-                form.title,
-                amount,
-                response.razorpay_payment_id,
-                teamName
-              );
+              try {
+                await sendPaymentConfirmationEmail(
+                  responses[emailField.id],
+                  form.title,
+                  amount,
+                  response.razorpay_payment_id,
+                  teamName
+                );
 
-              await sendRegistrationEmail(
-                responses[emailField.id],
-                playerName,
-                teamName,
-                form.title,
-                result.submissionId,
-                "Paid"
-              );
+                await sendRegistrationEmail(
+                  responses[emailField.id],
+                  playerName,
+                  teamName,
+                  form.title,
+                  result.submissionId,
+                  "Paid"
+                );
+              } catch (e) {
+                console.error("Failed to send emails:", e);
+              }
             }
 
             setIsSuccess(true);
@@ -154,14 +158,18 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       const playerNameField = fields.find((f: any) => f.type === "TEXT" && f.label.toLowerCase().includes("name"));
       const playerName = playerNameField ? responses[playerNameField.id] : "Player";
 
-      await sendRegistrationEmail(
-        responses[emailField.id],
-        playerName,
-        teamName,
-        form.title,
-        result.submissionId,
-        "Free / Not Required"
-      );
+      try {
+        await sendRegistrationEmail(
+          responses[emailField.id],
+          playerName,
+          teamName,
+          form.title,
+          result.submissionId,
+          "Free / Not Required"
+        );
+      } catch (e) {
+        console.error("Failed to send registration email:", e);
+      }
     }
 
     setIsSuccess(true);
