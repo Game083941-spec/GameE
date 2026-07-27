@@ -3,7 +3,7 @@
 import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Calendar, MapPin, Trophy, ArrowRight, LayoutTemplate, Briefcase, Megaphone, Rocket, Edit3, Image as ImageIcon, Link as LinkIcon, UploadCloud, EyeOff, Eye } from "lucide-react";
+import { Calendar, MapPin, Trophy, ArrowRight, LayoutTemplate, Briefcase, Megaphone, Rocket, Edit3, Image as ImageIcon, Link as LinkIcon, UploadCloud, EyeOff, Eye, Plus, Trash2, LayoutList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -138,7 +138,23 @@ export default function AdPageBuilder({
     // Reset visibility when selecting non-custom templates
     if (t.id !== "custom") {
       setVisibility({ showDate: true, showPrize: true, showLocation: true });
+      setCustomFields([]); // Clear custom fields
     }
+  };
+
+  const [customFields, setCustomFields] = useState<{ id: string; label: string; value: string }[]>([]);
+
+  const handleAddCustomField = () => {
+    setActiveTemplate("custom");
+    setCustomFields(prev => [...prev, { id: `field-${Date.now()}`, label: "New Field", value: "Custom Value" }]);
+  };
+
+  const handleUpdateCustomField = (id: string, key: "label" | "value", newValue: string) => {
+    setCustomFields(prev => prev.map(f => f.id === id ? { ...f, [key]: newValue } : f));
+  };
+
+  const handleRemoveCustomField = (id: string) => {
+    setCustomFields(prev => prev.filter(f => f.id !== id));
   };
 
   const handleCustomChange = (field: keyof typeof customData, value: string) => {
@@ -181,7 +197,7 @@ export default function AdPageBuilder({
         bg_image: customData.bgImage,
         registration_link: customData.registrationLink,
         status: "draft",
-        field_visibility: visibility,
+        field_visibility: { ...visibility, extraFields: customFields },
       });
       alert("Saved successfully!");
       router.push(`/dashboard/${orgSlug}/adpage`);
@@ -294,7 +310,38 @@ export default function AdPageBuilder({
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-2">
+            {/* Extra Custom Fields Section */}
+            {activeTemplate === "custom" && (
+              <div className="space-y-3 pt-4 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs flex items-center gap-1.5 text-muted-foreground"><LayoutList className="h-3.5 w-3.5" /> Extra Fields</Label>
+                  <Button variant="ghost" size="sm" className="h-7 text-xs px-2" onClick={handleAddCustomField}>
+                    <Plus className="h-3 w-3 mr-1" /> Add Field
+                  </Button>
+                </div>
+                {customFields.map((field) => (
+                  <div key={field.id} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
+                    <Input 
+                      value={field.label} 
+                      onChange={(e) => handleUpdateCustomField(field.id, "label", e.target.value)} 
+                      placeholder="Label (e.g. Server IP)" 
+                      className="bg-black/20 h-9 text-xs" 
+                    />
+                    <Input 
+                      value={field.value} 
+                      onChange={(e) => handleUpdateCustomField(field.id, "value", e.target.value)} 
+                      placeholder="Value" 
+                      className="bg-black/20 h-9 text-xs" 
+                    />
+                    <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:text-red-300 hover:bg-red-950/30" onClick={() => handleRemoveCustomField(field.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="space-y-1.5 pt-4 border-t border-border/50">
               <Label className="text-xs flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> Registration / Target Link</Label>
               <Input 
                 value={customData.registrationLink} 
@@ -375,27 +422,36 @@ export default function AdPageBuilder({
           </div>
 
           {/* Event Details Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl mt-8">
+          <div className="flex flex-wrap justify-center gap-6 w-full max-w-4xl mt-8">
             {visibility.showDate && (
-              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm">
+              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm min-w-[200px]">
                 <Calendar className="h-6 w-6 md:h-8 md:w-8 text-violet-400 mb-3" />
                 <h3 className="text-base md:text-lg font-bold text-white mb-1">{customData.date}</h3>
               </div>
             )}
             
             {visibility.showPrize && (
-              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm">
+              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm min-w-[200px]">
                 <Trophy className="h-6 w-6 md:h-8 md:w-8 text-cyan-400 mb-3" />
                 <h3 className="text-base md:text-lg font-bold text-white mb-1">{customData.prize}</h3>
               </div>
             )}
 
             {visibility.showLocation && (
-              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm">
+              <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm min-w-[200px]">
                 <MapPin className="h-6 w-6 md:h-8 md:w-8 text-violet-400 mb-3" />
                 <h3 className="text-base md:text-lg font-bold text-white mb-1">{customData.location}</h3>
               </div>
             )}
+
+            {/* Custom Extra Fields */}
+            {activeTemplate === "custom" && customFields.map((field) => (
+              <div key={field.id} className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm min-w-[200px]">
+                <LayoutList className="h-6 w-6 md:h-8 md:w-8 text-indigo-400 mb-3" />
+                <h3 className="text-base md:text-lg font-bold text-white mb-1">{field.value}</h3>
+                <span className="text-xs text-white/60 uppercase tracking-wider">{field.label}</span>
+              </div>
+            ))}
           </div>
 
           {/* Call to Action */}

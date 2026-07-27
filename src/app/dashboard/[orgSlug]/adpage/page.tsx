@@ -2,7 +2,7 @@
 
 import React, { use, useState } from "react";
 import Link from "next/link";
-import { Plus, Megaphone, MoreHorizontal, Edit, Trash2, Globe, Clock, Copy } from "lucide-react";
+import { Plus, Megaphone, MoreHorizontal, Edit, Trash2, Globe, Clock, Copy, ExternalLink } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -12,7 +12,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 const INITIAL_AD_PAGES: any[] = [];
 
 import { getAdPages, updateAdPageStatus, deleteAdPage } from "@/actions/adpages";
-import { toast } from "sonner"; // Using standard alert for now, but importing toast if needed, wait we removed toast earlier, let's keep it clean
 
 export default function AdPagesList({
   params,
@@ -112,15 +111,30 @@ export default function AdPagesList({
               </DropdownMenu>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-2">
-                {ad.status === "published" ? (
-                  <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25 border-emerald-500/20">
-                    <Globe className="mr-1 h-3 w-3" /> Live
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80">
-                    Draft
-                  </span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {ad.status === "published" ? (
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-emerald-500/15 text-emerald-500 hover:bg-emerald-500/25 border-emerald-500/20">
+                      <Globe className="mr-1 h-3 w-3" /> Live
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                      Draft
+                    </span>
+                  )}
+                </div>
+                {ad.status === "published" && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-7 text-xs px-2 gap-1.5 text-muted-foreground hover:text-foreground"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`https://esporthub.com/ad/${ad.id}`);
+                      alert("Link copied to clipboard!");
+                    }}
+                  >
+                    <ExternalLink className="h-3 w-3" /> Get Link
+                  </Button>
                 )}
               </div>
             </CardContent>
