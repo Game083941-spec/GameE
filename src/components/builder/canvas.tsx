@@ -20,6 +20,7 @@ function Section({ sectionId }: { sectionId: string }) {
   const removeSection = useFormBuilderStore((state) => state.removeSection);
   const setActiveField = useFormBuilderStore((state) => state.setActiveField);
   const activeFieldId = useFormBuilderStore((state) => state.activeFieldId);
+  const removeField = useFormBuilderStore((state) => state.removeField);
 
   if (!section) return null;
 
@@ -54,12 +55,25 @@ function Section({ sectionId }: { sectionId: string }) {
               <div
                 key={field.id}
                 onClick={() => setActiveField(field.id)}
-                className={`p-3 border rounded-md cursor-pointer transition-colors ${
+                className={`p-3 border rounded-md cursor-pointer transition-colors relative ${
                   activeFieldId === field.id
                     ? "border-primary ring-1 ring-primary"
                     : "hover:border-primary/50"
                 }`}
               >
+                {activeFieldId === field.id && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 h-6 w-6 text-destructive hover:bg-destructive/10"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeField(section.id, field.id);
+                    }}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
                 <div className="font-medium text-sm mb-1">
                   {field.label}
                   {field.required && <span className="text-destructive ml-1">*</span>}

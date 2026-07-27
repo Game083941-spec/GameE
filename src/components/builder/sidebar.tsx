@@ -2,9 +2,10 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import { FieldType } from "@/lib/store/form-builder";
-import { GripVertical, Type, Mail, Hash, Gamepad2, List, CircleDot, IndianRupee } from "lucide-react";
+import { GripVertical, Type, Mail, Hash, Gamepad2, List, CircleDot, IndianRupee, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useFormBuilderStore } from "@/lib/store/form-builder";
 
 const FIELD_TYPES: { type: FieldType; label: string; icon: React.ReactNode }[] = [
   { type: "TEXT", label: "Short Text", icon: <Type className="w-4 h-4" /> },
@@ -14,9 +15,10 @@ const FIELD_TYPES: { type: FieldType; label: string; icon: React.ReactNode }[] =
   { type: "SELECT", label: "Dropdown", icon: <List className="w-4 h-4" /> },
   { type: "RADIO", label: "Single Choice", icon: <CircleDot className="w-4 h-4" /> },
   { type: "PAYMENT", label: "Entry Fee (Razorpay)", icon: <IndianRupee className="w-4 h-4" /> },
+  { type: "IMAGE", label: "Banner Image", icon: <ImageIcon className="w-4 h-4" /> },
 ];
 
-function DraggableField({ type, label, icon }: { type: FieldType; label: string; icon: React.ReactNode }) {
+function DraggableField({ type, label, icon, onClick }: { type: FieldType; label: string; icon: React.ReactNode; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `sidebar-${type}`,
     data: {
@@ -33,6 +35,7 @@ function DraggableField({ type, label, icon }: { type: FieldType; label: string;
       className={`flex items-center gap-3 p-3 bg-card border rounded-md cursor-grab active:cursor-grabbing hover:border-primary transition-colors ${
         isDragging ? "opacity-50" : ""
       }`}
+      onClick={onClick}
     >
       <GripVertical className="w-4 h-4 text-muted-foreground" />
       {icon}
@@ -42,6 +45,15 @@ function DraggableField({ type, label, icon }: { type: FieldType; label: string;
 }
 
 export function BuilderSidebar() {
+  const sections = useFormBuilderStore((state) => state.sections);
+  const addField = useFormBuilderStore((state) => state.addField);
+
+  const handleFieldClick = (type: FieldType) => {
+    if (sections.length > 0) {
+      addField(sections[0].id, type);
+    }
+  };
+
   return (
     <div className="hidden md:flex w-64 border-r bg-muted/20 flex-col">
       <div className="p-4 border-b">
@@ -50,7 +62,7 @@ export function BuilderSidebar() {
       <ScrollArea className="flex-1 p-4">
         <div className="flex flex-col gap-3">
           {FIELD_TYPES.map((field) => (
-            <DraggableField key={field.type} {...field} />
+            <DraggableField key={field.type} {...field} onClick={() => handleFieldClick(field.type)} />
           ))}
         </div>
       </ScrollArea>

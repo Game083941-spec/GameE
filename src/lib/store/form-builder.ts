@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
-export type FieldType = "TEXT" | "EMAIL" | "NUMBER" | "BGMI_UID" | "SELECT" | "RADIO" | "PAYMENT";
+export type FieldType = "TEXT" | "EMAIL" | "NUMBER" | "BGMI_UID" | "SELECT" | "RADIO" | "PAYMENT" | "IMAGE";
 
 export interface FormField {
   id: string;
