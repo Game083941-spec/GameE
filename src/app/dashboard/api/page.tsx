@@ -60,9 +60,9 @@ export default async function ApiPage() {
             <CardContent>
               <div className="bg-zinc-900 text-zinc-300 p-4 rounded-md text-sm font-mono overflow-x-auto">
                 <pre>
-                  <span className="text-pink-400">curl</span> -X GET https://api.gameformhub.com/v1/forms \{"\n"}
-                  {"  "}-H <span className="text-green-400">"Authorization: Bearer YOUR_API_KEY"</span> \{"\n"}
-                  {"  "}-H <span className="text-green-400">"Content-Type: application/json"</span>
+                  <span className="text-pink-400">curl</span> -X GET &quot;https://api.gameformhub.com/v1/forms&quot; \{"\n"}
+                  {"  "}-H &quot;Authorization: Bearer YOUR_API_KEY&quot; \{"\n"}
+                  {"  "}-H &quot;Content-Type: application/json&quot;
                 </pre>
               </div>
             </CardContent>

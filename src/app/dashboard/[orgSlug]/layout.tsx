@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { getUserOrganizations } from "@/actions/organizations";
 import { createClient } from "@/lib/supabase/server";
 import { Sidebar } from "@/components/sidebar";
 import { Topbar } from "@/components/topbar";

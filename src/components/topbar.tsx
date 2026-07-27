@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { logout } from "@/actions/auth";
 import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield } from "lucide-react";
 
@@ -27,7 +26,6 @@ interface TopbarProps {
 }
 
 export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin }: TopbarProps) {
-  const pathname = usePathname();
   const currentOrg = organizations?.find((o) => o.slug === currentOrgSlug);
 
   return (
@@ -42,7 +40,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
         <SheetContent side="left" className="w-[280px]">
           <nav className="grid gap-4 text-lg font-medium">
             <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-              <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" />
+              <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" priority />
               <span className="tracking-tight">GameFormHub</span>
             </Link>
             <div className="grid gap-2 mt-4">
@@ -58,7 +56,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
         {/* Organization Switcher & Branding */}
         <div className="flex-1 flex items-center gap-4 sm:flex-initial sm:mr-auto">
           <Link href="/" className="hidden lg:flex items-center gap-2 font-bold tracking-tight text-lg mr-4">
-             <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" />
+             <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
               GameFormHub
           </Link>
 

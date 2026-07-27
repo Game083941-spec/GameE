@@ -20,7 +20,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ orgSl
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Organization Settings</h1>
         <p className="text-muted-foreground mt-1">
-          Manage your organization's identity and global preferences.
+          Manage your organization&apos;s identity and global preferences.
         </p>
       </div>
 
@@ -30,7 +30,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ orgSl
             <Building2 className="h-5 w-5" />
             General Information
           </CardTitle>
-          <CardDescription>Update your organization's name and URL slug.</CardDescription>
+          <CardDescription>Update your organization&apos;s name and URL slug.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid gap-2">
