@@ -124,17 +124,21 @@ const getCachedOrgTeams = unstable_cache(
 
           const formName = forms.find(f => f.id === sub.form_id)?.title;
 
-          if (teamName !== "Unknown Team") {
-            teamsList.push({
-              id: sub.id,
-              teamName,
-              contact: contactEmail || contact || "No Contact",
-              contactEmail: contactEmail,
-              formName: formName || "Unknown Form",
-              date: new Date(sub.created_at).toLocaleDateString(),
-              source: "FORM_SUBMISSION"
-            });
+          if (teamName === "Unknown Team" && contact !== "") {
+            teamName = contact; // Fallback to their name
+          } else if (teamName === "Unknown Team") {
+            teamName = "Individual Registration";
           }
+
+          teamsList.push({
+            id: sub.id,
+            teamName,
+            contact: contactEmail || contact || "No Contact",
+            contactEmail: contactEmail,
+            formName: formName || "Unknown Form",
+            date: new Date(sub.created_at).toLocaleDateString(),
+            source: "FORM_SUBMISSION"
+          });
         });
       }
     }

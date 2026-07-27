@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidateTag, unstable_cache } from "next/cache";
 
-export async function submitForm(formId: string, responses: Record<string, any>) {
+export async function submitForm(formId: string, responses: Record<string, any>, paymentRequired: boolean = false) {
   const supabase = await createClient();
 
   // 1. Create the base submission record
@@ -12,7 +12,7 @@ export async function submitForm(formId: string, responses: Record<string, any>)
     .from("submissions")
     .insert({
       form_id: formId,
-      // We don't insert responses here anymore, we use submission_answers table
+      payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
     })
     .select("id")
     .single();

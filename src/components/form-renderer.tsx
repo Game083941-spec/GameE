@@ -51,7 +51,12 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       }
     }
 
-    const result = await submitForm(form.id, responses);
+    // Check if there is a payment field
+    const paymentField = fields.find(f => f.type === "PAYMENT");
+    const amount = paymentField ? parseInt(paymentField.options?.[0]?.value || "0") : 0;
+    const paymentRequired = amount > 0;
+
+    const result = await submitForm(form.id, responses, paymentRequired);
 
     if (result.error) {
       setError(result.error);
@@ -59,10 +64,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       return;
     }
 
-    // Check if there is a payment field
-    const paymentField = fields.find(f => f.type === "PAYMENT");
-    if (paymentField) {
-      const amount = parseInt(paymentField.options?.[0]?.value || "0");
+    if (paymentRequired) {
       if (amount > 0) {
         // 1. Create Razorpay Order
         const orderRes = await createRazorpayOrder(amount);

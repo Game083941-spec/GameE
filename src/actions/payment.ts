@@ -65,6 +65,11 @@ export async function verifyPayment(
 
     if (updateError) throw updateError;
 
+    // 3. Invalidate cache
+    const { revalidateTag } = await import("next/cache");
+    revalidateTag("form-submissions", {});
+    revalidateTag("org-teams", {});
+
     return { success: true };
   } catch (error: any) {
     console.error("Error verifying payment:", error);
