@@ -9,7 +9,9 @@ import {
   Users,
   Settings,
   CreditCard,
-  Shield
+  Shield,
+  Gamepad2,
+  Trophy
 } from "lucide-react";
 
 export function Sidebar({ orgSlug, isSuperAdmin }: { orgSlug: string; isSuperAdmin?: boolean }) {
@@ -33,6 +35,18 @@ export function Sidebar({ orgSlug, isSuperAdmin }: { orgSlug: string; isSuperAdm
       label: "Members",
       icon: Users,
       active: pathname === `/dashboard/${orgSlug}/members`,
+    },
+    {
+      href: `/dashboard/${orgSlug}/teams`,
+      label: "Teams",
+      icon: Trophy,
+      active: pathname === `/dashboard/${orgSlug}/teams`,
+    },
+    {
+      href: `/dashboard/${orgSlug}/matches`,
+      label: "Matches & History",
+      icon: Gamepad2,
+      active: pathname === `/dashboard/${orgSlug}/matches`,
     },
     {
       href: `/dashboard/${orgSlug}/billing`,
