@@ -139,6 +139,33 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           },
           theme: {
             color: "#10b981"
+          },
+          config: {
+            display: {
+              blocks: {
+                upi: {
+                  name: 'Pay with UPI (GPay, PhonePe, Paytm)',
+                  instruments: [
+                    {
+                      method: 'upi'
+                    }
+                  ]
+                },
+                other: {
+                  name: 'Other Payment Modes',
+                  instruments: [
+                    { method: 'card' },
+                    { method: 'netbanking' },
+                    { method: 'wallet' },
+                    { method: 'paylater' }
+                  ]
+                }
+              },
+              sequence: ['block.upi', 'block.other'],
+              preferences: {
+                show_default_blocks: false
+              }
+            }
           }
         };
 
