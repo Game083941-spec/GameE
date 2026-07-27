@@ -11,10 +11,13 @@ import {
   CreditCard,
   Shield,
   Gamepad2,
-  Trophy
+  Gamepad2,
+  Trophy,
+  LogOut
 } from "lucide-react";
+import { logout } from "@/actions/auth";
 
-export function Sidebar({ orgSlug, isSuperAdmin }: { orgSlug: string; isSuperAdmin?: boolean }) {
+export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string; isSuperAdmin?: boolean; userEmail?: string }) {
   const pathname = usePathname();
 
   const routes = [
@@ -91,6 +94,33 @@ export function Sidebar({ orgSlug, isSuperAdmin }: { orgSlug: string; isSuperAdm
             </Link>
           ))}
         </nav>
+      </div>
+
+      <div className="p-4 border-t border-border/50 bg-muted/10">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg overflow-hidden bg-zinc-900 border border-zinc-800 shrink-0">
+            <img 
+              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${userEmail || 'gamer'}&backgroundColor=18181b`} 
+              alt="User Avatar" 
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate text-foreground">
+              {userEmail ? userEmail.split('@')[0] : 'Gamer'}
+            </p>
+            <p className="text-xs text-muted-foreground truncate">
+              {userEmail || 'Player'}
+            </p>
+          </div>
+          <button 
+            onClick={() => logout()}
+            className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors shrink-0"
+            title="Log Out"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

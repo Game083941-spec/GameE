@@ -33,7 +33,11 @@ export default async function DashboardOrgLayout({
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-1">
-        <Sidebar orgSlug={orgSlug} isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL} />
+        <Sidebar 
+          orgSlug={orgSlug} 
+          isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL} 
+          userEmail={user?.email}
+        />
         <div className="flex flex-col flex-1 sm:gap-4 sm:py-4">
           <Topbar 
             user={user} 
