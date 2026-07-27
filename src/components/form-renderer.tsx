@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { submitForm } from "@/actions/submissions";
+import { createRazorpayOrder, verifyPayment } from "@/actions/payment";
+import { sendPaymentConfirmationEmail } from "@/actions/email";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import Script from "next/script";
 
 interface FormRendererProps {
   form: any;
@@ -52,10 +55,83 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
     if (result.error) {
       setError(result.error);
-    } else {
-      setIsSuccess(true);
+      setIsSubmitting(false);
+      return;
     }
-    
+
+    // Check if there is a payment field
+    const paymentField = fields.find(f => f.type === "PAYMENT");
+    if (paymentField) {
+      const amount = parseInt(paymentField.options?.[0]?.value || "0");
+      if (amount > 0) {
+        // 1. Create Razorpay Order
+        const orderRes = await createRazorpayOrder(amount);
+        if (orderRes.error) {
+          setError(orderRes.error);
+          setIsSubmitting(false);
+          return;
+        }
+
+        // 2. Open Razorpay Checkout
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: amount * 100,
+          currency: "INR",
+          name: orgName,
+          description: form.title,
+          order_id: orderRes.orderId,
+          handler: async function (response: any) {
+            // 3. Verify Payment
+            const verifyRes = await verifyPayment(
+              response.razorpay_order_id,
+              response.razorpay_payment_id,
+              response.razorpay_signature,
+              result.submissionId,
+              amount
+            );
+
+            if (verifyRes.error) {
+              setError(verifyRes.error);
+              setIsSubmitting(false);
+              return;
+            }
+
+            // 4. Send Confirmation Email (Find email field if it exists)
+            const emailField = fields.find(f => f.type === "EMAIL");
+            if (emailField && responses[emailField.id]) {
+              await sendPaymentConfirmationEmail(
+                responses[emailField.id],
+                form.title,
+                amount,
+                response.razorpay_payment_id
+              );
+            }
+
+            setIsSuccess(true);
+            setIsSubmitting(false);
+          },
+          prefill: {
+            name: "Test User",
+            email: "test@example.com",
+            contact: "9999999999"
+          },
+          theme: {
+            color: "#10b981"
+          }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.on("payment.failed", function (response: any) {
+          setError(response.error.description);
+          setIsSubmitting(false);
+        });
+        rzp.open();
+        return; // Don't set success state yet, wait for callback
+      }
+    }
+
+    // If no payment required
+    setIsSuccess(true);
     setIsSubmitting(false);
   };
 
@@ -76,6 +152,8 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
   }
 
   return (
+    <>
+    <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
     <Card className="w-full max-w-2xl mx-auto shadow-xl border-t-4 border-t-primary">
       <CardHeader className="pb-8 border-b bg-muted/30">
         <CardTitle className="text-3xl font-bold tracking-tight">{form.title}</CardTitle>
@@ -118,6 +196,10 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
                         onChange={(e) => handleInputChange(field.id, e.target.value)}
                         className="h-12 text-base transition-colors focus-visible:ring-primary"
                       />
+                    ) : field.type === "PAYMENT" ? (
+                      <div className="h-12 flex items-center px-4 bg-muted/30 border rounded-md text-lg font-semibold text-primary">
+                        ₹ {field.options?.[0]?.value || "0"}
+                      </div>
                     ) : (
                        <Input
                         type="text"
@@ -143,6 +225,8 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Submitting...
               </>
+            ) : fields.some(f => f.type === "PAYMENT") ? (
+              "Submit & Pay"
             ) : (
               "Submit Form"
             )}
@@ -150,5 +234,6 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
         </CardFooter>
       </form>
     </Card>
+    </>
   );
 }

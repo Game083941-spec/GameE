@@ -24,15 +24,15 @@ interface TopbarProps {
   currentOrgSlug?: string;
 }
 
-export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
+export function Topbar({ user, organizations = [], currentOrgSlug }: TopbarProps) {
   const pathname = usePathname();
-  const currentOrg = organizations.find((o) => o.slug === currentOrgSlug);
+  const currentOrg = organizations?.find((o) => o.slug === currentOrgSlug);
 
   return (
     <header className="sticky top-0 z-40 flex h-16 w-full items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
       <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0 lg:hidden">
+        <SheetTrigger className="shrink-0 lg:hidden">
+          <Button variant="outline" size="icon">
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
@@ -65,23 +65,21 @@ export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
           </Link>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-[220px] justify-between shadow-sm">
-                <div className="flex items-center gap-2 truncate">
-                  <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
-                    {currentOrg ? currentOrg.name.charAt(0).toUpperCase() : "O"}
-                  </div>
-                  <span className="truncate">{currentOrg ? currentOrg.name : "Select Organization"}</span>
+            <DropdownMenuTrigger className="w-[220px] justify-between shadow-sm flex items-center border rounded-md px-4 py-2 bg-background hover:bg-accent hover:text-accent-foreground text-sm font-medium">
+              <div className="flex items-center gap-2 truncate">
+                <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
+                  {currentOrg ? currentOrg.name.charAt(0).toUpperCase() : "O"}
                 </div>
-                <span className="opacity-50 text-xs">▼</span>
-              </Button>
+                <span className="truncate">{currentOrg ? currentOrg.name : "Select Organization"}</span>
+              </div>
+              <span className="opacity-50 text-xs">▼</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-[220px]">
               <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
               <DropdownMenuGroup>
-                {organizations.map((org) => (
-                  <DropdownMenuItem key={org.id} asChild className="cursor-pointer">
-                    <Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full">
+                {organizations?.map((org) => (
+                  <DropdownMenuItem key={org.id} className="cursor-pointer p-0">
+                    <Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full px-2 py-1.5">
                       <div className="flex items-center gap-2">
                         <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
                            {org.name.charAt(0).toUpperCase()}
@@ -94,8 +92,8 @@ export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
                 ))}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild className="cursor-pointer text-primary focus:text-primary">
-                <Link href="/onboarding">
+              <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0">
+                <Link href="/onboarding" className="flex items-center w-full px-2 py-1.5">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   <span>Create Organization</span>
                 </Link>
@@ -106,16 +104,14 @@ export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
 
         {/* User Profile */}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="rounded-full h-9 w-9 ring-2 ring-transparent hover:ring-primary/20 transition-all">
-              <Avatar className="h-9 w-9">
-                <AvatarImage src={user?.user_metadata?.avatar_url} />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                  {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <span className="sr-only">Toggle user menu</span>
-            </Button>
+          <DropdownMenuTrigger className="rounded-full h-9 w-9 ring-2 ring-transparent hover:ring-primary/20 transition-all outline-none">
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={user?.user_metadata?.avatar_url} />
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <span className="sr-only">Toggle user menu</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
             <div className="flex items-center justify-start gap-2 p-2">
@@ -144,8 +140,8 @@ export function Topbar({ user, organizations, currentOrgSlug }: TopbarProps) {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <form action={logout}>
-              <DropdownMenuItem asChild className="cursor-pointer text-destructive focus:text-destructive">
-                <button type="submit" className="w-full flex items-center">
+              <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive p-0">
+                <button type="submit" className="w-full flex items-center px-2 py-1.5">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </button>

@@ -2,12 +2,12 @@ import { redirect } from "next/navigation";
 import { getUserOrganizations } from "@/actions/organizations";
 
 export default async function DashboardRoot() {
-  const orgs = await getUserOrganizations();
+  const organizations = await getUserOrganizations() as any[];
 
-  if (orgs.length === 0) {
+  if (!organizations || organizations.length === 0) {
     redirect("/onboarding");
-  } else {
-    // Redirect to the first organization by default
-    redirect(`/dashboard/${orgs[0].slug}`);
   }
+
+  // If the user has organizations, redirect them to the first one's dashboard
+  redirect(`/dashboard/${organizations[0].slug}`);
 }

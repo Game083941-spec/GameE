@@ -12,21 +12,24 @@ export default async function DashboardOrgLayout({
   params: Promise<{ orgSlug: string }>;
 }) {
   const { orgSlug } = await params;
-  const orgs = await getUserOrganizations();
-  
-  if (orgs.length === 0) {
-    redirect("/onboarding");
-  }
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const currentOrg = orgs.find((o) => o.slug === orgSlug);
+  // 3. Fetch all organizations for the switcher
+  const { data: orgsData } = await supabase
+    .from("organizations")
+    .select("id, name, slug")
+    .order("created_at", { ascending: false });
+    
+  const organizations = (orgsData || []) as any[];
+
+  // 4. Validate current organization
+  const currentOrg = organizations.find((o) => o.slug === orgSlug);
 
   if (!currentOrg) {
     // If the org doesn't exist or user doesn't have access, fallback to root dashboard
     redirect("/dashboard");
   }
-
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -34,9 +37,9 @@ export default async function DashboardOrgLayout({
         <Sidebar orgSlug={orgSlug} />
         <div className="flex flex-col flex-1 sm:gap-4 sm:py-4">
           <Topbar 
-            userEmail={user?.email ?? ""} 
-            organizations={orgs} 
-            currentOrg={currentOrg} 
+            user={user} 
+            organizations={organizations} 
+            currentOrgSlug={orgSlug} 
           />
           <main className="flex-1 items-start p-4 sm:px-6 sm:py-0 md:gap-8">
             {children}

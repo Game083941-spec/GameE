@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
-export type FieldType = "TEXT" | "EMAIL" | "NUMBER" | "BGMI_UID" | "SELECT" | "RADIO";
+export type FieldType = "TEXT" | "EMAIL" | "NUMBER" | "BGMI_UID" | "SELECT" | "RADIO" | "PAYMENT";
 
 export interface FormField {
   id: string;
@@ -78,6 +78,8 @@ export const useFormBuilderStore = create<FormBuilderState>((set) => ({
         placeholder: "",
         ...(type === "SELECT" || type === "RADIO"
           ? { options: [{ label: "Option 1", value: "option-1" }] }
+          : type === "PAYMENT"
+          ? { options: [{ label: "Amount (INR)", value: "50" }] }
           : {}),
       };
 

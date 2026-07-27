@@ -94,6 +94,26 @@ export function PropertiesPanel() {
           />
         </div>
 
+        {activeField.type === "PAYMENT" && (
+          <div className="space-y-2 pt-4 border-t border-dashed">
+            <Label htmlFor="prop-amount">Entry Fee Amount (INR)</Label>
+            <Input
+              id="prop-amount"
+              type="number"
+              min="1"
+              value={activeField.options?.[0]?.value || ""}
+              onChange={(e) =>
+                updateField(activeSectionId!, activeField.id, {
+                  options: [{ label: "Amount (INR)", value: e.target.value }],
+                })
+              }
+            />
+            <p className="text-xs text-muted-foreground">
+              This amount will be charged via Razorpay.
+            </p>
+          </div>
+        )}
+
         {/* Future expansion: specific properties for SELECT, RADIO, BGMI_UID etc. */}
         <div className="pt-4 border-t border-dashed">
           <p className="text-xs text-muted-foreground">

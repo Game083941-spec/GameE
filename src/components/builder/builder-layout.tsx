@@ -1,7 +1,7 @@
 "use client";
 
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFormBuilderStore, FieldType } from "@/lib/store/form-builder";
 import { BuilderSidebar } from "./sidebar";
 import { BuilderCanvas } from "./canvas";
@@ -13,6 +13,11 @@ export function BuilderLayout() {
   
   const addField = useFormBuilderStore((state) => state.addField);
   const sections = useFormBuilderStore((state) => state.sections);
+
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,6 +50,10 @@ export function BuilderLayout() {
       addField(sectionId, type);
     }
   };
+
+  if (!isMounted) {
+    return null; // Prevent hydration mismatch due to uuidv4() in zustand store
+  }
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>

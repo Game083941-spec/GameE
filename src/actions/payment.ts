@@ -1,0 +1,73 @@
+"use server";
+
+import Razorpay from "razorpay";
+import crypto from "crypto";
+import { createClient } from "@/lib/supabase/server";
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!,
+});
+
+export async function createRazorpayOrder(amount: number) {
+  try {
+    const options = {
+      amount: amount * 100, // Razorpay amount is in paise
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    return { success: true, orderId: order.id };
+  } catch (error: any) {
+    console.error("Error creating Razorpay order:", error);
+    return { error: error.message || "Failed to create order" };
+  }
+}
+
+export async function verifyPayment(
+  razorpayOrderId: string,
+  razorpayPaymentId: string,
+  razorpaySignature: string,
+  submissionId: string,
+  amount: number
+) {
+  try {
+    const text = razorpayOrderId + "|" + razorpayPaymentId;
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
+      .update(text)
+      .digest("hex");
+
+    if (generatedSignature !== razorpaySignature) {
+      return { error: "Payment verification failed (invalid signature)" };
+    }
+
+    const supabase = await createClient();
+
+    // 1. Insert into payments table
+    const { error: paymentError } = await supabase.from("payments").insert({
+      razorpay_order_id: razorpayOrderId,
+      razorpay_payment_id: razorpayPaymentId,
+      razorpay_signature: razorpaySignature,
+      submission_id: submissionId,
+      amount,
+      status: "SUCCESS"
+    });
+
+    if (paymentError) throw paymentError;
+
+    // 2. Update submission payment_status
+    const { error: updateError } = await supabase
+      .from("submissions")
+      .update({ payment_status: "SUCCESS", payment_id: razorpayPaymentId })
+      .eq("id", submissionId);
+
+    if (updateError) throw updateError;
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error verifying payment:", error);
+    return { error: error.message || "Payment verification failed" };
+  }
+}

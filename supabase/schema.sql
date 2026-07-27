@@ -267,6 +267,8 @@ CREATE TABLE public.submissions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     form_id UUID REFERENCES public.forms(id) ON DELETE CASCADE NOT NULL,
     responses JSONB NOT NULL DEFAULT '{}'::jsonb,
+    payment_status TEXT DEFAULT 'NOT_REQUIRED', -- 'NOT_REQUIRED', 'PENDING', 'SUCCESS', 'FAILED'
+    payment_id TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -283,6 +285,45 @@ CREATE POLICY "Org members can view submissions"
             SELECT 1 FROM public.forms
             JOIN public.members ON members.organization_id = forms.organization_id
             WHERE forms.id = submissions.form_id
+            AND members.profile_id = auth.uid()
+        )
+    );
+
+-- ==========================================
+-- PHASE 5 SCHEMA: Payments
+-- ==========================================
+
+CREATE TABLE public.payments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    razorpay_order_id TEXT NOT NULL,
+    razorpay_payment_id TEXT,
+    razorpay_signature TEXT,
+    amount NUMERIC NOT NULL,
+    currency TEXT DEFAULT 'INR',
+    status TEXT DEFAULT 'created',
+    submission_id UUID REFERENCES public.submissions(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can insert payments"
+    ON public.payments FOR INSERT
+    WITH CHECK ( true );
+
+CREATE POLICY "Anyone can update their own payment"
+    ON public.payments FOR UPDATE
+    USING ( true );
+
+CREATE POLICY "Org members can view payments"
+    ON public.payments FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.submissions
+            JOIN public.forms ON forms.id = submissions.form_id
+            JOIN public.members ON members.organization_id = forms.organization_id
+            WHERE submissions.id = payments.submission_id
             AND members.profile_id = auth.uid()
         )
     );

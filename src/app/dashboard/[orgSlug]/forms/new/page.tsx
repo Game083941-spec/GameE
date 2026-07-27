@@ -1,5 +1,5 @@
 import { BuilderLayout } from "@/components/builder/builder-layout";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 import { getUserOrganizations } from "@/actions/organizations";
@@ -11,10 +11,10 @@ export default async function NewFormPage({
   params: Promise<{ orgSlug: string }>;
 }) {
   const { orgSlug } = await params;
-  const orgs = await getUserOrganizations();
-  const currentOrg = orgs.find((o) => o.slug === orgSlug);
+  const orgs = await getUserOrganizations() as any[];
+  const org = orgs.find((o: any) => o.slug === orgSlug);
 
-  if (!currentOrg) {
+  if (!org) {
     redirect("/dashboard");
   }
 
@@ -22,16 +22,14 @@ export default async function NewFormPage({
     <div className="flex flex-col h-[calc(100vh-2rem)]">
       {/* Builder Top Bar */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
-            <Link href={`/dashboard/${orgSlug}/forms`}>
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="flex items-center gap-4 mb-6 pb-6 border-b">
+        <Link href={`/dashboard/${orgSlug}/forms`} className={buttonVariants({ variant: "ghost", size: "icon" })}>
+          <ArrowLeft className="h-4 w-4" />
+        </Link>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">Create New Form</h2>
             <p className="text-sm text-muted-foreground">
-              {currentOrg.name} Organization
+              {org.name} Organization
             </p>
           </div>
         </div>
