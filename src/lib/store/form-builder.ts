@@ -20,6 +20,10 @@ export interface FormSection {
 }
 
 interface FormBuilderState {
+  formTitle: string;
+  formDescription: string;
+  setFormTitle: (title: string) => void;
+  setFormDescription: (description: string) => void;
   sections: FormSection[];
   activeFieldId: string | null;
   addSection: () => void;
@@ -33,6 +37,10 @@ interface FormBuilderState {
 }
 
 export const useFormBuilderStore = create<FormBuilderState>((set) => ({
+  formTitle: "Untitled Form",
+  formDescription: "",
+  setFormTitle: (title) => set({ formTitle: title }),
+  setFormDescription: (description) => set({ formDescription: description }),
   sections: [
     {
       id: uuidv4(),

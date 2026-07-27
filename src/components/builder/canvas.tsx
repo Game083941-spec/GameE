@@ -3,7 +3,9 @@
 import { useDroppable } from "@dnd-kit/core";
 import { useFormBuilderStore } from "@/lib/store/form-builder";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { PlusCircle, Trash2, Edit2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 function Section({ sectionId }: { sectionId: string }) {
@@ -108,14 +110,28 @@ export function BuilderCanvas() {
   const sections = useFormBuilderStore((state) => state.sections);
   const addSection = useFormBuilderStore((state) => state.addSection);
 
+  const formTitle = useFormBuilderStore((state) => state.formTitle);
+  const setFormTitle = useFormBuilderStore((state) => state.setFormTitle);
+  const formDescription = useFormBuilderStore((state) => state.formDescription);
+  const setFormDescription = useFormBuilderStore((state) => state.setFormDescription);
+
   return (
     <div className="flex-1 bg-zinc-50 dark:bg-zinc-950 p-8 overflow-y-auto">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Form Builder</h1>
-          <p className="text-muted-foreground">
-            Drag fields from the sidebar into sections below.
-          </p>
+        <div className="mb-8 p-6 bg-background rounded-xl border shadow-sm">
+          <Input
+            value={formTitle}
+            onChange={(e) => setFormTitle(e.target.value)}
+            className="text-3xl font-bold tracking-tight mb-4 border-none shadow-none px-0 h-auto focus-visible:ring-0 placeholder:text-muted-foreground/50"
+            placeholder="Form Title"
+          />
+          <Textarea
+            value={formDescription}
+            onChange={(e) => setFormDescription(e.target.value)}
+            className="text-muted-foreground border-none shadow-none px-0 resize-none focus-visible:ring-0 placeholder:text-muted-foreground/50"
+            placeholder="Add a description for your form..."
+            rows={2}
+          />
         </div>
 
         {sections.map((section) => (

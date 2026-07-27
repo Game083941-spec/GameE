@@ -10,16 +10,15 @@ import { useRouter } from "next/navigation";
 export function SaveFormButton({ orgSlug }: { orgSlug: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const sections = useFormBuilderStore((state) => state.sections);
+  const formTitle = useFormBuilderStore((state) => state.formTitle);
+  const formDescription = useFormBuilderStore((state) => state.formDescription);
   const router = useRouter();
 
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      // For now, we'll just use a generic title. In a full implementation, you'd have a settings modal for this.
-      const formTitle = "My New Form";
-      const formDesc = "Form created via GameFormHub builder";
       
-      const result = await saveForm(orgSlug, formTitle, formDesc, sections);
+      const result = await saveForm(orgSlug, formTitle, formDescription, sections);
       
       if (result?.error) {
         alert("Error saving form: " + result.error);
