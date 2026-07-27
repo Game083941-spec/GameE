@@ -11,8 +11,9 @@ export function CopyLinkButton({ url, title = "Copy and View Public Form" }: { u
       className="h-8 w-8" 
       title={title}
       onClick={() => {
-        navigator.clipboard.writeText(url);
-        window.open(url, '_blank');
+        const fullUrl = url.startsWith('/') ? `${window.location.origin}${url}` : url;
+        navigator.clipboard.writeText(fullUrl);
+        window.open(fullUrl, '_blank');
         alert("Link copied to clipboard and opened in new tab!");
       }}
     >

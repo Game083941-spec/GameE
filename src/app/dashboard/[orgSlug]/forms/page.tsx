@@ -119,7 +119,7 @@ async function FormsGrid({ orgSlug }: { orgSlug: string }) {
                        Submissions
                      </Button>
                   </Link>
-                  <CopyLinkButton url={`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/f/${form.id}`} />
+                  <CopyLinkButton url={`/f/${form.id}`} />
                 </div>
               </CardContent>
             </Card>
