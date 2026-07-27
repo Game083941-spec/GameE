@@ -75,8 +75,22 @@ function Section({ sectionId }: { sectionId: string }) {
                   </Button>
                 )}
                 <div className="font-medium text-sm mb-1">
-                  {field.label}
-                  {field.required && <span className="text-destructive ml-1">*</span>}
+                  {field.type === "IMAGE" ? (
+                    field.options?.[0]?.value ? (
+                      <div className="mt-2 mb-2 rounded-md overflow-hidden border border-border/50">
+                        <img src={field.options[0].value} alt="Banner" className="w-full h-32 object-cover" />
+                      </div>
+                    ) : (
+                      <div className="mt-2 mb-2 bg-muted/50 w-full h-32 flex items-center justify-center rounded-md border border-dashed text-muted-foreground text-xs">
+                        Select to upload banner image
+                      </div>
+                    )
+                  ) : (
+                    <>
+                      {field.label}
+                      {field.required && <span className="text-destructive ml-1">*</span>}
+                    </>
+                  )}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Type: {field.type}

@@ -5,13 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Upload, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export function PropertiesPanel() {
   const activeFieldId = useFormBuilderStore((state) => state.activeFieldId);
   const sections = useFormBuilderStore((state) => state.sections);
   const updateField = useFormBuilderStore((state) => state.updateField);
   const removeField = useFormBuilderStore((state) => state.removeField);
+  const [isUploading, setIsUploading] = useState(false);
 
   // Find the active field across all sections
   let activeField = null;
@@ -111,6 +113,54 @@ export function PropertiesPanel() {
             <p className="text-xs text-muted-foreground">
               This amount will be charged via Razorpay.
             </p>
+          </div>
+        )}
+
+        {activeField.type === "IMAGE" && (
+          <div className="space-y-2 pt-4 border-t border-dashed">
+            <Label>Upload Banner Image</Label>
+            <div className="flex items-center gap-2 mt-2">
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+
+                  try {
+                    setIsUploading(true);
+                    const formData = new FormData();
+                    formData.append("file", file);
+
+                    const res = await fetch("/api/upload", {
+                      method: "POST",
+                      body: formData,
+                    });
+
+                    if (!res.ok) throw new Error("Upload failed");
+
+                    const data = await res.json();
+                    
+                    updateField(activeSectionId!, activeField.id, {
+                      options: [{ label: "url", value: data.url }],
+                    });
+                  } catch (error) {
+                    console.error("Upload error", error);
+                    alert("Failed to upload image. Please check your Cloudflare credentials.");
+                  } finally {
+                    setIsUploading(false);
+                  }
+                }}
+              />
+            </div>
+            {isUploading && (
+              <p className="text-xs text-muted-foreground flex items-center mt-1">
+                <Loader2 className="h-3 w-3 animate-spin mr-1" /> Uploading to Cloudflare R2...
+              </p>
+            )}
+            {activeField.options?.[0]?.value && !isUploading && (
+              <p className="text-xs text-green-600 mt-1">Image uploaded successfully!</p>
+            )}
           </div>
         )}
 
