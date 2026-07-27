@@ -79,13 +79,26 @@ export default async function PublicFormPage({
   }
 
   return (
-    <div className="min-h-screen bg-muted/20 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
+    <div 
+      className="min-h-screen bg-muted/20 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center relative"
+      style={form.banner_url ? {
+        backgroundImage: `url(${form.banner_url})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+      } : undefined}
+    >
+      {form.banner_url && (
+        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm pointer-events-none" />
+      )}
+      <div className="relative z-10 w-full">
       <FormRenderer 
         form={form} 
         sections={sections} 
         fields={fields} 
         orgName={form.organization?.name || "this organization"} 
       />
+      </div>
     </div>
   );
 }

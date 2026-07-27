@@ -27,7 +27,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
   // Group fields by section
   const fieldsBySection = sections.map(section => ({
     ...section,
-    fields: fields.filter(f => f.section_id === section.id).sort((a, b) => a.order_index - b.order_index)
+    fields: fields.filter(f => f.section_id === section.id && f.type !== "IMAGE").sort((a, b) => a.order_index - b.order_index)
   })).sort((a, b) => a.order_index - b.order_index);
 
   const handleInputChange = (fieldId: string, value: string) => {
