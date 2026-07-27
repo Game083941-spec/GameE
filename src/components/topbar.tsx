@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { logout } from "@/actions/auth";
-import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield } from "lucide-react";
+import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield, LayoutDashboard, FileText, Users, Trophy, Gamepad2, CreditCard } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -43,10 +43,28 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
               <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" priority />
               <span className="tracking-tight">ESportHub</span>
             </Link>
-            <div className="grid gap-2 mt-4">
-              <Link href={`/dashboard/${currentOrgSlug}`} className="text-muted-foreground hover:text-foreground">Overview</Link>
-              <Link href={`/dashboard/${currentOrgSlug}/forms`} className="text-muted-foreground hover:text-foreground">Forms</Link>
-              <Link href={`/dashboard/${currentOrgSlug}/members`} className="text-muted-foreground hover:text-foreground">Members</Link>
+            <div className="grid gap-3 mt-4">
+              <Link href={`/dashboard/${currentOrgSlug}`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <LayoutDashboard className="h-5 w-5" /> Overview
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/forms`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <FileText className="h-5 w-5" /> Forms
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/members`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <Users className="h-5 w-5" /> Members
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/teams`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <Trophy className="h-5 w-5" /> Teams
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/matches`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <Gamepad2 className="h-5 w-5" /> Matches & History
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/billing`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <CreditCard className="h-5 w-5" /> Billing
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/settings`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <Settings className="h-5 w-5" /> Settings
+              </Link>
             </div>
           </nav>
         </SheetContent>
