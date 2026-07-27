@@ -97,7 +97,7 @@ export async function addManualTeam(
     return { error: "Failed to add team" };
   }
 
-  revalidateTag(`org-teams-${orgSlug}`, {});
+  revalidateTag(`org-teams-${orgSlug}`, "default");
   return { success: true };
 }
 

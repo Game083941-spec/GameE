@@ -67,9 +67,9 @@ export async function verifyPayment(
     await insertTeamFromSubmission(submissionId);
 
     // 4. Invalidate cache
-    revalidateTag("form-submissions");
-    revalidateTag("org-teams");
-    revalidateTag("org-payments");
+    revalidateTag("form-submissions", "default");
+    revalidateTag("org-teams", "default");
+    revalidateTag("org-payments", "default");
 
     return { success: true };
   } catch (error: any) {

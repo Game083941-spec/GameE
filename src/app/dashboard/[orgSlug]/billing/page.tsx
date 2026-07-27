@@ -55,7 +55,7 @@ async function TransactionList({ orgSlug }: { orgSlug: string }) {
 
   return (
     <>
-      <VirtualTransactionTable transactions={transactions} />
+      <VirtualTransactionTable transactions={transactions as any} />
     </>
   );
 }

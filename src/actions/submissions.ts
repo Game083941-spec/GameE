@@ -45,8 +45,8 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     await insertTeamFromSubmission(submissionData.id);
   }
 
-  revalidateTag("form-submissions", {});
-  revalidateTag("org-teams", {});
+  revalidateTag("form-submissions", "default");
+  revalidateTag("org-teams", "default");
   
   return { success: true, submissionId: submissionData.id };
 }
