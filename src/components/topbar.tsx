@@ -53,13 +53,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
       </Sheet>
 
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        {/* Organization Switcher & Branding */}
         <div className="flex-1 flex items-center gap-4 sm:flex-initial sm:mr-auto">
-          <Link href="/" className="hidden lg:flex items-center gap-2 font-bold tracking-tight text-lg mr-4">
-             <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
-              GameFormHub
-          </Link>
-
           <DropdownMenu>
             <DropdownMenuTrigger className="w-[220px] justify-between shadow-sm flex items-center border rounded-md px-4 py-2 bg-background hover:bg-accent hover:text-accent-foreground text-sm font-medium">
               <div className="flex items-center gap-2 truncate">

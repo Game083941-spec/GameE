@@ -13,8 +13,8 @@ import {
   Gamepad2,
   Trophy,
   LogOut
-} from "lucide-react";
 import { logout } from "@/actions/auth";
+import Image from "next/image";
 
 export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string; isSuperAdmin?: boolean; userEmail?: string }) {
   const pathname = usePathname();
@@ -74,7 +74,14 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
   }
 
   return (
-    <div className="hidden border-r bg-muted/20 lg:block lg:w-64 shrink-0 h-[calc(100vh-4rem)]">
+    <div className="hidden border-r bg-muted/20 lg:flex lg:flex-col lg:w-64 shrink-0 h-[calc(100vh-4rem)]">
+      <div className="p-4 border-b border-border/50">
+        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-lg">
+          <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
+          GameFormHub
+        </Link>
+      </div>
+      
       <div className="flex-1 overflow-auto py-6">
         <nav className="grid items-start px-4 text-sm font-medium space-y-1.5">
           {routes.map((route) => (
