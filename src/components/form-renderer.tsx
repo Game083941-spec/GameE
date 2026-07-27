@@ -169,12 +169,23 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           }
         };
 
-        const rzp = new (window as any).Razorpay(options);
-        rzp.on("payment.failed", function (response: any) {
-          setError(response.error.description);
+        try {
+          if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
+            throw new Error("Razorpay API key is missing. Please configure it in your dashboard.");
+          }
+          if (!(window as any).Razorpay) {
+            throw new Error("Payment gateway is still loading or was blocked by an ad-blocker. Please disable ad-blockers and try again.");
+          }
+          const rzp = new (window as any).Razorpay(options);
+          rzp.on("payment.failed", function (response: any) {
+            setError(response.error.description || "Payment failed");
+            setIsSubmitting(false);
+          });
+          rzp.open();
+        } catch (err: any) {
+          setError(err.message || "Failed to initialize payment gateway. Please try again.");
           setIsSubmitting(false);
-        });
-        rzp.open();
+        }
         return; // Don't set success state yet, wait for callback
       }
     }
@@ -223,7 +234,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
   return (
     <>
-    <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+    <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
     <Card className="w-full max-w-2xl mx-auto shadow-xl border-t-4 border-t-primary">
       <CardHeader className="pb-8 border-b bg-muted/30">
         <CardTitle className="text-3xl font-bold tracking-tight">{form.title}</CardTitle>
