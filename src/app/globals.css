@@ -129,4 +129,9 @@
   html {
     @apply font-sans;
   }
+  
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
 }
