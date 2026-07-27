@@ -15,7 +15,7 @@ export default async function MembersPage({ params }: { params: Promise<{ orgSlu
     .single();
 
   // Fetch members (placeholder or actual fetch)
-  let members = [];
+  let members: any[] = [];
   if (orgData) {
     const { data: membersData } = await supabase
       .from("members")
