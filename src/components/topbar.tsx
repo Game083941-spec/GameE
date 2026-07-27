@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logout } from "@/actions/auth";
-import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check } from "lucide-react";
+import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,9 +22,10 @@ interface TopbarProps {
   user: any;
   organizations: any[];
   currentOrgSlug?: string;
+  isSuperAdmin?: boolean;
 }
 
-export function Topbar({ user, organizations = [], currentOrgSlug }: TopbarProps) {
+export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin }: TopbarProps) {
   const pathname = usePathname();
   const currentOrg = organizations?.find((o) => o.slug === currentOrgSlug);
 

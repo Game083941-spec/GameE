@@ -96,18 +96,6 @@ export default function LoginPage() {
             {isPending ? "Logging in..." : "Log in"}
           </Button>
         </form>
-      </CardContent>
-      <CardFooter className="flex flex-col items-center justify-center space-y-2">
-        <div className="text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <Link
-            href="/signup"
-            className="font-semibold text-primary hover:underline"
-          >
-            Sign up
-          </Link>
-        </div>
-      </CardFooter>
     </Card>
   );
 }

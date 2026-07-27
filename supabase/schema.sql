@@ -52,6 +52,10 @@ CREATE POLICY "Users can update their own profile."
     ON public.profiles FOR UPDATE
     USING ( auth.uid() = id );
 
+CREATE POLICY "Super admin can bypass profiles"
+    ON public.profiles FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
+
 -- Organizations Policies
 CREATE POLICY "Organizations are viewable by everyone."
     ON public.organizations FOR SELECT
@@ -71,6 +75,10 @@ CREATE POLICY "Organization owners and admins can update organization."
             AND members.role IN ('OWNER', 'ADMIN', 'SUPER_ADMIN')
         )
     );
+
+CREATE POLICY "Super admin can bypass organizations"
+    ON public.organizations FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
 
 CREATE POLICY "Members are viewable by everyone."
     ON public.members FOR SELECT
@@ -101,6 +109,10 @@ CREATE POLICY "Org admins can delete members"
             AND m.role IN ('OWNER', 'ADMIN', 'SUPER_ADMIN')
         )
     );
+
+CREATE POLICY "Super admin can bypass members"
+    ON public.members FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
 
 -- Function to handle new user signup and create a profile automatically
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -198,6 +210,10 @@ CREATE POLICY "Org members can update forms."
         )
     );
 
+CREATE POLICY "Super admin can bypass forms"
+    ON public.forms FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
+
 -- Sections Policies
 CREATE POLICY "Sections are viewable by everyone if form is published or by org members."
     ON public.sections FOR SELECT
@@ -226,6 +242,10 @@ CREATE POLICY "Org members can manage sections."
             AND members.profile_id = auth.uid()
         )
     );
+
+CREATE POLICY "Super admin can bypass sections"
+    ON public.sections FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
 
 -- Fields Policies
 CREATE POLICY "Fields are viewable by everyone if form is published or by org members."
@@ -258,6 +278,10 @@ CREATE POLICY "Org members can manage fields."
         )
     );
 
+CREATE POLICY "Super admin can bypass fields"
+    ON public.fields FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
+
 -- ==========================================
 -- PHASE 4 SCHEMA: Submissions
 -- ==========================================
@@ -288,6 +312,10 @@ CREATE POLICY "Org members can view submissions"
             AND members.profile_id = auth.uid()
         )
     );
+
+CREATE POLICY "Super admin can bypass submissions"
+    ON public.submissions FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );
 
 -- ==========================================
 -- PHASE 5 SCHEMA: Payments
@@ -327,3 +355,7 @@ CREATE POLICY "Org members can view payments"
             AND members.profile_id = auth.uid()
         )
     );
+
+CREATE POLICY "Super admin can bypass payments"
+    ON public.payments FOR ALL
+    USING ( (auth.jwt() ->> 'email') = 'scrimsgame8@gmail.com' );

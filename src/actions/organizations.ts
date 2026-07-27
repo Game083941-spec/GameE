@@ -57,6 +57,18 @@ export async function getUserOrganizations() {
 
   if (!user) return [];
 
+  if (user.email === process.env.SUPER_ADMIN_EMAIL) {
+    const { data } = await supabase
+      .from("organizations")
+      .select("id, name, slug, logo_url")
+      .order("created_at", { ascending: false });
+      
+    return (data || []).map((org) => ({
+      role: "OWNER",
+      ...org,
+    }));
+  }
+
   const { data } = await supabase
     .from("members")
     .select(`

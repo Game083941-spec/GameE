@@ -40,6 +40,7 @@ export default async function DashboardOrgLayout({
             user={user} 
             organizations={organizations} 
             currentOrgSlug={orgSlug} 
+            isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL}
           />
           <main className="flex-1 items-start p-4 sm:px-6 sm:py-0 md:gap-8">
             {children}
