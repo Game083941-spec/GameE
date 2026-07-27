@@ -32,7 +32,7 @@ export const getPaymentTemplate = ({
 <body>
   <div class="container">
     <div class="header">
-      <h1>GameFormHub</h1>
+      <h1>ESportHub</h1>
     </div>
     <div class="content">
       <h2 style="color: #10b981; margin-top: 0; text-align: center;">Payment Successful!</h2>
@@ -49,7 +49,7 @@ export const getPaymentTemplate = ({
       
     </div>
     <div class="footer">
-      <p>This is an automated receipt from GameFormHub. Please keep it for your records.</p>
+      <p>This is an automated receipt from ESportHub. Please keep it for your records.</p>
     </div>
   </div>
 </body>

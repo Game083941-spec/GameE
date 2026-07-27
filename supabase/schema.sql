@@ -1,4 +1,4 @@
--- Initial Database Schema for GameFormHub
+-- Initial Database Schema for ESportHub
 
 -- Create custom types for roles
 CREATE TYPE public.organization_role AS ENUM ('SUPER_ADMIN', 'OWNER', 'ADMIN', 'MODERATOR', 'VIEWER');

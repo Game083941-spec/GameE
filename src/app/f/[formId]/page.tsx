@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ formId: s
   }
 
   return {
-    title: `${form.title} - GameFormHub`,
-    description: form.description || "A public form on GameFormHub.",
+    title: `${form.title} - ESportHub`,
+    description: form.description || "A public form on ESportHub.",
   };
 }
 

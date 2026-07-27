@@ -41,7 +41,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
           <nav className="grid gap-4 text-lg font-medium">
             <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
               <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" priority />
-              <span className="tracking-tight">GameFormHub</span>
+              <span className="tracking-tight">ESportHub</span>
             </Link>
             <div className="grid gap-2 mt-4">
               <Link href={`/dashboard/${currentOrgSlug}`} className="text-muted-foreground hover:text-foreground">Overview</Link>

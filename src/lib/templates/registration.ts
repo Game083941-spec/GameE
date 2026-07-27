@@ -35,7 +35,7 @@ export const getRegistrationTemplate = ({
 <body>
   <div class="container">
     <div class="header">
-      <h1>GameFormHub</h1>
+      <h1>ESportHub</h1>
     </div>
     <div class="content">
       <h2 style="color: #10b981; margin-top: 0;">Registration Successful! 🎉</h2>
@@ -53,7 +53,7 @@ export const getRegistrationTemplate = ({
       <p>Good luck in the tournament!</p>
     </div>
     <div class="footer">
-      <p>This is an automated email from GameFormHub. Please do not reply.</p>
+      <p>This is an automated email from ESportHub. Please do not reply.</p>
     </div>
   </div>
 </body>

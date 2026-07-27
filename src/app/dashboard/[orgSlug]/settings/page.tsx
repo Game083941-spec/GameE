@@ -41,7 +41,7 @@ export default async function SettingsPage({ params }: { params: Promise<{ orgSl
             <Label htmlFor="orgSlug">URL Slug</Label>
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground text-sm bg-muted px-3 py-2 rounded-md border border-input">
-                gameformhub.com/
+                esporthub.com/
               </span>
               <Input id="orgSlug" defaultValue={orgData?.slug} className="flex-1" />
             </div>

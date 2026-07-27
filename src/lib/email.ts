@@ -19,7 +19,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
     });
 
     const info = await transporter.sendMail({
-      from: `"GameFormHub" <${process.env.SMTP_USER}>`,
+      from: `"ESportHub" <${process.env.SMTP_USER}>`,
       to: Array.isArray(to) ? to.join(", ") : to,
       subject,
       html,

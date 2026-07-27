@@ -79,7 +79,7 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
       <div className="p-4 border-b border-border/50">
         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-lg">
           <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
-          GameFormHub
+          ESportHub
         </Link>
       </div>
       

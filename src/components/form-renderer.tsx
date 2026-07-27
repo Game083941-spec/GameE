@@ -258,7 +258,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
         
         <CardFooter className="pt-8 pb-8 bg-muted/10 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground order-2 sm:order-1">
-            Powered by <strong className="text-foreground">GameFormHub</strong>
+            Powered by <strong className="text-foreground">ESportHub</strong>
           </p>
           <Button type="submit" size="lg" disabled={isSubmitting} className="font-semibold px-8 shadow-md w-full sm:w-auto order-1 sm:order-2">
             {isSubmitting ? (

@@ -20,7 +20,7 @@ export const getPasswordResetTemplate = ({ resetLink }: PasswordResetTemplatePro
 <body>
   <div class="container">
     <div class="header">
-      <h1>GameFormHub</h1>
+      <h1>ESportHub</h1>
     </div>
     <div class="content">
       <h2 style="color: #0f172a; margin-top: 0;">Reset your password</h2>

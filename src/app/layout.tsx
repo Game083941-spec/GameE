@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GameFormHub - Modern Gaming Form Builder",
+  title: "ESportHub - Modern Gaming Form Builder",
   description: "A modern no-code form builder for Gaming Communities, Tournament Organizers, and Event Management.",
 };
 
