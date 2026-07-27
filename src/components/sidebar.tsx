@@ -12,7 +12,8 @@ import {
   Shield,
   Gamepad2,
   Trophy,
-  LogOut
+  LogOut,
+  Bell
 } from "lucide-react";
 import { logout } from "@/actions/auth";
 import Image from "next/image";
@@ -38,6 +39,12 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
       label: "Members",
       icon: Users,
       active: pathname === `/dashboard/${orgSlug}/members`,
+    },
+    {
+      href: `/dashboard/${orgSlug}/notifications`,
+      label: "Notifications",
+      icon: Bell,
+      active: pathname === `/dashboard/${orgSlug}/notifications`,
     },
     {
       href: `/dashboard/${orgSlug}/teams`,

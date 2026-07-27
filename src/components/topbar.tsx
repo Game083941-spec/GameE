@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { logout } from "@/actions/auth";
-import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield, LayoutDashboard, FileText, Users, Trophy, Gamepad2, CreditCard } from "lucide-react";
+import { Menu, PlusCircle, LogOut, User as UserIcon, Settings, Code, Check, Shield, LayoutDashboard, FileText, Users, Trophy, Gamepad2, CreditCard, Bell } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +52,9 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
               </Link>
               <Link href={`/dashboard/${currentOrgSlug}/members`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
                 <Users className="h-5 w-5" /> Members
+              </Link>
+              <Link href={`/dashboard/${currentOrgSlug}/notifications`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+                <Bell className="h-5 w-5" /> Notifications
               </Link>
               <Link href={`/dashboard/${currentOrgSlug}/teams`} className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
                 <Trophy className="h-5 w-5" /> Teams
