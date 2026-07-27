@@ -57,7 +57,7 @@ export function BuilderLayout() {
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="flex h-[calc(100vh-4rem)] border rounded-xl overflow-hidden bg-background shadow-sm">
+      <div className="flex h-full border rounded-xl overflow-hidden bg-background shadow-sm">
         <BuilderSidebar />
         <BuilderCanvas />
         <PropertiesPanel />
