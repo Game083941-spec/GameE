@@ -1,6 +1,6 @@
 import { BuilderLayout } from "@/components/builder/builder-layout";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getUserOrganizations } from "@/actions/organizations";
 import { redirect } from "next/navigation";
@@ -37,8 +37,8 @@ export default async function NewFormPage({
         <div className="flex items-center gap-2">
           {/* We will wire up a Client Component form saving button here later */}
           <Button>
-            <Save className="h-4 w-4 mr-2" />
-            Save Changes
+            Next
+            <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
       </div>
