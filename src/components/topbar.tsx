@@ -74,7 +74,6 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
 
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="flex-1 flex items-center gap-4 sm:flex-initial sm:mr-auto">
-          {!organizations || organizations.length <= 1 ? (
             <div className="w-[220px] shadow-sm flex items-center border rounded-md px-4 py-2 bg-background text-sm font-medium">
               <div className="flex items-center gap-2 truncate">
                 <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
@@ -83,40 +82,6 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
                 <span className="truncate">{currentOrg ? currentOrg.name : "Organization"}</span>
               </div>
             </div>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger className="w-[220px] justify-between shadow-sm flex items-center border rounded-md px-4 py-2 bg-background hover:bg-accent hover:text-accent-foreground text-sm font-medium">
-                <div className="flex items-center gap-2 truncate">
-                  <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
-                    {currentOrg ? currentOrg.name.charAt(0).toUpperCase() : "O"}
-                  </div>
-                  <span className="truncate">{currentOrg ? currentOrg.name : "Select Organization"}</span>
-                </div>
-                <span className="opacity-50 text-xs">▼</span>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[220px]">
-                <DropdownMenuGroup>
-                  <DropdownMenuLabel className="text-xs uppercase text-muted-foreground font-semibold tracking-wider">Organizations</DropdownMenuLabel>
-                  {organizations?.map((org) => (
-                    <DropdownMenuItem key={org.id} className="cursor-pointer p-0" render={<Link href={`/dashboard/${org.slug}`} className="flex items-center justify-between w-full px-2 py-1.5" />}>
-                      <div className="flex items-center gap-2">
-                        <div className="h-5 w-5 rounded-sm bg-muted flex items-center justify-center font-bold text-[10px]">
-                           {org.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="truncate max-w-[120px]">{org.name}</span>
-                      </div>
-                      {org.slug === currentOrgSlug && <Check className="h-4 w-4 text-primary" />}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-primary focus:text-primary p-0" render={<Link href="/onboarding" className="flex items-center w-full px-2 py-1.5" />}>
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  <span>Create Organization</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
         </div>
 
         {/* User Profile */}
