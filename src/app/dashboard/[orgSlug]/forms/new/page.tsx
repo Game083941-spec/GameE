@@ -21,11 +21,11 @@ export default async function NewFormPage({
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)]">
       {/* Builder Top Bar */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4 mb-6 pb-6 border-b">
-        <Link href={`/dashboard/${orgSlug}/forms`} className={buttonVariants({ variant: "ghost", size: "icon" })}>
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+      <div className="flex items-center justify-between mb-6 pb-6 border-b">
+        <div className="flex items-center gap-4">
+          <Link href={`/dashboard/${orgSlug}/forms`} className={buttonVariants({ variant: "ghost", size: "icon" })}>
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">Create New Form</h2>
             <p className="text-sm text-muted-foreground">
@@ -35,11 +35,10 @@ export default async function NewFormPage({
         </div>
         
         <div className="flex items-center gap-2">
-          {/* We will wire up a Client Component form saving button here later */}
-          <Button>
+          <Link href={`/dashboard/${orgSlug}/forms`} className={buttonVariants({ variant: "default" })}>
             Next
             <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
+          </Link>
         </div>
       </div>
 
