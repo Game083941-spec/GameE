@@ -8,7 +8,8 @@ export async function saveForm(
   orgSlug: string,
   title: string,
   description: string,
-  sections: FormSection[]
+  sections: FormSection[],
+  formId?: string
 ) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -30,10 +31,7 @@ export async function saveForm(
 
   const orgId = orgData.id;
 
-  // 2. Insert or update the form metadata
-  // For simplicity in this iteration, we create a new form every time or update if slug matches.
-  // Real app: We'd use a form ID. We'll generate a slug based on title + random.
-  const formSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).substring(2, 6);
+  let currentFormId = formId;
 
   // Find if there's any IMAGE field to use as the form's banner_url
   let bannerUrl = null;
@@ -45,24 +43,46 @@ export async function saveForm(
     }
   }
 
-  const { data: formData, error: formError } = await supabase
-    .from("forms")
-    .insert({
-      organization_id: orgId,
-      title,
-      slug: formSlug,
-      description,
-      banner_url: bannerUrl,
-      is_published: true,
-    })
-    .select("id")
-    .single();
+  if (formId) {
+    // Update existing form
+    const { error: updateError } = await supabase
+      .from("forms")
+      .update({
+        title,
+        description,
+        banner_url: bannerUrl,
+      })
+      .eq("id", formId);
 
-  if (formError || !formData) {
-    return { error: formError?.message || "Failed to create form" };
+    if (updateError) {
+      return { error: updateError.message || "Failed to update form" };
+    }
+    
+    // Clear old sections and fields to replace them
+    // Relying on CASCADE DELETE if sections are deleted, fields should be deleted.
+    await supabase.from("sections").delete().eq("form_id", formId);
+    
+  } else {
+    // Create new form
+    const formSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).substring(2, 6);
+    const { data: formData, error: formError } = await supabase
+      .from("forms")
+      .insert({
+        organization_id: orgId,
+        title,
+        slug: formSlug,
+        description,
+        banner_url: bannerUrl,
+        is_published: true,
+      })
+      .select("id")
+      .single();
+
+    if (formError || !formData) {
+      return { error: formError?.message || "Failed to create form" };
+    }
+    currentFormId = formData.id;
   }
-
-  const formId = formData.id;
 
   // 3. Insert sections and fields
   for (let sIndex = 0; sIndex < sections.length; sIndex++) {
@@ -71,7 +91,7 @@ export async function saveForm(
     const { data: sectionData, error: sectionError } = await supabase
       .from("sections")
       .insert({
-        form_id: formId,
+        form_id: currentFormId,
         title: section.title,
         description: section.description,
         order_index: sIndex,
@@ -107,5 +127,24 @@ export async function saveForm(
   }
 
   revalidatePath(`/dashboard/${orgSlug}/forms`);
-  return { success: true, formSlug };
+  return { success: true };
+}
+
+export async function deleteForm(orgSlug: string, formId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return { error: "Not authenticated" };
+
+  const { error } = await supabase
+    .from("forms")
+    .delete()
+    .eq("id", formId);
+
+  if (error) {
+    return { error: error.message || "Failed to delete form" };
+  }
+
+  revalidatePath(`/dashboard/${orgSlug}/forms`);
+  return { success: true };
 }

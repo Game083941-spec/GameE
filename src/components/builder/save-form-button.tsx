@@ -7,7 +7,7 @@ import { useFormBuilderStore } from "@/lib/store/form-builder";
 import { saveForm } from "@/actions/forms";
 import { useRouter } from "next/navigation";
 
-export function SaveFormButton({ orgSlug }: { orgSlug: string }) {
+export function SaveFormButton({ orgSlug, formId }: { orgSlug: string; formId?: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const sections = useFormBuilderStore((state) => state.sections);
   const formTitle = useFormBuilderStore((state) => state.formTitle);
@@ -18,7 +18,7 @@ export function SaveFormButton({ orgSlug }: { orgSlug: string }) {
     try {
       setIsSaving(true);
       
-      const result = await saveForm(orgSlug, formTitle, formDescription, sections);
+      const result = await saveForm(orgSlug, formTitle, formDescription, sections, formId);
       
       if (result?.error) {
         alert("Error saving form: " + result.error);

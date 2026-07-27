@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { PlusCircle, FileText, Settings, ExternalLink, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FormCardActions } from "@/components/forms/form-card-actions";
 
 export default async function FormsListPage({
   params,
@@ -64,16 +65,19 @@ export default async function FormsListPage({
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {forms.map((form) => (
-            <Card key={form.id} className="hover:shadow-md transition-all group flex flex-col">
+            <Card key={form.id} className="hover:shadow-md transition-all group flex flex-col relative">
               <CardHeader className="pb-4">
                 <div className="flex justify-between items-start">
-                  <div className="space-y-1">
+                  <div className="space-y-1 pr-8">
                     <CardTitle className="text-lg line-clamp-1">{form.title}</CardTitle>
                     {form.description && (
                       <CardDescription className="line-clamp-2 text-xs">
                         {form.description}
                       </CardDescription>
                     )}
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <FormCardActions orgSlug={orgSlug} formId={form.id} />
                   </div>
                 </div>
               </CardHeader>
