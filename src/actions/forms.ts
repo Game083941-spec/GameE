@@ -127,7 +127,7 @@ export async function saveForm(
     }
   }
 
-  revalidateTag("org-forms");
+  revalidateTag("org-forms", {});
   revalidatePath(`/dashboard/${orgSlug}/forms`);
   return { success: true };
 }
@@ -147,7 +147,7 @@ export async function deleteForm(orgSlug: string, formId: string) {
     return { error: error.message || "Failed to delete form" };
   }
 
-  revalidateTag("org-forms");
+  revalidateTag("org-forms", {});
   revalidatePath(`/dashboard/${orgSlug}/forms`);
   return { success: true };
 }

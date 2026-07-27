@@ -49,7 +49,7 @@ export async function createOrganization(formData: FormData) {
   }
 
   // Invalidate user's orgs cache
-  revalidateTag(`user-orgs-${user.id}`);
+  revalidateTag(`user-orgs-${user.id}`, {});
   revalidatePath("/", "layout");
   redirect(`/dashboard/${orgData.slug}`);
 }

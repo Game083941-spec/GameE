@@ -84,36 +84,6 @@ export default async function BillingPage({ params }: { params: Promise<{ orgSlu
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            Payment Methods
-          </CardTitle>
-          <CardDescription>Manage how you pay for your subscription.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg bg-background gap-4">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-16 bg-muted rounded-md flex items-center justify-center border">
-                <span className="font-bold text-xs">VISA</span>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm">Visa ending in 4242</h4>
-                <p className="text-xs text-muted-foreground">Expires 12/2028</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="bg-secondary text-secondary-foreground text-xs px-2 py-1 rounded-md">Default</span>
-              <Button variant="ghost" size="sm">Edit</Button>
-            </div>
-          </div>
-        </CardContent>
-        <CardFooter className="border-t pt-6">
-          <Button variant="outline"><Plus className="mr-2 h-4 w-4" /> Add Payment Method</Button>
-        </CardFooter>
-      </Card>
-
-      <Card>
-        <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
           <CardDescription>All successful payments collected from your forms.</CardDescription>
         </CardHeader>
