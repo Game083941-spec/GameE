@@ -16,7 +16,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 export function SaveFormButton({ orgSlug, formId }: { orgSlug: string; formId?: string }) {
@@ -58,76 +57,76 @@ export function SaveFormButton({ orgSlug, formId }: { orgSlug: string; formId?: 
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          Next <ArrowRight className="h-4 w-4 ml-2" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Publish Form</DialogTitle>
-          <DialogDescription>
-            Review the final details and settings for your form before making it public.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Form Title</Label>
-            <Input
-              id="title"
-              value={formTitle}
-              onChange={(e) => setFormTitle(e.target.value)}
-            />
+    <>
+      <Button onClick={() => setIsOpen(true)}>
+        Next <ArrowRight className="h-4 w-4 ml-2" />
+      </Button>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Publish Form</DialogTitle>
+            <DialogDescription>
+              Review the final details and settings for your form before making it public.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Form Title</Label>
+              <Input
+                id="title"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Form Description</Label>
+              <Textarea
+                id="description"
+                value={formDescription}
+                onChange={(e) => setFormDescription(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="limit">Max Submissions Limit (Optional)</Label>
+              <Input
+                id="limit"
+                type="number"
+                placeholder="e.g. 100"
+                value={settings.limit || ""}
+                onChange={(e) => {
+                  const val = e.target.value ? parseInt(e.target.value) : undefined;
+                  updateSettings({ limit: val });
+                }}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contact">Support Contact Email</Label>
+              <Input
+                id="contact"
+                type="email"
+                placeholder="e.g. contact@example.com"
+                value={settings.contactEmail || ""}
+                onChange={(e) => updateSettings({ contactEmail: e.target.value })}
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Form Description</Label>
-            <Textarea
-              id="description"
-              value={formDescription}
-              onChange={(e) => setFormDescription(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="limit">Max Submissions Limit (Optional)</Label>
-            <Input
-              id="limit"
-              type="number"
-              placeholder="e.g. 100"
-              value={settings.limit || ""}
-              onChange={(e) => {
-                const val = e.target.value ? parseInt(e.target.value) : undefined;
-                updateSettings({ limit: val });
-              }}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="contact">Support Contact Email</Label>
-            <Input
-              id="contact"
-              type="email"
-              placeholder="e.g. contact@example.com"
-              value={settings.contactEmail || ""}
-              onChange={(e) => updateSettings({ contactEmail: e.target.value })}
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Publishing...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4 mr-2" />
-                Save & Publish
-              </>
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Publishing...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save & Publish
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

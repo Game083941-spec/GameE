@@ -36,7 +36,7 @@ export default async function FormSuccessPage({
           </div>
           <h2 className="text-4xl font-bold tracking-tight">Submission Received!</h2>
           <p className="text-muted-foreground text-xl max-w-lg">
-            Thank you for filling out <strong>{form.title}</strong>. Your response has been securely recorded by {form.organization?.name || "the organization"}.
+            Thank you for filling out <strong>{form.title}</strong>. Your response has been securely recorded by {form.organization?.[0]?.name || (form.organization as any)?.name || "the organization"}.
           </p>
           <div className="bg-primary/5 border border-primary/20 rounded-lg p-6 max-w-lg mt-4 text-left">
             <p className="text-foreground font-medium mb-2">

@@ -36,7 +36,6 @@ interface FormBuilderState {
   removeField: (sectionId: string, fieldId: string) => void;
   moveField: (sectionId: string, oldIndex: number, newIndex: number) => void;
   setActiveField: (fieldId: string | null) => void;
-  setActiveField: (fieldId: string | null) => void;
   loadTemplate: (title: string, description: string, sections: FormSection[], settings?: { limit?: number; contactEmail?: string }) => void;
 }
 
