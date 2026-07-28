@@ -78,7 +78,7 @@ export default async function PublicFormPage({
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tight">Form Closed</h2>
               <p className="text-muted-foreground text-lg max-w-sm mx-auto">
-                This form has reached its maximum capacity. The slots are full, please try the next slot.
+                The slots are full, please try the next slot.
               </p>
             </div>
             <div className="pt-6">
