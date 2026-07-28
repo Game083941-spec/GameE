@@ -81,20 +81,12 @@ export default async function PublicFormPage({
                 The slots are full, please try the next slot.
               </p>
             </div>
-            <div className="pt-6">
-              <Link href="/">
-                <Button variant="outline" className="px-8 hover:bg-primary hover:text-primary-foreground transition-colors">
-                  Return to Home
-                </Button>
-              </Link>
-            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // Fetch Sections
   const { data: sections, error: sectionsError } = await supabase
     .from("sections")
     .select("*")

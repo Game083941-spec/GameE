@@ -52,13 +52,6 @@ export default async function FormSuccessPage({
               </a>
             </p>
           </div>
-          <div className="pt-8">
-            <Link href="/">
-              <Button size="lg" className="px-8 text-lg font-semibold shadow-md">
-                Return Home
-              </Button>
-            </Link>
-          </div>
         </CardContent>
       </Card>
     </div>
