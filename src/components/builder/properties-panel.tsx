@@ -32,6 +32,10 @@ export function PropertiesPanel() {
 
 
 
+  const updateSettings = useFormBuilderStore((state) => state.updateSettings);
+  const settings = useFormBuilderStore((state) => state.settings);
+  const setActiveField = useFormBuilderStore((state) => state.setActiveField);
+
   if (!activeField || !activeSectionId) {
     return (
       <div className="w-80 border-l bg-muted/10 p-6 flex items-center justify-center text-center text-muted-foreground text-sm">

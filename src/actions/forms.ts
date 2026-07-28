@@ -10,6 +10,7 @@ export async function saveForm(
   title: string,
   description: string,
   sections: FormSection[],
+  settings: any,
   formId?: string
 ) {
   const supabase = await createClient();
@@ -51,6 +52,7 @@ export async function saveForm(
       .update({
         title,
         description,
+        settings,
         banner_url: bannerUrl,
       })
       .eq("id", formId);
@@ -73,6 +75,7 @@ export async function saveForm(
         title,
         slug: formSlug,
         description,
+        settings,
         banner_url: bannerUrl,
         is_published: true,
       })

@@ -74,14 +74,12 @@ export default function EventRegistrationPage() {
       className="min-h-full pb-16"
       style={{ background: "transparent" }}
     >
-      {/* ── Hero Banner ── */}
       <div
         className="rounded-xl overflow-hidden mb-8 relative"
         style={{
           background: "linear-gradient(135deg,#0f0c29 0%,#302b63 55%,#24243e 100%)",
         }}
       >
-        {/* Glow orbs */}
         <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "#7c3aed" }} />
         <div className="absolute -bottom-16 -right-16 w-72 h-72 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "#06b6d4" }} />
 
@@ -116,8 +114,6 @@ export default function EventRegistrationPage() {
             </div>
           </div>
         </div>
-
-        {/* Bottom shimmer */}
         <div
           className="h-0.5"
           style={{ background: "linear-gradient(90deg,#7c3aed,#06b6d4,#7c3aed)" }}
@@ -125,9 +121,7 @@ export default function EventRegistrationPage() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-5">
-        {/* ── Left: Info Cards ── */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Perks */}
           <Card className="border-violet-500/20" style={{ background: "rgba(124,58,237,0.05)" }}>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -145,7 +139,6 @@ export default function EventRegistrationPage() {
             </CardContent>
           </Card>
 
-          {/* Schedule */}
           <Card className="border-violet-500/20" style={{ background: "rgba(124,58,237,0.05)" }}>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -169,7 +162,6 @@ export default function EventRegistrationPage() {
             </CardContent>
           </Card>
 
-          {/* Supported Games */}
           <Card className="border-violet-500/20" style={{ background: "rgba(124,58,237,0.05)" }}>
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center gap-2">
@@ -191,7 +183,6 @@ export default function EventRegistrationPage() {
           </Card>
         </div>
 
-        {/* ── Right: Registration Form ── */}
         <div className="lg:col-span-3">
           <Card
             className="border-violet-500/20"

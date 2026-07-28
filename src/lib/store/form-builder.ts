@@ -22,8 +22,10 @@ export interface FormSection {
 interface FormBuilderState {
   formTitle: string;
   formDescription: string;
+  settings: { limit?: number; contactEmail?: string };
   setFormTitle: (title: string) => void;
   setFormDescription: (description: string) => void;
+  updateSettings: (settings: { limit?: number; contactEmail?: string }) => void;
   sections: FormSection[];
   activeFieldId: string | null;
   addSection: () => void;
@@ -34,14 +36,17 @@ interface FormBuilderState {
   removeField: (sectionId: string, fieldId: string) => void;
   moveField: (sectionId: string, oldIndex: number, newIndex: number) => void;
   setActiveField: (fieldId: string | null) => void;
-  loadTemplate: (title: string, description: string, sections: FormSection[]) => void;
+  setActiveField: (fieldId: string | null) => void;
+  loadTemplate: (title: string, description: string, sections: FormSection[], settings?: { limit?: number; contactEmail?: string }) => void;
 }
 
 export const useFormBuilderStore = create<FormBuilderState>((set) => ({
   formTitle: "Untitled Form",
   formDescription: "",
+  settings: {},
   setFormTitle: (title) => set({ formTitle: title }),
   setFormDescription: (description) => set({ formDescription: description }),
+  updateSettings: (newSettings) => set((state) => ({ settings: { ...state.settings, ...newSettings } })),
   sections: [
     {
       id: uuidv4(),
@@ -142,10 +147,11 @@ export const useFormBuilderStore = create<FormBuilderState>((set) => ({
 
   setActiveField: (fieldId) => set({ activeFieldId: fieldId }),
   
-  loadTemplate: (title, description, sections) =>
+  loadTemplate: (title, description, sections, settings) =>
     set({
       formTitle: title,
       formDescription: description,
+      settings: settings || {},
       sections,
       activeFieldId: null,
     }),

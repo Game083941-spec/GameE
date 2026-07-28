@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-// Mock Data representing saved Ad Pages
 const INITIAL_AD_PAGES: any[] = [];
 
 import { getAdPages, updateAdPageStatus, deleteAdPage } from "@/actions/adpages";
@@ -97,7 +96,7 @@ export default function AdPagesList({
                   </div>
                 </div>
                 
-                {/* Direct Action Buttons */}
+           
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => alert("Edit functionality coming soon!")}>
                     <Edit className="h-3 w-3 mr-1.5" /> Edit
@@ -139,7 +138,6 @@ export default function AdPagesList({
           </Card>
         ))}
 
-        {/* Create New Placeholder Card */}
         <Link href={`/dashboard/${orgSlug}/adpage/new`}>
           <Card className="flex flex-col h-full justify-center items-center p-6 border-dashed hover:border-primary/50 hover:bg-muted/50 transition-colors cursor-pointer text-muted-foreground hover:text-foreground">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">

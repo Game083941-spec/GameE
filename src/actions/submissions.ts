@@ -7,7 +7,26 @@ import { revalidateTag, unstable_cache } from "next/cache";
 export async function submitForm(formId: string, responses: Record<string, any>, paymentRequired: boolean = false) {
   const supabase = await createClient();
 
-  // 1. Create the base submission record
+  const { data: formData, error: formError } = await supabase
+    .from("forms")
+    .select(`
+      settings,
+      submissions(count)
+    `)
+    .eq("id", formId)
+    .single();
+
+  if (formError || !formData) {
+    return { error: "Form not found or could not verify limits." };
+  }
+
+  const limit = formData.settings?.limit;
+  const currentCount = formData.submissions?.[0]?.count || 0;
+
+  if (limit && currentCount >= limit) {
+    return { error: "This form has reached its maximum number of submissions and is now closed." };
+  }
+
   const { data: submissionData, error: submissionError } = await supabase
     .from("submissions")
     .insert({

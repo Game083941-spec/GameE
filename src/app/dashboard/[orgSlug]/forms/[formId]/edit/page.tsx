@@ -29,6 +29,7 @@ export default async function EditFormPage({
     .select(`
       title, 
       description,
+      settings,
       sections (
         id,
         title,
@@ -77,6 +78,7 @@ export default async function EditFormPage({
         formTitle={form.title} 
         formDescription={form.description || ""} 
         sections={mappedSections} 
+        settings={form.settings || {}}
       />
 
       {/* Builder Top Bar */}
@@ -94,12 +96,11 @@ export default async function EditFormPage({
         </div>
         
         <div className="flex items-center gap-2">
-          {/* We pass formId so the button knows to update instead of create */}
+         
           <SaveFormButton orgSlug={orgSlug} formId={formId} />
         </div>
       </div>
 
-      {/* Main Drag and Drop Interface */}
       <div className="flex-1 min-h-0">
         <BuilderLayout />
       </div>

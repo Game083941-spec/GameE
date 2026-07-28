@@ -8,7 +8,7 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
   const { id } = await params;
   const supabase = await createClient();
 
-  // Fetch the ad page data
+ 
   const { data: ad, error } = await supabase
     .from("ad_pages")
     .select("*")
@@ -19,9 +19,6 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
     notFound();
   }
 
-  // Increment views if we were tracking analytics, but for now we'll just render it
-  
-  // Destructure for easy access
   const {
     title,
     subtitle,
@@ -35,13 +32,11 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
     field_visibility,
   } = ad;
 
-  // Defaults for missing visibility rules in older data
   const visibility = field_visibility || { showDate: true, showPrize: true, showLocation: true, extraFields: [] };
   const extraFields = visibility.extraFields || [];
 
   return (
     <div className="min-h-screen bg-black text-white relative flex flex-col items-center justify-center overflow-hidden">
-      {/* Background Image with Overlays */}
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('${bg_image}')` }}
@@ -50,10 +45,8 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
 
-      {/* Main Content Area */}
       <div className="relative z-10 w-full max-w-5xl px-6 py-20 flex flex-col items-center text-center space-y-12">
         
-        {/* Badge */}
         {badge && (
           <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-500/20 border border-violet-500/30 backdrop-blur-md animate-fade-in-down">
             <span className="flex h-2.5 w-2.5 rounded-full bg-violet-400 animate-pulse" />
@@ -61,7 +54,6 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
           </div>
         )}
 
-        {/* Headings */}
         <div className="space-y-6 max-w-4xl">
           {title && (
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-violet-100 to-cyan-200 drop-shadow-xl tracking-tight leading-tight">
@@ -75,7 +67,6 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
           )}
         </div>
 
-        {/* Feature Grid */}
         <div className="flex flex-wrap justify-center gap-6 w-full pt-8">
           {visibility.showDate && date_info && (
             <div className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl min-w-[220px]">
@@ -98,7 +89,6 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
             </div>
           )}
 
-          {/* Extra Custom Fields */}
           {extraFields.map((field: any, idx: number) => (
             <div key={idx} className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl min-w-[220px]">
               <LayoutList className="h-8 w-8 text-indigo-400 mb-4" />
@@ -108,7 +98,6 @@ export default async function PublicAdPage({ params }: { params: Promise<{ id: s
           ))}
         </div>
 
-        {/* Call To Action Button */}
         <div className="pt-12 w-full flex justify-center">
           <Link href={registration_link || "#"}>
             <Button 

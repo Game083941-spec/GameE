@@ -3,7 +3,7 @@
 import { use, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Calendar, MapPin, Trophy, ArrowRight, LayoutTemplate, Briefcase, Megaphone, Rocket, Edit3, Image as ImageIcon, Link as LinkIcon, UploadCloud, EyeOff, Eye, Plus, Trash2, LayoutList } from "lucide-react";
+import { Calendar, MapPin, Trophy, ArrowRight, LayoutTemplate, Briefcase, Megaphone, Rocket, Edit3, Image as ImageIcon, Link as LinkIcon, UploadCloud, EyeOff, Eye, Plus, Trash2, LayoutList, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -380,8 +380,15 @@ export default function AdPageBuilder({
           </div>
 
           <div className="mt-8 pt-4 border-t border-border/50">
-            <Button onClick={handleSave} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-              Save Ad Page Design
+            <Button onClick={handleSave} disabled={saving} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Save Ad Page Design"
+              )}
             </Button>
           </div>
         </div>

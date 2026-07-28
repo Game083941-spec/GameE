@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { submitForm } from "@/actions/submissions";
 import { createRazorpayOrder, verifyPayment } from "@/actions/payment";
 import { sendPaymentConfirmationEmail, sendRegistrationEmail } from "@/actions/email";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, CreditCard } from "lucide-react";
 import Script from "next/script";
+import { useRouter } from "next/navigation";
 
 interface FormRendererProps {
   form: any;
@@ -19,8 +20,10 @@ interface FormRendererProps {
 }
 
 export function FormRenderer({ form, sections, fields, orgName }: FormRendererProps) {
+  const router = useRouter();
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
@@ -83,6 +86,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           description: form.title,
           order_id: orderRes.orderId,
           handler: async function (response: any) {
+            setIsProcessing(true);
             // 3. Verify Payment
             const verifyRes = await verifyPayment(
               response.razorpay_order_id,
@@ -95,6 +99,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
             if (verifyRes.error) {
               setError(verifyRes.error);
               setIsSubmitting(false);
+              setIsProcessing(false);
               return;
             }
 
@@ -131,6 +136,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
             setIsSuccess(true);
             setIsSubmitting(false);
+            router.push(`/f/${form.id}/success`);
           },
           prefill: {
             name: "Test User",
@@ -180,6 +186,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           rzp.on("payment.failed", function (response: any) {
             setError(response.error.description || "Payment failed");
             setIsSubmitting(false);
+            setIsProcessing(false);
           });
           rzp.open();
         } catch (err: any) {
@@ -214,18 +221,21 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
     setIsSuccess(true);
     setIsSubmitting(false);
+    router.push(`/f/${form.id}/success`);
   };
 
-  if (isSuccess) {
+  if (isSuccess || isProcessing) {
     return (
       <Card className="w-full max-w-2xl mx-auto mt-12 shadow-lg border-primary/20">
-        <CardContent className="pt-12 pb-12 flex flex-col items-center justify-center text-center space-y-4">
-          <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle2 className="h-10 w-10 text-primary" />
+        <CardContent className="pt-16 pb-16 flex flex-col items-center justify-center text-center space-y-6">
+          <div className="h-24 w-24 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+            <Loader2 className="h-12 w-12 text-primary animate-spin" />
           </div>
-          <h2 className="text-3xl font-bold tracking-tight">Submission Received!</h2>
+          <h2 className="text-3xl font-bold tracking-tight">
+            {isProcessing ? "Processing Payment..." : "Redirecting..."}
+          </h2>
           <p className="text-muted-foreground text-lg max-w-md">
-            Thank you for filling out <strong>{form.title}</strong>. Your response has been securely recorded by {orgName}.
+            Please wait while we process your submission. Do not close or refresh this page.
           </p>
         </CardContent>
       </Card>
@@ -304,7 +314,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Submitting...
+                Processing...
               </>
             ) : fields.some(f => f.type === "PAYMENT") ? (
               "Submit & Pay"

@@ -7,10 +7,12 @@ export function FormBuilderHydrator({
   formTitle,
   formDescription,
   sections,
+  settings,
 }: {
   formTitle: string;
   formDescription: string;
   sections: any[];
+  settings: any;
 }) {
   const setFormTitle = useFormBuilderStore((state) => state.setFormTitle);
   const setFormDescription = useFormBuilderStore((state) => state.setFormDescription);
@@ -23,11 +25,11 @@ export function FormBuilderHydrator({
       
       // Zustand allows us to update the entire store state cleanly via setState if we wanted to, 
       // but modifying properties directly is safer if we don't have a specific hydration method.
-      useFormBuilderStore.setState({ sections });
+      useFormBuilderStore.setState({ sections, settings: settings || {} });
       
       hasHydrated.current = true;
     }
-  }, [formTitle, formDescription, sections, setFormTitle, setFormDescription]);
+  }, [formTitle, formDescription, sections, settings, setFormTitle, setFormDescription]);
 
   return null;
 }
