@@ -77,6 +77,29 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           return;
         }
 
+        // Handle Dev Mock Payment
+        if (orderRes.mock) {
+          setIsProcessing(true);
+          const verifyRes = await verifyPayment(
+            orderRes.orderId,
+            `mock_payment_${Date.now()}`,
+            "mock_signature",
+            result.submissionId,
+            amount
+          );
+          
+          if (verifyRes.error) {
+             setError(verifyRes.error);
+             setIsSubmitting(false); setIsProcessing(false);
+             return;
+          }
+          
+          setIsSuccess(true);
+          setIsSubmitting(false);
+          router.push(`/f/${form.id}/success`);
+          return;
+        }
+
         // 2. Open Razorpay Checkout
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -113,27 +136,29 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
               const playerName = playerNameField ? responses[playerNameField.id] : "Player";
 
               try {
-                await sendPaymentConfirmationEmail(
+                // Fire and forget emails so they don't block the UI if SMTP is slow
+                sendPaymentConfirmationEmail(
                   responses[emailField.id],
                   form.title,
                   amount,
                   response.razorpay_payment_id,
                   teamName
-                );
+                ).catch(e => console.error("Failed to send payment email:", e));
 
-                await sendRegistrationEmail(
+                sendRegistrationEmail(
                   responses[emailField.id],
                   playerName,
                   teamName,
                   form.title,
                   result.submissionId,
                   "Paid"
-                );
+                ).catch(e => console.error("Failed to send registration email:", e));
               } catch (e) {
-                console.error("Failed to send emails:", e);
+                console.error("Failed to trigger emails:", e);
               }
             }
 
+            setIsProcessing(false);
             setIsSuccess(true);
             setIsSubmitting(false);
             router.push(`/f/${form.id}/success`);
@@ -206,19 +231,21 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       const playerName = playerNameField ? responses[playerNameField.id] : "Player";
 
       try {
-        await sendRegistrationEmail(
+        // Fire and forget email to prevent blocking the UI
+        sendRegistrationEmail(
           responses[emailField.id],
           playerName,
           teamName,
           form.title,
           result.submissionId,
           "Free / Not Required"
-        );
+        ).catch(e => console.error("Failed to send free registration email:", e));
       } catch (e) {
-        console.error("Failed to send registration email:", e);
+        console.error("Failed to trigger registration email:", e);
       }
     }
 
+    setIsProcessing(false);
     setIsSuccess(true);
     setIsSubmitting(false);
     router.push(`/f/${form.id}/success`);
@@ -226,17 +253,38 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
   if (isSuccess || isProcessing) {
     return (
-      <Card className="w-full max-w-2xl mx-auto mt-12 shadow-lg border-primary/20">
-        <CardContent className="pt-16 pb-16 flex flex-col items-center justify-center text-center space-y-6">
-          <div className="h-24 w-24 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-            <Loader2 className="h-12 w-12 text-primary animate-spin" />
+      <Card className="w-full max-w-2xl mx-auto mt-12 shadow-lg border-primary/20 overflow-hidden">
+        <CardContent className="pt-16 pb-16 flex flex-col items-center justify-center text-center relative">
+          <div className="absolute inset-0 bg-grid-white/5 bg-[size:20px_20px] pointer-events-none [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
+          
+          <div className="relative">
+            <div className="h-24 w-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 relative">
+              <div className="absolute inset-0 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
+              {isSuccess ? <CheckCircle2 className="h-10 w-10 text-primary animate-in zoom-in duration-300" /> : <CreditCard className="h-8 w-8 text-primary animate-pulse" />}
+            </div>
           </div>
-          <h2 className="text-3xl font-bold tracking-tight">
-            {isProcessing ? "Processing Payment..." : "Redirecting..."}
+          
+          <h2 className="text-3xl font-bold tracking-tight z-10 animate-in fade-in slide-in-from-bottom-2">
+            {isSuccess ? "Redirecting..." : "Processing Payment..."}
           </h2>
-          <p className="text-muted-foreground text-lg max-w-md">
-            Please wait while we process your submission. Do not close or refresh this page.
+          
+          <p className="text-muted-foreground text-lg max-w-md mt-4 z-10">
+            {isSuccess 
+              ? "Payment verified! Taking you to the receipt..."
+              : "Please wait while we securely process your transaction. Do not close or refresh this page."}
           </p>
+
+          {isProcessing && !isSuccess && (
+            <div className="mt-8 w-full max-w-xs space-y-2 z-10">
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-primary rounded-full animate-[progress_2s_ease-in-out_infinite]" style={{ width: "60%" }} />
+              </div>
+              <div className="text-xs text-muted-foreground flex justify-between animate-pulse">
+                <span>Connecting to secure gateway</span>
+                <span>Encrypting...</span>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     );

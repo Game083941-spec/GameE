@@ -16,10 +16,10 @@ export async function insertTeamFromSubmission(submissionId: string) {
 
   if (!subData) return;
 
-  // 2. Fetch answers with field labels
+  // 2. Fetch answers with field labels and types
   const { data: answers } = await adminSupabase
     .from("submission_answers")
-    .select(`value, field:fields(label)`)
+    .select(`value, field:fields(label, type)`)
     .eq("submission_id", submissionId);
 
   let teamName = "Unknown Team";
@@ -32,7 +32,7 @@ export async function insertTeamFromSubmission(submissionId: string) {
       if (label.includes("team")) {
         teamName = ans.value;
       }
-      if (label.includes("email")) {
+      if (ans.field?.type === "EMAIL" || label.includes("email")) {
         contactEmail = ans.value;
       }
       if (label.includes("name") && !label.includes("team")) {
@@ -97,7 +97,7 @@ export async function addManualTeam(
     return { error: "Failed to add team" };
   }
 
-  revalidateTag(`org-teams-${orgSlug}`, "default");
+  revalidateTag("org-teams-v3", "default");
   return { success: true };
 }
 
@@ -139,8 +139,8 @@ const getCachedOrgTeams = unstable_cache(
 
     return teamsList;
   },
-  ["org-teams"],
-  { tags: ["org-teams"] }
+  ["org-teams-cache-v3"], 
+  { tags: ["org-teams-v3"] }
 );
 
 export async function getOrgTeams(orgSlug: string) {

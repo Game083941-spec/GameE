@@ -71,6 +71,31 @@ export function EditAdminModal({
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="role">User Type</Label>
+              <select 
+                id="role"
+                name="role"
+                defaultValue={(user.user_metadata as any)?.role || "ADMIN"}
+                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="SUPER_ADMIN" className="bg-background">Super Admin</option>
+                <option value="ADMIN" className="bg-background">Admin</option>
+                <option value="USER_ADMIN" className="bg-background">User Admin</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="commission_rate">Commission Cut (%)</Label>
+              <Input
+                id="commission_rate"
+                name="commission_rate"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                defaultValue={(user.user_metadata as any)?.commission_rate || "5"}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="password">New Password (Optional)</Label>
               <div className="relative">
                 <Input

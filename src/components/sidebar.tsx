@@ -42,7 +42,7 @@ export function Sidebar({
     {
       id: "overview",
       href: `/dashboard/${orgSlug}`,
-      label: "Overview",
+      label: "Revenue Dashboard",
       icon: LayoutDashboard,
       active: pathname === `/dashboard/${orgSlug}`,
     },
@@ -113,9 +113,9 @@ export function Sidebar({
   ];
 
   // Apply Role-Based Filtering
-  // If globalRole is USER_ADMIN, show ONLY the requested 4 options
+  // If globalRole is USER_ADMIN, show ONLY the requested 4 options + overview
   if (globalRole === "USER_ADMIN") {
-    const allowed = ["forms", "notifications", "teams", "adpage"];
+    const allowed = ["overview", "forms", "notifications", "teams", "adpage"];
     routes = routes.filter(route => allowed.includes(route.id));
   } 
   // Otherwise apply organization-level filtering

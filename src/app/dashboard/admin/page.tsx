@@ -55,6 +55,7 @@ export default async function SuperAdminPage() {
                 <TableHead>User ID</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Full Name</TableHead>
+                <TableHead>Commission</TableHead>
                 <TableHead>Joined At</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -69,6 +70,7 @@ export default async function SuperAdminPage() {
                     {user.email}
                   </TableCell>
                   <TableCell>{user.user_metadata?.full_name || "N/A"}</TableCell>
+                  <TableCell>{user.user_metadata?.commission_rate || 5}%</TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Clock className="h-3 w-3 text-muted-foreground" />
                     {new Date(user.created_at).toLocaleDateString()}

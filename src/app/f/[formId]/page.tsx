@@ -76,7 +76,7 @@ export default async function PublicFormPage({
               <Lock className="h-10 w-10 text-primary" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">Form Closed</h2>
+              <h2 className="text-3xl font-bold tracking-tight">Event Closed</h2>
               <p className="text-muted-foreground text-lg max-w-sm mx-auto">
                 The slots are full, please try the next slot.
               </p>

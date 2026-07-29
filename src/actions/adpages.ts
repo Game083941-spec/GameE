@@ -5,6 +5,14 @@ import { revalidatePath } from "next/cache";
 
 export async function createAdPage(data: any) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user) {
+    data.field_visibility = {
+      ...(data.field_visibility || {}),
+      createdBy: user.id
+    };
+  }
 
   const { data: result, error } = await supabase
     .from("ad_pages")
@@ -23,12 +31,21 @@ export async function createAdPage(data: any) {
 
 export async function getAdPages(orgSlug: string) {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const role = user?.user_metadata?.role;
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("ad_pages")
     .select("*")
     .eq("org_slug", orgSlug)
     .order("created_at", { ascending: false });
+
+  if (role !== "SUPER_ADMIN" && user) {
+    // Regular users can only see the ad pages they created
+    query = query.eq("field_visibility->>createdBy", user.id);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     console.error("Error fetching ad pages:", error);

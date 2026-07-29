@@ -89,6 +89,19 @@ export function CreateAdminModal() {
               </select>
             </div>
             <div className="space-y-2">
+              <Label htmlFor="commission_rate">Commission Cut (%)</Label>
+              <Input
+                id="commission_rate"
+                name="commission_rate"
+                type="number"
+                step="0.1"
+                min="0"
+                max="100"
+                defaultValue="5"
+                required
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input

@@ -15,6 +15,7 @@ interface Team {
   teamName: string;
   contactEmail: string;
   formName: string;
+  date?: string;
 }
 
 export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[] }) {
@@ -111,7 +112,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
   };
 
   return (
-    <Card className="max-w-3xl border-t-4 border-t-primary shadow-md">
+    <Card className="max-w-3xl mx-auto border-t-4 border-t-primary shadow-md">
       <CardHeader className="bg-muted/30 border-b">
         <CardTitle className="flex items-center gap-2 text-2xl">
           <Bell className="h-6 w-6 text-primary" />
@@ -196,10 +197,15 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
                             />
                             <label
                               htmlFor={`team-${team.id}`}
-                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 truncate"
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1 flex justify-between items-center truncate"
                               title={`${team.teamName} (${team.contactEmail})`}
                             >
-                              {team.teamName} <span className="text-muted-foreground font-normal text-xs ml-1">({team.contactEmail})</span>
+                              <span className="truncate">
+                                {team.teamName} <span className="text-muted-foreground font-normal text-xs ml-1">({team.contactEmail})</span>
+                              </span>
+                              {team.date && (
+                                <span className="text-xs text-muted-foreground ml-2 shrink-0">{team.date}</span>
+                              )}
                             </label>
                           </div>
                         ))}

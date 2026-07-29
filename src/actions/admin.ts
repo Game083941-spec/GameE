@@ -27,6 +27,7 @@ export async function createAdminUser(formData: FormData) {
   const password = formData.get("password") as string;
   const full_name = formData.get("full_name") as string;
   const role = formData.get("role") as string || "ADMIN";
+  const commission_rate = parseFloat((formData.get("commission_rate") as string) || "5");
   
   const adminAuthClient = createAdminClient();
   
@@ -34,7 +35,7 @@ export async function createAdminUser(formData: FormData) {
     email,
     password,
     email_confirm: true,
-    user_metadata: { full_name, role }
+    user_metadata: { full_name, role, commission_rate }
   });
   
   if (error) {
@@ -51,11 +52,21 @@ export async function updateAdminUser(formData: FormData) {
   const full_name = formData.get("full_name") as string;
   const password = formData.get("password") as string;
   
-  const adminAuthClient = createAdminClient();
-  
   const updateData: any = {
     user_metadata: { full_name }
   };
+
+  const commission_rate_str = formData.get("commission_rate") as string;
+  if (commission_rate_str) {
+    updateData.user_metadata.commission_rate = parseFloat(commission_rate_str);
+  }
+  
+  const role = formData.get("role") as string;
+  if (role) {
+    updateData.user_metadata.role = role;
+  }
+  
+  const adminAuthClient = createAdminClient();
   
   if (password && password.trim() !== "") {
     updateData.password = password;
