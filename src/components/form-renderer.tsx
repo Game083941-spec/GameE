@@ -128,8 +128,8 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           return;
         }
 
-        // Redirect to the provided Razorpay Payment Link
-        window.location.href = process.env.NEXT_PUBLIC_PAYMENT_LINK || "https://rzp.io/rzp/KCK7aEGK";
+        // Removing Razorpay Payment Link logic
+        console.log("Payment Required, but no mock order Id generated.");
         return;
       }
     }

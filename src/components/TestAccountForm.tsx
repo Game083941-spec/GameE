@@ -44,14 +44,12 @@ export function TestAccountForm() {
       </div>
 
       <div className="pt-4 flex justify-center">
-        <a
-          href={process.env.NEXT_PUBLIC_PAYMENT_LINK || "https://rzp.io/rzp/KCK7aEGK"}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
           className="px-8 py-2.5 bg-[#4a362a] hover:bg-[#3a2a20] text-white text-[15px] font-medium rounded-lg shadow-sm transition-colors"
         >
-          Submit & Pay
-        </a>
+          Submit
+        </button>
       </div>
     </div>
   );
