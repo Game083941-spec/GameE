@@ -210,3 +210,36 @@ export async function getEligibleNotificationTeams(orgSlug: string) {
   return teamsList;
 }
 
+export async function bulkAddManualTeams(orgSlug: string, teamsData: { name: string, email: string, phone: string }[]) {
+  const supabase = await createClient();
+
+  const { data: orgData, error: orgError } = await supabase
+    .from("organizations")
+    .select("id")
+    .eq("slug", orgSlug)
+    .single();
+
+  if (orgError || !orgData) {
+    return { error: "Organization not found" };
+  }
+
+  const teamsToInsert = teamsData.map(team => ({
+    organization_id: orgData.id,
+    name: team.name || "Unknown Team",
+    contact_email: team.email || "",
+    contact_phone: team.phone || "",
+    source: "MANUAL",
+  }));
+
+  const { error: insertError } = await supabase
+    .from("teams")
+    .insert(teamsToInsert);
+
+  if (insertError) {
+    console.error("Error bulk adding teams:", insertError);
+    return { error: "Failed to bulk add teams" };
+  }
+
+  revalidateTag("org-teams-v3", "default");
+  return { success: true, count: teamsToInsert.length };
+}

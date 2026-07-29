@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Trophy, Plus, Users, Mail, Send, Loader2, CheckCircle2, UserPlus } from "lucide-react";
+import { Trophy, Plus, Users, Mail, Send, Loader2, CheckCircle2, UserPlus, FileUp } from "lucide-react";
+import * as XLSX from 'xlsx';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { addManualTeam } from "@/actions/teams";
+import { addManualTeam, bulkAddManualTeams } from "@/actions/teams";
 import { broadcastToTeams } from "@/actions/email";
 import { useRouter } from "next/navigation";
 
@@ -41,6 +42,8 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
   const [isAdding, setIsAdding] = useState(false);
   const [addError, setAddError] = useState("");
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const [broadcastSubject, setBroadcastSubject] = useState("");
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [isBroadcasting, setIsBroadcasting] = useState(false);
@@ -62,6 +65,75 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
       setNewTeamEmail("");
       setNewTeamPhone("");
       router.refresh();
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      
+      // Parse as JSON array of arrays to handle different header names
+      const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
+      
+      if (rows.length < 2) {
+        alert("The Excel file is empty or missing headers.");
+        setIsUploading(false);
+        return;
+      }
+
+      // Assume first row is header. Try to find indexes for name, email, phone.
+      const headers = (rows[0] || []).map(h => String(h).toLowerCase().trim());
+      const nameIdx = headers.findIndex(h => h.includes("name") || h.includes("team"));
+      const emailIdx = headers.findIndex(h => h.includes("email") || h.includes("mail"));
+      const phoneIdx = headers.findIndex(h => h.includes("phone") || h.includes("number"));
+
+      if (nameIdx === -1) {
+        alert("Could not find a 'Name' or 'Team' column in the Excel file.");
+        setIsUploading(false);
+        return;
+      }
+
+      const parsedTeams = [];
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length === 0) continue;
+        
+        const name = row[nameIdx] ? String(row[nameIdx]) : "";
+        if (!name) continue; // Skip empty names
+
+        const email = emailIdx !== -1 && row[emailIdx] ? String(row[emailIdx]) : "";
+        const phone = phoneIdx !== -1 && row[phoneIdx] ? String(row[phoneIdx]) : "";
+
+        parsedTeams.push({ name, email, phone });
+      }
+
+      if (parsedTeams.length === 0) {
+        alert("No valid teams found in the Excel file.");
+        setIsUploading(false);
+        return;
+      }
+
+      const res = await bulkAddManualTeams(orgSlug, parsedTeams);
+      if (res.error) {
+        alert("Error bulk adding teams: " + res.error);
+      } else {
+        alert(`Successfully added ${res.count} teams!`);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error parsing the Excel file.");
+    } finally {
+      setIsUploading(false);
+      // Reset input
+      e.target.value = '';
     }
   };
 
@@ -112,6 +184,22 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
             <Mail className="mr-2 h-4 w-4" />
             Broadcast Msg
           </Button>
+          
+          <div className="relative w-full sm:w-auto">
+            <input
+              type="file"
+              accept=".xlsx, .xls, .csv"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              onChange={handleFileUpload}
+              disabled={isUploading}
+              title="Upload Excel/CSV"
+            />
+            <Button variant="secondary" className="w-full sm:w-auto" disabled={isUploading}>
+              {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileUp className="mr-2 h-4 w-4" />}
+              {isUploading ? "Uploading..." : "Bulk Upload"}
+            </Button>
+          </div>
+
           <Button className="w-full sm:w-auto" onClick={() => setIsAddOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Add Team
