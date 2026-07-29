@@ -34,11 +34,24 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .eq("form_id", formId);
 
   const humanReadableResponses: Record<string, any> = {};
+  let team_name = "";
+  let contact_email = "";
+  let contact_phone = "";
+  let in_game_name = "";
+  let discord_tag = "";
+
   if (formFields) {
     for (const [key, val] of Object.entries(responses)) {
       const field = formFields.find(f => f.id === key);
       const label = field ? field.label : key;
       humanReadableResponses[label] = val;
+
+      const lower = label.toLowerCase();
+      if ((lower.includes("team") || lower.includes("name")) && !team_name) team_name = String(val);
+      else if (lower.includes("email") && !contact_email) contact_email = String(val);
+      else if ((lower.includes("phone") || lower.includes("number")) && !contact_phone) contact_phone = String(val);
+      else if ((lower.includes("game") || lower.includes("ign")) && !in_game_name) in_game_name = String(val);
+      else if (lower.includes("discord") && !discord_tag) discord_tag = String(val);
     }
   } else {
     Object.assign(humanReadableResponses, responses);
@@ -49,6 +62,11 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .insert({
       form_id: formId,
       payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
+      team_name,
+      contact_email,
+      contact_phone,
+      in_game_name,
+      discord_tag,
       responses: humanReadableResponses,
     })
     .select("id")
