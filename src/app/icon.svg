@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" /> <!-- Violet 600 -->
+      <stop offset="100%" stop-color="#06b6d4" /> <!-- Cyan 500 -->
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded Square Background -->
+  <rect x="5" y="5" width="90" height="90" rx="20" fill="url(#bg)" />
+  
+  <!-- Stylized Gamepad / E -->
+  <path d="M 25 35 L 45 35 L 45 45 L 35 45 L 35 55 L 45 55 L 45 65 L 25 65 Z" fill="#ffffff" />
+  <circle cx="65" cy="40" r="6" fill="#ffffff" />
+  <circle cx="75" cy="55" r="6" fill="#ffffff" />
+  <circle cx="55" cy="55" r="6" fill="#ffffff" />
+</svg>
