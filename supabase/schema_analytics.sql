@@ -1,10 +1,4 @@
--- ==========================================
--- ANALYTICS TABLES
--- These tables store persistent data for internal analysis
--- and are not affected by cascading deletes from the main app.
--- ==========================================
-
--- 1. Analytics Users Table (Tracks all submissions)
+-- 
 CREATE TABLE public.analytics_users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     original_form_id UUID, -- Kept as a simple UUID (no foreign key) so it doesn't cascade delete

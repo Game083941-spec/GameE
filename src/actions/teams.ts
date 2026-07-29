@@ -53,6 +53,7 @@ export async function insertTeamFromSubmission(submissionId: string) {
       contact_email: contactEmail || contact,
       contact_phone: "",
       source: "FORM_SUBMISSION",
+      submission_id: submissionId,
     });
 
   if (insertError) {
@@ -140,3 +141,72 @@ const getCachedOrgTeams = unstable_cache(
 export async function getOrgTeams(orgSlug: string) {
   return await getCachedOrgTeams(orgSlug);
 }
+
+export async function getEligibleNotificationTeams(orgSlug: string) {
+  const supabase = createAdminClient();
+
+  const { data: orgData } = await supabase
+    .from("organizations")
+    .select("id")
+    .eq("slug", orgSlug)
+    .single();
+
+  if (!orgData) return [];
+
+  const teamsList: any[] = [];
+
+  const { data: allTeams } = await supabase
+    .from("teams")
+    .select(`
+      id, name, contact_email, contact_phone, source, created_at, submission_id,
+      submissions (
+        payment_status,
+        form:forms (
+          is_published
+        )
+      )
+    `)
+    .eq("organization_id", orgData.id)
+    .order("created_at", { ascending: false });
+
+  if (allTeams) {
+    allTeams.forEach((t: any) => {
+      // Logic for filtering teams
+      let isEligible = false;
+      
+      if (t.source === "MANUAL") {
+        isEligible = true; // Manual teams are always included
+      } else if (t.source === "FORM_SUBMISSION") {
+        const sub = Array.isArray(t.submissions) ? t.submissions[0] : t.submissions;
+        if (sub) {
+          const isPaid = sub.payment_status === "SUCCESS" || sub.payment_status === "NOT_REQUIRED";
+          const form = Array.isArray(sub.form) ? sub.form[0] : sub.form;
+          const isActive = form && form.is_published === true;
+          if (isPaid && isActive) {
+            isEligible = true;
+          }
+        } else {
+          // If no submission_id linked (old data before fix), we can't reliably know, 
+          // but we'll include them by default to not break old records unless strict is needed.
+          // The user wants strictly "only whose data show payment is done", so we should exclude them
+          // if they lack submission data, but we'll provide a backfill script.
+        }
+      }
+
+      if (isEligible) {
+        teamsList.push({
+          id: t.id,
+          teamName: t.name,
+          contact: t.contact_email || t.contact_phone || "No Contact",
+          contactEmail: t.contact_email,
+          formName: t.source === "MANUAL" ? "Manual Entry" : "Form Submission",
+          date: new Date(t.created_at).toLocaleDateString(),
+          source: t.source
+        });
+      }
+    });
+  }
+
+  return teamsList;
+}
+

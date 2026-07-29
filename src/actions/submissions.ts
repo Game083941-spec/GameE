@@ -61,6 +61,18 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     await insertTeamFromSubmission(submissionData.id);
   }
 
+  // Insert into analytics_users directly to capture all responses safely
+  const { error: analyticsError } = await supabase
+    .from("analytics_users")
+    .insert({
+      original_form_id: formId,
+      responses: responses,
+    });
+    
+  if (analyticsError) {
+    console.error("Analytics Error:", analyticsError);
+  }
+
   revalidateTag("form-submissions", "default");
   revalidateTag("org-teams-v3", "default");
 

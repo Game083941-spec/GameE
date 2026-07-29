@@ -1,9 +1,9 @@
 import { NotificationsForm } from "@/components/notifications/notifications-form";
-import { getOrgTeams } from "@/actions/teams";
+import { getEligibleNotificationTeams } from "@/actions/teams";
 
 export default async function NotificationsPage({ params }: { params: Promise<{ orgSlug: string }> }) {
   const { orgSlug } = await params;
-  const teams = await getOrgTeams(orgSlug);
+  const teams = await getEligibleNotificationTeams(orgSlug);
 
   return (
     <div className="space-y-6">
