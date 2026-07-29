@@ -211,12 +211,8 @@ export function Sidebar({
       {/* ── Logout — always pinned at the bottom ── */}
       <div className="p-4 border-t border-border/50 bg-muted/10 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg overflow-hidden bg-zinc-900 border border-zinc-800 shrink-0">
-            <img
-              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${userEmail || 'gamer'}&backgroundColor=18181b`}
-              alt="User Avatar"
-              className="h-full w-full object-cover"
-            />
+          <div className="h-10 w-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg uppercase shrink-0">
+            {userEmail ? userEmail.charAt(0) : 'U'}
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate text-foreground">
