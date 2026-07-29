@@ -32,6 +32,7 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .insert({
       form_id: formId,
       payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
+      responses: responses,
     })
     .select("id")
     .single();
