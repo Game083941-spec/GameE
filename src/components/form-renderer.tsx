@@ -21,7 +21,7 @@ interface FormRendererProps {
 
 export function FormRenderer({ form, sections, fields, orgName }: FormRendererProps) {
   const router = useRouter();
-  const [responses, setResponses] = useState<Record<string, string>>({});\n
+  const [responses, setResponses] = useState<Record<string, string>>({});
   useEffect(() => {
     try {
       const savedEmail = localStorage.getItem('autofill_email');
@@ -64,7 +64,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");\n
+    setError("");
     try {
       const emailField = fields.find(f => f.type === 'EMAIL');
       if (emailField && responses[emailField.id]) {
