@@ -27,12 +27,29 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     return { error: "This form has reached its maximum number of submissions and is now closed." };
   }
 
+  // Fetch fields to map UUID keys to human-readable labels for the JSON
+  const { data: formFields } = await supabase
+    .from("fields")
+    .select("id, label")
+    .eq("form_id", formId);
+
+  const humanReadableResponses: Record<string, any> = {};
+  if (formFields) {
+    for (const [key, val] of Object.entries(responses)) {
+      const field = formFields.find(f => f.id === key);
+      const label = field ? field.label : key;
+      humanReadableResponses[label] = val;
+    }
+  } else {
+    Object.assign(humanReadableResponses, responses);
+  }
+
   const { data: submissionData, error: submissionError } = await supabase
     .from("submissions")
     .insert({
       form_id: formId,
       payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
-      responses: responses,
+      responses: humanReadableResponses,
     })
     .select("id")
     .single();
@@ -67,7 +84,7 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .from("analytics_users")
     .insert({
       original_form_id: formId,
-      responses: responses,
+      responses: humanReadableResponses,
     });
     
   if (analyticsError) {
