@@ -104,7 +104,58 @@ export async function getUserOrganizations() {
 
   const isSuperAdmin = user.email === process.env.SUPER_ADMIN_EMAIL;
   
-  // Use the cached helper, passing a dynamic tag for the specific user
-  // We use unstable_cache to cache this specific user's orgs globally
   return await getCachedOrganizations(user.id, isSuperAdmin);
+}
+
+export async function inviteMember(orgId: string, email: string, role: string, sidebarPermissions: string[]) {
+  const supabase = createAdminClient();
+  
+  // Find user by email
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("email", email)
+    .single();
+
+  if (!profile) {
+    return { error: "User with this email not found. They must sign up first." };
+  }
+
+  // Insert member
+  const { error } = await supabase
+    .from("members")
+    .insert({
+      organization_id: orgId,
+      profile_id: profile.id,
+      role: role as any,
+      sidebar_permissions: sidebarPermissions,
+    });
+
+  if (error) {
+    return { error: error.message };
+  }
+  
+  revalidatePath("/dashboard/[orgSlug]/members", "page");
+  return { success: true };
+}
+
+export async function updateMemberPermissions(orgId: string, profileId: string, role: string, sidebarPermissions: string[]) {
+  const supabase = createAdminClient();
+  
+  const { error } = await supabase
+    .from("members")
+    .update({
+      role: role as any,
+      sidebar_permissions: sidebarPermissions,
+    })
+    .eq("organization_id", orgId)
+    .eq("profile_id", profileId);
+
+  if (error) {
+    return { error: error.message };
+  }
+  
+  revalidatePath("/dashboard/[orgSlug]/members", "page");
+  revalidatePath("/dashboard/[orgSlug]", "layout");
+  return { success: true };
 }

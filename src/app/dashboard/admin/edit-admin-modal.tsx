@@ -13,10 +13,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PlusCircle, Loader2, Eye, EyeOff } from "lucide-react";
-import { createAdminUser } from "@/actions/admin";
+import { Loader2, Edit2, Eye, EyeOff } from "lucide-react";
+import { updateAdminUser } from "@/actions/admin";
 
-export function CreateAdminModal() {
+export function EditAdminModal({ 
+  user 
+}: { 
+  user: { id: string; email?: string; user_metadata?: { full_name?: string } } 
+}) {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +30,10 @@ export function CreateAdminModal() {
     setIsPending(true);
     setError(null);
     
-    const result = await createAdminUser(formData);
+    // Add user ID to form data
+    formData.append("id", user.id);
+    
+    const result = await updateAdminUser(formData);
     
     if (result.error) {
       setError(result.error);
@@ -39,20 +46,17 @@ export function CreateAdminModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger 
-        render={
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Add Administrator
-          </Button>
-        } 
-      />
+      <DialogTrigger>
+        <div className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
+          <Edit2 className="h-4 w-4" />
+        </div>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form action={onSubmit}>
           <DialogHeader>
-            <DialogTitle>Create Administrator</DialogTitle>
+            <DialogTitle>Edit Administrator</DialogTitle>
             <DialogDescription>
-              Create a new administrator account. They will be able to log in immediately.
+              Update details for {user.email}. Leave password blank to keep it unchanged.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -61,41 +65,19 @@ export function CreateAdminModal() {
               <Input
                 id="full_name"
                 name="full_name"
+                defaultValue={user.user_metadata?.full_name || ""}
                 placeholder="Rahul Sharma"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="rahul@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role">User Type</Label>
-              <select 
-                id="role"
-                name="role"
-                className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                required
-              >
-                <option value="SUPER_ADMIN" className="bg-background">Super Admin</option>
-                <option value="ADMIN" className="bg-background">Admin</option>
-                <option value="USER_ADMIN" className="bg-background">User Admin</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">New Password (Optional)</Label>
               <div className="relative">
                 <Input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  required
+                  placeholder="Leave blank to keep unchanged"
                   minLength={6}
                   className="pr-10"
                 />
@@ -125,7 +107,7 @@ export function CreateAdminModal() {
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create User
+              Save Changes
             </Button>
           </DialogFooter>
         </form>

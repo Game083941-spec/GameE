@@ -21,65 +21,89 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { EventBanner } from "@/components/EventBanner";
 
-export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string; isSuperAdmin?: boolean; userEmail?: string }) {
+export function Sidebar({ 
+  orgSlug, 
+  isSuperAdmin, 
+  userEmail,
+  memberRole = "VIEWER",
+  sidebarPermissions = [],
+  globalRole,
+}: { 
+  orgSlug: string; 
+  isSuperAdmin?: boolean; 
+  userEmail?: string;
+  memberRole?: string;
+  sidebarPermissions?: string[];
+  globalRole?: string;
+}) {
   const pathname = usePathname();
 
-  const routes = [
+  let routes = [
     {
+      id: "overview",
       href: `/dashboard/${orgSlug}`,
       label: "Overview",
       icon: LayoutDashboard,
       active: pathname === `/dashboard/${orgSlug}`,
     },
     {
+      id: "forms",
       href: `/dashboard/${orgSlug}/forms`,
-      label: "Forms",
+      label: "Create Tournament",
       icon: FileText,
       active: pathname === `/dashboard/${orgSlug}/forms`,
     },
     {
+      id: "adpage",
       href: `/dashboard/${orgSlug}/adpage`,
       label: "Ad Page",
       icon: Megaphone,
       active: pathname === `/dashboard/${orgSlug}/adpage`,
     },
     {
+      id: "members",
       href: `/dashboard/${orgSlug}/members`,
       label: "Members",
       icon: Users,
       active: pathname === `/dashboard/${orgSlug}/members`,
     },
     {
+      id: "notifications",
       href: `/dashboard/${orgSlug}/notifications`,
-      label: "Notifications",
+      label: "Send IDP",
       icon: Bell,
       active: pathname === `/dashboard/${orgSlug}/notifications`,
     },
     {
+      id: "teams",
       href: `/dashboard/${orgSlug}/teams`,
-      label: "Teams",
+      label: "Current Events",
       icon: Trophy,
       active: pathname === `/dashboard/${orgSlug}/teams`,
     },
     {
+      id: "matches",
       href: `/dashboard/${orgSlug}/matches`,
       label: "Matches & History",
       icon: Gamepad2,
       active: pathname === `/dashboard/${orgSlug}/matches`,
     },
     {
+      id: "billing",
       href: `/dashboard/${orgSlug}/billing`,
       label: "Billing",
       icon: CreditCard,
       active: pathname === `/dashboard/${orgSlug}/billing`,
     },
     {
+      id: "settings",
       href: `/dashboard/${orgSlug}/settings`,
       label: "Settings",
       icon: Settings,
       active: pathname === `/dashboard/${orgSlug}/settings`,
     },
     {
+      id: "event-registration",
       href: `/dashboard/${orgSlug}/event-registration`,
       label: "Event Registration",
       icon: Megaphone,
@@ -88,9 +112,24 @@ export function Sidebar({ orgSlug, isSuperAdmin, userEmail }: { orgSlug: string;
     },
   ];
 
+  // Apply Role-Based Filtering
+  // If globalRole is USER_ADMIN, show ONLY the requested 4 options + overview
+  if (globalRole === "USER_ADMIN") {
+    const allowed = ["overview", "forms", "notifications", "teams", "adpage"];
+    routes = routes.filter(route => allowed.includes(route.id));
+  } 
+  // Otherwise apply organization-level filtering
+  else if (!isSuperAdmin && memberRole === "MODERATOR") {
+    routes = routes.filter(route => 
+      route.id === "overview" || sidebarPermissions.includes(route.id)
+    );
+  } else if (!isSuperAdmin && memberRole === "VIEWER") {
+    routes = routes.filter(route => route.id === "overview");
+  }
 
   if (isSuperAdmin) {
     routes.push({
+      id: "superadmin",
       href: "/dashboard/admin",
       label: "Super Admin Panel",
       icon: Shield,

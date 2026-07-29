@@ -6,10 +6,10 @@ export default async function DashboardRoot() {
   try {
     const organizations = await getUserOrganizations() as any[];
 
-    if (await isSuperAdmin()) {
-      redirect("/dashboard/admin");
-    }
     if (!organizations || organizations.length === 0) {
+      if (await isSuperAdmin()) {
+        redirect("/dashboard/admin");
+      }
       redirect("/onboarding");
     }
     redirect(`/dashboard/${organizations[0].slug}`);

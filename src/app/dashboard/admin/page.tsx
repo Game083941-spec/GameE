@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Shield, Users, Mail, Clock, Activity, CheckCircle2, Globe, Database } from "lucide-react";
 import { CreateAdminModal } from "./create-admin-modal";
+import { EditAdminModal } from "./edit-admin-modal";
+import { DeleteAdminModal } from "./delete-admin-modal";
 
 export default async function SuperAdminPage() {
   if (!(await isSuperAdmin())) {
@@ -55,6 +57,7 @@ export default async function SuperAdminPage() {
                 <TableHead>Full Name</TableHead>
                 <TableHead>Joined At</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -74,6 +77,14 @@ export default async function SuperAdminPage() {
                     <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
                       Active
                     </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <EditAdminModal user={user} />
+                      {user.email !== process.env.SUPER_ADMIN_EMAIL && (
+                        <DeleteAdminModal user={user} />
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

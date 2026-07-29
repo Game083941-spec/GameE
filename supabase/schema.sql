@@ -29,6 +29,7 @@ CREATE TABLE public.members (
     organization_id UUID REFERENCES public.organizations(id) ON DELETE CASCADE NOT NULL,
     profile_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
     role organization_role NOT NULL DEFAULT 'VIEWER',
+    sidebar_permissions JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     UNIQUE(organization_id, profile_id)

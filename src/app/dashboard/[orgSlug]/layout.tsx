@@ -30,6 +30,24 @@ export default async function DashboardOrgLayout({
     redirect("/dashboard");
   }
 
+  // 5. Fetch member role and permissions
+  let memberRole = "VIEWER";
+  let sidebarPermissions: string[] = [];
+  
+  if (user && currentOrg) {
+    const { data: memberData } = await supabase
+      .from("members")
+      .select("role, sidebar_permissions")
+      .eq("organization_id", currentOrg.id)
+      .eq("profile_id", user.id)
+      .single();
+      
+    if (memberData) {
+      memberRole = memberData.role;
+      sidebarPermissions = memberData.sidebar_permissions || [];
+    }
+  }
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-muted/40">
       {/* Sidebar — fixed height, never scrolls */}
@@ -37,6 +55,9 @@ export default async function DashboardOrgLayout({
         orgSlug={orgSlug} 
         isSuperAdmin={user?.email === process.env.SUPER_ADMIN_EMAIL} 
         userEmail={user?.email}
+        memberRole={memberRole}
+        sidebarPermissions={sidebarPermissions}
+        globalRole={user?.user_metadata?.role}
       />
       {/* Main area — scrolls independently */}
       <div className="flex flex-col flex-1 h-screen overflow-hidden">
