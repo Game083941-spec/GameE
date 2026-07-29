@@ -31,19 +31,16 @@ interface Team {
 
 export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], orgSlug: string }) {
   const router = useRouter();
-  
-  // Modals state
+
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isBroadcastOpen, setIsBroadcastOpen] = useState(false);
-  
-  // Add Team Form
+
   const [newTeamName, setNewTeamName] = useState("");
   const [newTeamEmail, setNewTeamEmail] = useState("");
   const [newTeamPhone, setNewTeamPhone] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [addError, setAddError] = useState("");
 
-  // Broadcast Form
   const [broadcastSubject, setBroadcastSubject] = useState("");
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [isBroadcasting, setIsBroadcasting] = useState(false);
@@ -73,12 +70,10 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
     setIsBroadcasting(true);
     setBroadcastResult(null);
 
-    // Collect all valid emails
     const validEmails = initialTeams
       .map(t => t.contactEmail)
       .filter(email => email && email.includes("@"));
 
-    // Deduplicate emails
     const uniqueEmails = Array.from(new Set(validEmails));
 
     if (uniqueEmails.length === 0) {
@@ -88,7 +83,7 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
     }
 
     const res = await broadcastToTeams(uniqueEmails, broadcastSubject, broadcastMessage);
-    
+
     if (res.error) {
       setBroadcastResult({ error: res.error });
     } else {
@@ -152,12 +147,12 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {initialTeams.map((team, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="group relative overflow-hidden border rounded-xl p-5 flex flex-col gap-3 hover:border-primary/50 hover:shadow-lg transition-all duration-300 bg-card hover:-translate-y-1"
                 >
                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/40 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  
+
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shadow-inner">
@@ -171,7 +166,7 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-1.5 mt-2">
                     <div className="text-sm text-muted-foreground flex items-center gap-2">
                       <Users className="h-4 w-4 text-primary/60" />
@@ -184,7 +179,7 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="mt-auto pt-4 border-t text-xs text-muted-foreground flex items-center justify-between">
                     <div className="truncate max-w-[140px] font-medium text-foreground/70 bg-muted px-2 py-1 rounded-md">
                       {team.formName}
@@ -215,27 +210,27 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
             )}
             <div className="space-y-2">
               <Label>Team Name <span className="text-destructive">*</span></Label>
-              <Input 
-                required 
-                placeholder="e.g. Team Soul" 
+              <Input
+                required
+                placeholder="e.g. Team Soul"
                 value={newTeamName}
                 onChange={e => setNewTeamName(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label>Contact Email</Label>
-              <Input 
-                type="email" 
-                placeholder="leader@example.com" 
+              <Input
+                type="email"
+                placeholder="leader@example.com"
                 value={newTeamEmail}
                 onChange={e => setNewTeamEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label>Contact Phone</Label>
-              <Input 
-                type="tel" 
-                placeholder="+91 9999999999" 
+              <Input
+                type="tel"
+                placeholder="+91 9999999999"
                 value={newTeamPhone}
                 onChange={e => setNewTeamPhone(e.target.value)}
               />
@@ -263,7 +258,7 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
               Send an email to all active teams that have provided an email address.
             </DialogDescription>
           </DialogHeader>
-          
+
           {broadcastResult?.success ? (
             <div className="py-8 flex flex-col items-center justify-center text-center space-y-3">
               <CheckCircle2 className="h-12 w-12 text-green-500" />
@@ -279,25 +274,25 @@ export function TeamsManager({ initialTeams, orgSlug }: { initialTeams: Team[], 
                   {broadcastResult.error}
                 </div>
               )}
-              
+
               <div className="bg-muted p-3 rounded-md text-sm text-muted-foreground mb-4">
                 You are about to email <strong>{new Set(initialTeams.map(t => t.contactEmail).filter(e => e && e.includes("@"))).size}</strong> unique team contacts.
               </div>
 
               <div className="space-y-2">
                 <Label>Subject Line <span className="text-destructive">*</span></Label>
-                <Input 
-                  required 
-                  placeholder="e.g. Schedule Update for Tonight's Scrims" 
+                <Input
+                  required
+                  placeholder="e.g. Schedule Update for Tonight's Scrims"
                   value={broadcastSubject}
                   onChange={e => setBroadcastSubject(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
                 <Label>Message Body <span className="text-destructive">*</span></Label>
-                <Textarea 
-                  required 
-                  placeholder="Type your message here..." 
+                <Textarea
+                  required
+                  placeholder="Type your message here..."
                   className="min-h-[150px] resize-none"
                   value={broadcastMessage}
                   onChange={e => setBroadcastMessage(e.target.value)}

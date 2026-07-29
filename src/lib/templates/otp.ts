@@ -24,11 +24,11 @@ export const getOTPTemplate = ({ otp }: OTPTemplateProps) => `
     <div class="content">
       <h2 style="color: #0f172a; margin-top: 0;">Verification Code</h2>
       <p>Use the following code to complete your verification process. This code will expire in <strong>5 minutes</strong>.</p>
-      
+
       <div class="otp-box">
         ${otp}
       </div>
-      
+
       <p style="font-size: 14px; color: #64748b;">If you didn't request this code, you can safely ignore this email.</p>
     </div>
     <div class="footer">

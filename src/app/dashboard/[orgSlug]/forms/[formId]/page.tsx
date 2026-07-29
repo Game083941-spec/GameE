@@ -14,7 +14,6 @@ export default async function SubmissionsPage({
   const { orgSlug, formId } = await params;
   const supabase = await createClient();
 
-  // 1. Verify org and form exist and belong to each other
   const { data: form, error: formError } = await supabase
     .from("forms")
     .select("*, organization:organizations(slug)")
@@ -25,15 +24,13 @@ export default async function SubmissionsPage({
     notFound();
   }
 
-  // 2. Fetch submissions
   const submissions = await getFormSubmissions(formId);
 
-  // 3. Fetch fields so we know the column headers
   const { data: sections } = await supabase
     .from("sections")
     .select("id")
     .eq("form_id", formId);
-    
+
   let fields: any[] = [];
   if (sections && sections.length > 0) {
     const { data: fieldsData } = await supabase

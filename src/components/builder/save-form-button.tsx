@@ -21,12 +21,12 @@ import {
 export function SaveFormButton({ orgSlug, formId }: { orgSlug: string; formId?: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   const sections = useFormBuilderStore((state) => state.sections);
   const formTitle = useFormBuilderStore((state) => state.formTitle);
   const formDescription = useFormBuilderStore((state) => state.formDescription);
   const settings = useFormBuilderStore((state) => state.settings);
-  
+
   const setFormTitle = useFormBuilderStore((state) => state.setFormTitle);
   const setFormDescription = useFormBuilderStore((state) => state.setFormDescription);
   const updateSettings = useFormBuilderStore((state) => state.updateSettings);
@@ -36,16 +36,15 @@ export function SaveFormButton({ orgSlug, formId }: { orgSlug: string; formId?: 
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      
+
       const result = await saveForm(orgSlug, formTitle, formDescription, sections, settings, formId);
-      
+
       if (result?.error) {
         alert("Error saving form: " + result.error);
         setIsSaving(false);
         return;
       }
 
-      // Success! Redirect back to the forms list
       router.push(`/dashboard/${orgSlug}/forms`);
       router.refresh();
       setIsOpen(false);

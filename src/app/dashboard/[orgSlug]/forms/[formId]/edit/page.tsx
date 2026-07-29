@@ -23,11 +23,10 @@ export default async function EditFormPage({
 
   const supabase = await createClient();
 
-  // Fetch the form with its sections and fields
   const { data: form, error } = await supabase
     .from("forms")
     .select(`
-      title, 
+      title,
       description,
       settings,
       sections (
@@ -53,7 +52,6 @@ export default async function EditFormPage({
     notFound();
   }
 
-  // Transform data to match FormSection[] format expected by Zustand
   const mappedSections = (form.sections || [])
     .sort((a: any, b: any) => a.order_index - b.order_index)
     .map((section: any) => ({
@@ -74,10 +72,10 @@ export default async function EditFormPage({
 
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)]">
-      <FormBuilderHydrator 
-        formTitle={form.title} 
-        formDescription={form.description || ""} 
-        sections={mappedSections} 
+      <FormBuilderHydrator
+        formTitle={form.title}
+        formDescription={form.description || ""}
+        sections={mappedSections}
         settings={form.settings || {}}
       />
 
@@ -94,9 +92,9 @@ export default async function EditFormPage({
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-         
+
           <SaveFormButton orgSlug={orgSlug} formId={formId} />
         </div>
       </div>

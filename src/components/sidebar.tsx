@@ -21,16 +21,16 @@ import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { EventBanner } from "@/components/EventBanner";
 
-export function Sidebar({ 
-  orgSlug, 
-  isSuperAdmin, 
+export function Sidebar({
+  orgSlug,
+  isSuperAdmin,
   userEmail,
   memberRole = "VIEWER",
   sidebarPermissions = [],
   globalRole,
-}: { 
-  orgSlug: string; 
-  isSuperAdmin?: boolean; 
+}: {
+  orgSlug: string;
+  isSuperAdmin?: boolean;
   userEmail?: string;
   memberRole?: string;
   sidebarPermissions?: string[];
@@ -112,15 +112,12 @@ export function Sidebar({
     },
   ];
 
-  // Apply Role-Based Filtering
-  // If globalRole is USER_ADMIN, show ONLY the requested 4 options + overview
   if (globalRole === "USER_ADMIN") {
     const allowed = ["overview", "forms", "notifications", "teams", "adpage"];
     routes = routes.filter(route => allowed.includes(route.id));
-  } 
-  // Otherwise apply organization-level filtering
+  }
   else if (!isSuperAdmin && memberRole === "MODERATOR") {
-    routes = routes.filter(route => 
+    routes = routes.filter(route =>
       route.id === "overview" || sidebarPermissions.includes(route.id)
     );
   } else if (!isSuperAdmin && memberRole === "VIEWER") {

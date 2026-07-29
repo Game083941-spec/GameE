@@ -40,7 +40,6 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     return { error: submissionError?.message || "Failed to create submission" };
   }
 
-  // 2. Insert the answers for each field
   const answersToInsert = Object.entries(responses).map(([fieldId, value]) => ({
     submission_id: submissionData.id,
     field_id: fieldId,
@@ -54,11 +53,9 @@ export async function submitForm(formId: string, responses: Record<string, any>,
 
     if (answersError) {
       console.error("Answers Error:", answersError);
-      // Don't fail the whole submission if answers fail, but log it
     }
   }
 
-  // 3. If no payment required, insert into teams immediately
   if (!paymentRequired) {
     const { insertTeamFromSubmission } = await import("./teams");
     await insertTeamFromSubmission(submissionData.id);
@@ -66,7 +63,7 @@ export async function submitForm(formId: string, responses: Record<string, any>,
 
   revalidateTag("form-submissions", "default");
   revalidateTag("org-teams-v3", "default");
-  
+
   return { success: true, submissionId: submissionData.id };
 }
 
@@ -111,7 +108,6 @@ export async function getSubmissions(formId: string) {
 export async function getFormSubmissions(formId: string) {
   const supabase = await createClient();
 
-  // RLS will ensure they can only view it if they are an org member
   const { data: submissions, error: subError } = await supabase
     .from("submissions")
     .select("*, submission_answers(field_id, value)")
@@ -123,7 +119,6 @@ export async function getFormSubmissions(formId: string) {
     return [];
   }
 
-  // Reconstruct the responses object for frontend compatibility
   return submissions.map(sub => {
     const responses: Record<string, any> = {};
     if (sub.submission_answers) {

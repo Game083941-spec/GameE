@@ -17,7 +17,7 @@ export default async function FormsListPage({
   params: Promise<{ orgSlug: string }>;
 }) {
   const { orgSlug } = await params;
-  
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -111,7 +111,7 @@ async function FormsGrid({ orgSlug }: { orgSlug: string }) {
                      {new Date(form.created_at).toLocaleDateString()}
                    </div>
                 </div>
-                
+
                 <div className="flex items-center gap-2 pt-4 border-t">
                   <Link href={`/dashboard/${orgSlug}/forms/${form.id}`} className="flex-1">
                      <Button variant="secondary" className="w-full text-xs h-8">

@@ -41,7 +41,6 @@ export async function getAdPages(orgSlug: string) {
     .order("created_at", { ascending: false });
 
   if (role !== "SUPER_ADMIN" && user) {
-    // Regular users can only see the ad pages they created
     query = query.eq("field_visibility->>createdBy", user.id);
   }
 

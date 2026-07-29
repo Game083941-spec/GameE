@@ -44,7 +44,7 @@ export default async function FormSuccessPage({
             </p>
             <p className="text-sm text-muted-foreground">
               For any issues, please contact this mail:{" "}
-              <a 
+              <a
                 href={`mailto:${form.settings?.contactEmail || process.env.NEXT_PUBLIC_CONTACT_EMAIL || process.env.SMTP_USER || "support@esporthub.com"}`}
                 className="text-primary hover:underline font-medium"
               >

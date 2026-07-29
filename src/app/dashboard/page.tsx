@@ -15,7 +15,7 @@ export default async function DashboardRoot() {
     redirect(`/dashboard/${organizations[0].slug}`);
   } catch (error: any) {
     if ((error.message && error.message === "NEXT_REDIRECT") || (error.digest && error.digest.startsWith("NEXT_REDIRECT"))) {
-      throw error; 
+      throw error;
     }
     return (
       <div className="p-8 text-red-500 bg-red-50 rounded-md m-8">

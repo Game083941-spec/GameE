@@ -18,13 +18,10 @@ export async function createOrganization(formData: FormData) {
     return { error: "Organization name is required." };
   }
 
-  // Generate a basic slug
   let slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
-  // Add a random suffix to ensure uniqueness easily
   const randomSuffix = Math.random().toString(36).substring(2, 6);
   slug = `${slug}-${randomSuffix}`;
 
-  // 1. Insert organization
   const { data: orgData, error: orgError } = await supabase
     .from("organizations")
     .insert({ name, slug })
@@ -35,7 +32,6 @@ export async function createOrganization(formData: FormData) {
     return { error: orgError?.message || "Failed to create organization." };
   }
 
-  // 2. Insert member as OWNER
   const { error: memberError } = await supabase
     .from("members")
     .insert({
@@ -48,7 +44,6 @@ export async function createOrganization(formData: FormData) {
     return { error: memberError.message };
   }
 
-  // Invalidate user's orgs cache
   revalidateTag(`user-orgs-${user.id}`, "default");
   revalidatePath("/", "layout");
   redirect(`/dashboard/${orgData.slug}`);
@@ -63,7 +58,7 @@ const getCachedOrganizations = unstable_cache(
         .from("organizations")
         .select("id, name, slug, logo_url")
         .order("created_at", { ascending: false });
-        
+
       return (data || []).map((org) => ({
         role: "OWNER",
         ...org,
@@ -103,14 +98,13 @@ export async function getUserOrganizations() {
   if (!user) return [];
 
   const isSuperAdmin = user.email === process.env.SUPER_ADMIN_EMAIL;
-  
+
   return await getCachedOrganizations(user.id, isSuperAdmin);
 }
 
 export async function inviteMember(orgId: string, email: string, role: string, sidebarPermissions: string[]) {
   const supabase = createAdminClient();
-  
-  // Find user by email
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("id")
@@ -121,7 +115,6 @@ export async function inviteMember(orgId: string, email: string, role: string, s
     return { error: "User with this email not found. They must sign up first." };
   }
 
-  // Insert member
   const { error } = await supabase
     .from("members")
     .insert({
@@ -134,14 +127,14 @@ export async function inviteMember(orgId: string, email: string, role: string, s
   if (error) {
     return { error: error.message };
   }
-  
+
   revalidatePath("/dashboard/[orgSlug]/members", "page");
   return { success: true };
 }
 
 export async function updateMemberPermissions(orgId: string, profileId: string, role: string, sidebarPermissions: string[]) {
   const supabase = createAdminClient();
-  
+
   const { error } = await supabase
     .from("members")
     .update({
@@ -154,7 +147,7 @@ export async function updateMemberPermissions(orgId: string, profileId: string, 
   if (error) {
     return { error: error.message };
   }
-  
+
   revalidatePath("/dashboard/[orgSlug]/members", "page");
   revalidatePath("/dashboard/[orgSlug]", "layout");
   return { success: true };

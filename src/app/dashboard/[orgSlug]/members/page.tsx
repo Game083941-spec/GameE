@@ -5,14 +5,12 @@ export default async function MembersPage({ params }: { params: Promise<{ orgSlu
   const { orgSlug } = await params;
   const supabase = await createClient();
 
-  // Fetch the organization ID
   const { data: orgData } = await supabase
     .from("organizations")
     .select("id, name")
     .eq("slug", orgSlug)
     .single();
 
-  // Fetch members (placeholder or actual fetch)
   let members: any[] = [];
   if (orgData) {
     const { data: membersData } = await supabase
@@ -29,7 +27,7 @@ export default async function MembersPage({ params }: { params: Promise<{ orgSlu
         )
       `)
       .eq("organization_id", orgData.id);
-      
+
     if (membersData) {
       members = membersData;
     }

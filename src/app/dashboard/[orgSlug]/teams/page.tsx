@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default async function TeamsPage({ params }: { params: Promise<{ orgSlug: string }> }) {
   const { orgSlug } = await params;
-  
+
   return (
     <Suspense fallback={<TeamsSkeleton />}>
       <TeamsList orgSlug={orgSlug} />

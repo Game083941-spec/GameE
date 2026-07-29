@@ -27,12 +27,10 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // refreshing the auth token
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Route protection
   const url = request.nextUrl.clone();
   if (!user && (url.pathname.startsWith("/dashboard") || url.pathname.startsWith("/onboarding"))) {
     url.pathname = "/login";

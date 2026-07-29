@@ -7,7 +7,6 @@ import { revalidateTag, unstable_cache } from "next/cache";
 export async function insertTeamFromSubmission(submissionId: string) {
   const adminSupabase = createAdminClient();
 
-  // 1. Fetch submission and form details
   const { data: subData } = await adminSupabase
     .from("submissions")
     .select(`*, form:forms(organization_id, title)`)
@@ -16,7 +15,6 @@ export async function insertTeamFromSubmission(submissionId: string) {
 
   if (!subData) return;
 
-  // 2. Fetch answers with field labels and types
   const { data: answers } = await adminSupabase
     .from("submission_answers")
     .select(`value, field:fields(label, type)`)
@@ -47,7 +45,6 @@ export async function insertTeamFromSubmission(submissionId: string) {
     teamName = "Individual Registration";
   }
 
-  // 3. Insert into teams table
   const { error: insertError } = await adminSupabase
     .from("teams")
     .insert({
@@ -71,7 +68,6 @@ export async function addManualTeam(
 ) {
   const supabase = await createClient();
 
-  // Get org ID
   const { data: orgData, error: orgError } = await supabase
     .from("organizations")
     .select("id")
@@ -105,7 +101,6 @@ const getCachedOrgTeams = unstable_cache(
   async (orgSlug: string) => {
     const supabase = createAdminClient();
 
-    // Get org ID
     const { data: orgData } = await supabase
       .from("organizations")
       .select("id")
@@ -116,7 +111,6 @@ const getCachedOrgTeams = unstable_cache(
 
     const teamsList: any[] = [];
 
-    // Fetch ALL Teams from teams table
     const { data: allTeams } = await supabase
       .from("teams")
       .select("id, name, contact_email, contact_phone, source, created_at")
@@ -139,7 +133,7 @@ const getCachedOrgTeams = unstable_cache(
 
     return teamsList;
   },
-  ["org-teams-cache-v3"], 
+  ["org-teams-cache-v3"],
   { tags: ["org-teams-v3"] }
 );
 

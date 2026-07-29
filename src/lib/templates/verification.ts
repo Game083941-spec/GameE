@@ -25,9 +25,9 @@ export const getVerificationTemplate = ({ verificationLink }: VerificationTempla
     <div class="content">
       <h2 style="color: #0f172a; margin-top: 0;">Verify your email</h2>
       <p>Thanks for signing up! Please verify your email address by clicking the button below.</p>
-      
+
       <a href="${verificationLink}" class="btn" style="color: #ffffff;">Verify Email Address</a>
-      
+
       <p style="font-size: 14px; color: #64748b; margin-top: 24px;">If the button doesn't work, copy and paste this link into your browser:</p>
       <p style="font-size: 12px; color: #64748b; word-break: break-all;">${verificationLink}</p>
     </div>

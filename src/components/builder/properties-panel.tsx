@@ -22,15 +22,13 @@ export function PropertiesPanel() {
       return null;
     })
   );
-  
+
   const updateField = useFormBuilderStore((state) => state.updateField);
   const removeField = useFormBuilderStore((state) => state.removeField);
   const [isUploading, setIsUploading] = useState(false);
 
   const activeField = activeFieldData?.activeField;
   const activeSectionId = activeFieldData?.activeSectionId;
-
-
 
   const updateSettings = useFormBuilderStore((state) => state.updateSettings);
   const settings = useFormBuilderStore((state) => state.settings);
@@ -148,7 +146,7 @@ export function PropertiesPanel() {
                     if (!res.ok) throw new Error("Upload failed");
 
                     const data = await res.json();
-                    
+
                     updateField(activeSectionId!, activeField.id, {
                       options: [{ label: "url", value: data.url }],
                     });

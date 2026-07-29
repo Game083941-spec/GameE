@@ -73,7 +73,6 @@ export const useFormBuilderStore = create<FormBuilderState>((set) => ({
   removeSection: (sectionId) =>
     set((state) => ({
       sections: state.sections.filter((section) => section.id !== sectionId),
-      // Clean up activeField if it was in this section
       activeFieldId: state.sections
         .find((s) => s.id === sectionId)
         ?.fields.find((f) => f.id === state.activeFieldId)
@@ -145,7 +144,7 @@ export const useFormBuilderStore = create<FormBuilderState>((set) => ({
     })),
 
   setActiveField: (fieldId) => set({ activeFieldId: fieldId }),
-  
+
   loadTemplate: (title, description, sections, settings) =>
     set({
       formTitle: title,

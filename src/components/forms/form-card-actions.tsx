@@ -21,10 +21,10 @@ export function FormCardActions({ orgSlug, formId }: { orgSlug: string; formId: 
     if (!confirm("Are you sure you want to delete this form? This action cannot be undone and will delete all submissions.")) {
       return;
     }
-    
+
     setIsDeleting(true);
     const result = await deleteForm(orgSlug, formId);
-    
+
     if (result?.error) {
       alert("Error deleting form: " + result.error);
       setIsDeleting(false);
@@ -40,7 +40,7 @@ export function FormCardActions({ orgSlug, formId }: { orgSlug: string; formId: 
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem className="cursor-pointer p-0">
-          <button 
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -53,7 +53,7 @@ export function FormCardActions({ orgSlug, formId }: { orgSlug: string; formId: 
           </button>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive p-0">
-          <button 
+          <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();

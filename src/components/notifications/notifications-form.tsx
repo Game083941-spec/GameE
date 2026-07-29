@@ -19,12 +19,10 @@ interface Team {
 }
 
 export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[] }) {
-  // We only care about teams that actually have an email
-  const validTeams = useMemo(() => 
+  const validTeams = useMemo(() =>
     initialTeams.filter(t => t.contactEmail && t.contactEmail.includes("@")),
   [initialTeams]);
 
-  // Group teams by form name for easy selection
   const forms = useMemo(() => {
     const formMap = new Map<string, Team[]>();
     validTeams.forEach(t => {
@@ -52,7 +50,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
   const toggleForm = (formTeams: Team[]) => {
     const next = new Set(selectedTeams);
     const allSelected = formTeams.every(t => next.has(t.id));
-    
+
     if (allSelected) {
       formTeams.forEach(t => next.delete(t.id));
     } else {
@@ -74,18 +72,15 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
     setIsSending(true);
     setResult(null);
 
-    // Get emails from selected teams
     const teamEmails = validTeams
       .filter(t => selectedTeams.has(t.id))
       .map(t => t.contactEmail);
 
-    // Parse custom comma separated emails
     const customEmailList = customEmails
       .split(",")
       .map(e => e.trim())
       .filter(e => e && e.includes("@"));
 
-    // Combine and deduplicate
     const allEmails = [...teamEmails, ...customEmailList];
     const uniqueEmails = Array.from(new Set(allEmails));
 
@@ -96,7 +91,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
     }
 
     const res = await broadcastToTeams(uniqueEmails, subject, message);
-    
+
     if (res.error) {
       setResult({ error: res.error });
     } else {
@@ -107,7 +102,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
       setSelectedTeams(new Set());
       setTimeout(() => setResult(null), 5000);
     }
-    
+
     setIsSending(false);
   };
 
@@ -122,7 +117,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
           Select registered teams or enter custom emails to broadcast a message.
         </CardDescription>
       </CardHeader>
-      
+
       <CardContent className="pt-6">
         {result?.success ? (
           <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
@@ -142,7 +137,7 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
                 {result.error}
               </div>
             )}
-            
+
             {/* Team Selection Section */}
             <div className="space-y-4 bg-muted/20 p-5 rounded-lg border">
               <div className="flex items-center justify-between border-b pb-3">
@@ -155,10 +150,10 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
                     Only teams with valid email addresses are shown.
                   </p>
                 </div>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={selectAll}
                   disabled={validTeams.length === 0}
                 >
@@ -175,12 +170,12 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
                   {forms.map(([formName, formTeams]) => (
                     <div key={formName} className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <Checkbox 
-                          id={`form-${formName}`} 
+                        <Checkbox
+                          id={`form-${formName}`}
                           checked={formTeams.every(t => selectedTeams.has(t.id))}
                           onCheckedChange={() => toggleForm(formTeams)}
                         />
-                        <label 
+                        <label
                           htmlFor={`form-${formName}`}
                           className="text-sm font-semibold uppercase tracking-wider text-muted-foreground cursor-pointer"
                         >
@@ -190,8 +185,8 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
                         {formTeams.map(team => (
                           <div key={team.id} className="flex items-center space-x-2 bg-background border p-2 rounded-md hover:border-primary/50 transition-colors">
-                            <Checkbox 
-                              id={`team-${team.id}`} 
+                            <Checkbox
+                              id={`team-${team.id}`}
                               checked={selectedTeams.has(team.id)}
                               onCheckedChange={() => toggleTeam(team.id)}
                             />
@@ -219,8 +214,8 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
             {/* Custom Emails Section */}
             <div className="space-y-2">
               <Label className="text-base font-medium">Additional Custom Emails (Optional)</Label>
-              <Textarea 
-                placeholder="email1@example.com, email2@example.com..." 
+              <Textarea
+                placeholder="email1@example.com, email2@example.com..."
                 className="min-h-[80px]"
                 value={customEmails}
                 onChange={e => setCustomEmails(e.target.value)}
@@ -230,20 +225,20 @@ export function NotificationsForm({ initialTeams = [] }: { initialTeams?: Team[]
 
             <div className="space-y-2">
               <Label className="text-base font-medium">Subject Line <span className="text-destructive">*</span></Label>
-              <Input 
-                required 
-                placeholder="Notification Subject" 
+              <Input
+                required
+                placeholder="Notification Subject"
                 className="h-12 text-base"
                 value={subject}
                 onChange={e => setSubject(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label className="text-base font-medium">Message Body <span className="text-destructive">*</span></Label>
-              <Textarea 
-                required 
-                placeholder="Type your message here..." 
+              <Textarea
+                required
+                placeholder="Type your message here..."
                 className="min-h-[200px] text-base"
                 value={message}
                 onChange={e => setMessage(e.target.value)}

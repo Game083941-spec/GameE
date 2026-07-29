@@ -15,7 +15,6 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  // Fetch all organizations for the switcher
   const { data: orgsData } = await supabase
     .from("organizations")
     .select("id, name, slug")
@@ -26,9 +25,9 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <div className="flex flex-col sm:gap-4 sm:py-4">
-        <Topbar 
-          user={user} 
-          organizations={organizations} 
+        <Topbar
+          user={user}
+          organizations={organizations}
           isSuperAdmin={true}
         />
         <main className="flex-1 items-start p-4 sm:px-6 sm:py-0 md:gap-8">

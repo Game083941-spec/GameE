@@ -25,27 +25,27 @@ export function CreateAdminModal() {
   async function onSubmit(formData: FormData) {
     setIsPending(true);
     setError(null);
-    
+
     const result = await createAdminUser(formData);
-    
+
     if (result.error) {
       setError(result.error);
     } else {
       setOpen(false);
     }
-    
+
     setIsPending(false);
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger 
+      <DialogTrigger
         render={
           <Button>
             <PlusCircle className="mr-2 h-4 w-4" />
             Add Administrator
           </Button>
-        } 
+        }
       />
       <DialogContent className="sm:max-w-[425px]">
         <form action={onSubmit}>
@@ -77,7 +77,7 @@ export function CreateAdminModal() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">User Type</Label>
-              <select 
+              <select
                 id="role"
                 name="role"
                 className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

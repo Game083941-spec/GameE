@@ -16,10 +16,10 @@ import { Label } from "@/components/ui/label";
 import { Loader2, Edit2, Eye, EyeOff } from "lucide-react";
 import { updateAdminUser } from "@/actions/admin";
 
-export function EditAdminModal({ 
-  user 
-}: { 
-  user: { id: string; email?: string; user_metadata?: { full_name?: string } } 
+export function EditAdminModal({
+  user
+}: {
+  user: { id: string; email?: string; user_metadata?: { full_name?: string } }
 }) {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -29,18 +29,17 @@ export function EditAdminModal({
   async function onSubmit(formData: FormData) {
     setIsPending(true);
     setError(null);
-    
-    // Add user ID to form data
+
     formData.append("id", user.id);
-    
+
     const result = await updateAdminUser(formData);
-    
+
     if (result.error) {
       setError(result.error);
     } else {
       setOpen(false);
     }
-    
+
     setIsPending(false);
   }
 
@@ -72,7 +71,7 @@ export function EditAdminModal({
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">User Type</Label>
-              <select 
+              <select
                 id="role"
                 name="role"
                 defaultValue={(user.user_metadata as any)?.role || "ADMIN"}

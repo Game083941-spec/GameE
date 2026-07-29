@@ -20,7 +20,6 @@ export async function saveForm(
     return { error: "Not authenticated" };
   }
 
-  // 1. Get the organization ID from the slug
   const { data: orgData, error: orgError } = await supabase
     .from("organizations")
     .select("id")
@@ -35,7 +34,6 @@ export async function saveForm(
 
   let currentFormId = formId;
 
-  // Find if there's any IMAGE field to use as the form's banner_url
   let bannerUrl = null;
   for (const section of sections) {
     const imageField = section.fields.find(f => f.type === "IMAGE" && f.options?.[0]?.value);
@@ -46,7 +44,6 @@ export async function saveForm(
   }
 
   if (formId) {
-    // Update existing form
     const { error: updateError } = await supabase
       .from("forms")
       .update({
@@ -60,13 +57,10 @@ export async function saveForm(
     if (updateError) {
       return { error: updateError.message || "Failed to update form" };
     }
-    
-    // Clear old sections and fields to replace them
-    // Relying on CASCADE DELETE if sections are deleted, fields should be deleted.
+
     await supabase.from("sections").delete().eq("form_id", formId);
-    
+
   } else {
-    // Create new form
     const formSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-") + "-" + Math.random().toString(36).substring(2, 6);
     const { data: formData, error: formError } = await supabase
       .from("forms")
@@ -88,10 +82,9 @@ export async function saveForm(
     currentFormId = formData.id;
   }
 
-  // 3. Insert sections and fields
   for (let sIndex = 0; sIndex < sections.length; sIndex++) {
     const section = sections[sIndex];
-    
+
     const { data: sectionData, error: sectionError } = await supabase
       .from("sections")
       .insert({
@@ -108,7 +101,6 @@ export async function saveForm(
       continue;
     }
 
-    // 4. Insert fields for this section
     if (section.fields.length > 0) {
       const fieldsToInsert = section.fields.map((field, fIndex) => ({
         section_id: sectionData.id,
@@ -159,7 +151,6 @@ const getCachedOrgForms = unstable_cache(
   async (orgSlug: string) => {
     const supabase = createAdminClient();
 
-    // 1. Get org ID
     const { data: orgData, error: orgError } = await supabase
       .from("organizations")
       .select("id")
@@ -170,7 +161,6 @@ const getCachedOrgForms = unstable_cache(
       return [];
     }
 
-    // 2. Fetch forms
     const { data: forms, error: formsError } = await supabase
       .from("forms")
       .select(`
@@ -188,7 +178,6 @@ const getCachedOrgForms = unstable_cache(
       return [];
     }
 
-    // Transform count
     return forms.map((f: any) => ({
       ...f,
       submissions_count: f.submissions[0]?.count || 0

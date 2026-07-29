@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createAdPage } from "@/actions/adpages";
 
-// ... (TEMPLATES stay the same, assuming they are defined above)
 const TEMPLATES = [
   {
     id: "tournament",
@@ -121,8 +120,7 @@ export default function AdPageBuilder({
   const [activeTemplate, setActiveTemplate] = useState(TEMPLATES[0].id);
   const [customData, setCustomData] = useState(TEMPLATES[0].data);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // Custom Field Visibility
+
   const [visibility, setVisibility] = useState({
     showDate: true,
     showPrize: true,
@@ -135,7 +133,6 @@ export default function AdPageBuilder({
       ...t.data,
       registrationLink: `/dashboard/${orgSlug}/event-registration` // default link
     });
-    // Reset visibility when selecting non-custom templates
     if (t.id !== "custom") {
       setVisibility({ showDate: true, showPrize: true, showLocation: true });
       setCustomFields([]); // Clear custom fields
@@ -210,7 +207,7 @@ export default function AdPageBuilder({
 
   return (
     <div className="flex flex-col lg:flex-row min-h-[calc(100vh-6rem)] gap-6 p-4 md:p-0">
-      
+
       {/* LEFT PANEL - BUILDER/CONTROLS */}
       <div className="w-full lg:w-[400px] flex-shrink-0 bg-background/50 border border-border/50 rounded-xl p-6 overflow-y-auto max-h-[calc(100vh-6rem)]">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -247,29 +244,29 @@ export default function AdPageBuilder({
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label className="text-xs">Badge Text</Label>
-              <Input 
-                value={customData.badge} 
-                onChange={(e) => handleCustomChange("badge", e.target.value)} 
+              <Input
+                value={customData.badge}
+                onChange={(e) => handleCustomChange("badge", e.target.value)}
                 className="bg-black/20 h-9"
               />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Main Title</Label>
-              <Input 
-                value={customData.title} 
-                onChange={(e) => handleCustomChange("title", e.target.value)} 
+              <Input
+                value={customData.title}
+                onChange={(e) => handleCustomChange("title", e.target.value)}
                 className="bg-black/20 h-9"
               />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Subtitle / Description</Label>
-              <Textarea 
-                value={customData.subtitle} 
-                onChange={(e) => handleCustomChange("subtitle", e.target.value)} 
+              <Textarea
+                value={customData.subtitle}
+                onChange={(e) => handleCustomChange("subtitle", e.target.value)}
                 className="bg-black/20 resize-none h-24"
               />
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
@@ -321,17 +318,17 @@ export default function AdPageBuilder({
                 </div>
                 {customFields.map((field) => (
                   <div key={field.id} className="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
-                    <Input 
-                      value={field.label} 
-                      onChange={(e) => handleUpdateCustomField(field.id, "label", e.target.value)} 
-                      placeholder="Label (e.g. Server IP)" 
-                      className="bg-black/20 h-9 text-xs" 
+                    <Input
+                      value={field.label}
+                      onChange={(e) => handleUpdateCustomField(field.id, "label", e.target.value)}
+                      placeholder="Label (e.g. Server IP)"
+                      className="bg-black/20 h-9 text-xs"
                     />
-                    <Input 
-                      value={field.value} 
-                      onChange={(e) => handleUpdateCustomField(field.id, "value", e.target.value)} 
-                      placeholder="Value" 
-                      className="bg-black/20 h-9 text-xs" 
+                    <Input
+                      value={field.value}
+                      onChange={(e) => handleUpdateCustomField(field.id, "value", e.target.value)}
+                      placeholder="Value"
+                      className="bg-black/20 h-9 text-xs"
                     />
                     <Button variant="ghost" size="icon" className="h-9 w-9 text-red-400 hover:text-red-300 hover:bg-red-950/30" onClick={() => handleRemoveCustomField(field.id)}>
                       <Trash2 className="h-4 w-4" />
@@ -343,9 +340,9 @@ export default function AdPageBuilder({
 
             <div className="space-y-1.5 pt-4 border-t border-border/50">
               <Label className="text-xs flex items-center gap-1.5"><LinkIcon className="h-3.5 w-3.5" /> Registration / Target Link</Label>
-              <Input 
-                value={customData.registrationLink} 
-                onChange={(e) => handleCustomChange("registrationLink", e.target.value)} 
+              <Input
+                value={customData.registrationLink}
+                onChange={(e) => handleCustomChange("registrationLink", e.target.value)}
                 placeholder="https://example.com/register"
                 className="bg-black/20 h-9 text-xs"
               />
@@ -353,25 +350,25 @@ export default function AdPageBuilder({
 
             <div className="space-y-1.5 pt-2">
               <Label className="text-xs flex items-center gap-1.5"><ImageIcon className="h-3.5 w-3.5" /> Background Image</Label>
-              
+
               <div className="flex gap-2">
-                <Input 
-                  value={customData.bgImage} 
-                  onChange={(e) => handleCustomChange("bgImage", e.target.value)} 
+                <Input
+                  value={customData.bgImage}
+                  onChange={(e) => handleCustomChange("bgImage", e.target.value)}
                   className="bg-black/20 h-9 text-xs flex-1"
                   placeholder="Image URL"
                 />
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   className="h-9 px-3 shrink-0 bg-primary/20 text-primary hover:bg-primary/30"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <UploadCloud className="h-4 w-4" />
                 </Button>
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   ref={fileInputRef}
-                  className="hidden" 
+                  className="hidden"
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
@@ -396,24 +393,24 @@ export default function AdPageBuilder({
 
       {/* RIGHT PANEL - LIVE PREVIEW */}
       <div className="flex-1 rounded-2xl overflow-hidden relative min-h-[600px] border border-border/30">
-        
+
         {/* Background Image with Overlay */}
-        <div 
+        <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
-          style={{ 
+          style={{
             backgroundImage: `url('${customData.bgImage}')`,
           }}
         >
           {/* Dark overlay for readability */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
-          
+
           {/* Gradient overlay for aesthetic */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         </div>
 
         {/* Content Preview */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 h-full max-w-4xl mx-auto space-y-8 pointer-events-none">
-          
+
           {customData.badge && (
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/20 border border-violet-500/30 backdrop-blur-md">
               <span className="flex h-2 w-2 rounded-full bg-violet-400 animate-pulse" />
@@ -442,7 +439,7 @@ export default function AdPageBuilder({
                 <h3 className="text-base md:text-lg font-bold text-white mb-1">{customData.date}</h3>
               </div>
             )}
-            
+
             {visibility.showPrize && (
               <div className="flex flex-col items-center p-5 rounded-xl bg-black/40 border border-white/10 backdrop-blur-sm min-w-[200px]">
                 <Trophy className="h-6 w-6 md:h-8 md:w-8 text-cyan-400 mb-3" />
@@ -469,8 +466,8 @@ export default function AdPageBuilder({
 
           {/* Call to Action */}
           <div className="pt-8 w-full flex justify-center">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               className="h-12 md:h-14 px-6 md:px-8 text-base md:text-lg font-bold text-white shadow-[0_0_40px_rgba(124,58,237,0.4)] transition-all"
               style={{
                 background: "linear-gradient(135deg, #7c3aed, #06b6d4)",

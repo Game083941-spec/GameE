@@ -22,11 +22,9 @@ export function FormBuilderHydrator({
     if (!hasHydrated.current) {
       setFormTitle(formTitle);
       setFormDescription(formDescription);
-      
-      // Zustand allows us to update the entire store state cleanly via setState if we wanted to, 
-      // but modifying properties directly is safer if we don't have a specific hydration method.
+
       useFormBuilderStore.setState({ sections, settings: settings || {} });
-      
+
       hasHydrated.current = true;
     }
   }, [formTitle, formDescription, sections, settings, setFormTitle, setFormDescription]);

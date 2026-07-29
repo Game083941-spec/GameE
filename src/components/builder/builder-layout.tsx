@@ -18,7 +18,7 @@ const PropertiesPanel = dynamic(() => import("./properties-panel").then(mod => m
 export function BuilderLayout() {
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [activeDragType, setActiveDragType] = useState<FieldType | null>(null);
-  
+
   const addField = useFormBuilderStore((state) => state.addField);
   const sections = useFormBuilderStore((state) => state.sections);
 
@@ -38,7 +38,6 @@ export function BuilderLayout() {
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     setActiveDragId(active.id as string);
-    // If dragging from sidebar, the active.data will contain the field type
     if (active.data.current?.isSidebarItem) {
       setActiveDragType(active.data.current.type as FieldType);
     }
@@ -51,7 +50,6 @@ export function BuilderLayout() {
 
     if (!over) return;
 
-    // Handle dropping a sidebar item into a section
     if (active.data.current?.isSidebarItem && over.data.current?.isSection) {
       const sectionId = over.id as string;
       const type = active.data.current.type as FieldType;

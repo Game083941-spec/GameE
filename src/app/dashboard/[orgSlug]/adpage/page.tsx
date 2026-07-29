@@ -95,16 +95,15 @@ export default function AdPagesList({
                     )}
                   </div>
                 </div>
-                
-           
+
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <Button variant="outline" size="sm" className="w-full text-xs" onClick={() => alert("Edit functionality coming soon!")}>
                     <Edit className="h-3 w-3 mr-1.5" /> Edit
                   </Button>
-                  
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="w-full text-xs"
                     onClick={() => {
                       const url = `${window.location.origin}/ad/${ad.id}`;
@@ -120,7 +119,7 @@ export default function AdPagesList({
                       <Globe className="h-3 w-3 mr-1.5" /> Publish
                     </Button>
                   )}
-                  
+
                   <Button variant="destructive" size="sm" className={`w-full text-xs ${ad.status === 'published' ? 'col-span-2' : ''}`} onClick={() => handleDelete(ad.id)}>
                     <Trash2 className="h-3 w-3 mr-1.5" /> Delete
                   </Button>

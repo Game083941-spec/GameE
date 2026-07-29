@@ -9,16 +9,16 @@ export function CopyLinkButton({ url, title = "Copy and View Public Form" }: { u
 
   return (
     <>
-      <Button 
-        variant="outline" 
-        size="icon" 
-        className="h-8 w-8" 
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-8 w-8"
         title={title}
         onClick={() => {
           const fullUrl = url.startsWith('/') ? `${window.location.origin}${url}` : url;
           navigator.clipboard.writeText(fullUrl);
           window.open(fullUrl, '_blank');
-          
+
           setShowToast(true);
           setTimeout(() => setShowToast(false), 3000);
         }}

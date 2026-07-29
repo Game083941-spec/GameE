@@ -14,10 +14,10 @@ import {
 import { Loader2, Trash2 } from "lucide-react";
 import { deleteAdminUser } from "@/actions/admin";
 
-export function DeleteAdminModal({ 
-  user 
-}: { 
-  user: { id: string; email?: string } 
+export function DeleteAdminModal({
+  user
+}: {
+  user: { id: string; email?: string }
 }) {
   const [open, setOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -26,15 +26,15 @@ export function DeleteAdminModal({
   async function onDelete() {
     setIsPending(true);
     setError(null);
-    
+
     const result = await deleteAdminUser(user.id);
-    
+
     if (result.error) {
       setError(result.error);
     } else {
       setOpen(false);
     }
-    
+
     setIsPending(false);
   }
 

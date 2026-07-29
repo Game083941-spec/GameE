@@ -14,7 +14,6 @@ export async function login(formData: FormData) {
 
   let { error } = await supabase.auth.signInWithPassword(data);
 
-  // Auto-signup for Super Admin if they don't exist yet
   if (
     error &&
     data.email === process.env.SUPER_ADMIN_EMAIL &&
@@ -27,7 +26,7 @@ export async function login(formData: FormData) {
         data: { full_name: "Super Admin" },
       },
     });
-    
+
     if (!signUpError) {
       error = null; // Successfully created and logged in
     }

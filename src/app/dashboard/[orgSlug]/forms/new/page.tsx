@@ -34,7 +34,7 @@ export default async function NewFormPage({
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <SaveFormButton orgSlug={orgSlug} />
         </div>

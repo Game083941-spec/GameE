@@ -73,13 +73,11 @@ export async function sendPasswordResetEmail(userEmail: string, resetLink: strin
 }
 
 export async function broadcastToTeams(emails: string[], subject: string, message: string) {
-  // We send individual emails or use bcc to avoid exposing all emails to everyone.
-  // Using individual emails in a loop (Promise.all) is safer for simple setups.
-  
+
   if (!emails || emails.length === 0) return { error: "No recipients provided" };
 
   try {
-    const emailPromises = emails.map(email => 
+    const emailPromises = emails.map(email =>
       sendEmail({
         to: email,
         subject: subject,

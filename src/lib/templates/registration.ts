@@ -41,7 +41,7 @@ export const getRegistrationTemplate = ({
       <h2 style="color: #10b981; margin-top: 0;">Registration Successful! 🎉</h2>
       <p>Hi ${playerName},</p>
       <p>You have successfully registered for <strong>${tournamentName}</strong>.</p>
-      
+
       <div class="details">
         <div class="row"><span class="label">Registration ID</span><span class="value">${registrationId}</span></div>
         <div class="row"><span class="label">Team Name</span><span class="value">${teamName}</span></div>
@@ -49,7 +49,7 @@ export const getRegistrationTemplate = ({
         <div class="row"><span class="label">Date</span><span class="value">${date}</span></div>
         <div class="row"><span class="label">Payment Status</span><span class="value" style="color: ${paymentStatus.toLowerCase() === 'paid' ? '#10b981' : '#f59e0b'};">${paymentStatus}</span></div>
       </div>
-      
+
       <p>Good luck in the tournament!</p>
     </div>
     <div class="footer">

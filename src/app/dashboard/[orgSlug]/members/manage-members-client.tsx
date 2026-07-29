@@ -17,17 +17,17 @@ const SIDEBAR_OPTIONS = [
   { id: "event-registration", label: "Event Registration" },
 ];
 
-export function ManageMembersClient({ 
-  orgId, 
-  members 
-}: { 
+export function ManageMembersClient({
+  orgId,
+  members
+}: {
   orgId: string;
   members: any[];
 }) {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<any>(null);
-  
+
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("VIEWER"); // Default role
   const [permissions, setPermissions] = useState<string[]>([]);
@@ -71,7 +71,7 @@ export function ManageMembersClient({
   };
 
   const togglePermission = (id: string) => {
-    setPermissions(prev => 
+    setPermissions(prev =>
       prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
     );
   };
@@ -109,8 +109,8 @@ export function ManageMembersClient({
                 {member.role === "ADMIN" && <Shield className="h-3 w-3" />}
                 {member.role}
               </span>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 size="icon"
                 onClick={() => {
                   setSelectedMember(member);
@@ -149,8 +149,8 @@ export function ManageMembersClient({
             <form onSubmit={handleInvite} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -160,8 +160,8 @@ export function ManageMembersClient({
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Role</label>
-                <select 
-                  value={role} 
+                <select
+                  value={role}
                   onChange={e => setRole(e.target.value)}
                   className="w-full p-2 border rounded-md bg-transparent"
                 >
@@ -170,7 +170,7 @@ export function ManageMembersClient({
                   <option value="VIEWER">Viewer</option>
                 </select>
               </div>
-              
+
               {role === "MODERATOR" && (
                 <div>
                   <label className="block text-sm font-medium mb-2">Sidebar Permissions</label>
@@ -178,8 +178,8 @@ export function ManageMembersClient({
                   <div className="space-y-2 max-h-48 overflow-y-auto border p-3 rounded-md">
                     {SIDEBAR_OPTIONS.map(opt => (
                       <label key={opt.id} className="flex items-center gap-2 text-sm">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           checked={permissions.includes(opt.id)}
                           onChange={() => togglePermission(opt.id)}
                         />
@@ -189,7 +189,7 @@ export function ManageMembersClient({
                   </div>
                 </div>
               )}
-              
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 Send Invite
@@ -213,8 +213,8 @@ export function ManageMembersClient({
             <form onSubmit={handleUpdate} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   disabled
                   value={selectedMember.profiles.email}
                   className="w-full p-2 border rounded-md bg-muted text-muted-foreground"
@@ -222,8 +222,8 @@ export function ManageMembersClient({
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Role</label>
-                <select 
-                  value={role} 
+                <select
+                  value={role}
                   onChange={e => setRole(e.target.value)}
                   className="w-full p-2 border rounded-md bg-transparent"
                 >
@@ -233,7 +233,7 @@ export function ManageMembersClient({
                   <option value="VIEWER">Viewer</option>
                 </select>
               </div>
-              
+
               {role === "MODERATOR" && (
                 <div>
                   <label className="block text-sm font-medium mb-2">Sidebar Permissions</label>
@@ -241,8 +241,8 @@ export function ManageMembersClient({
                   <div className="space-y-2 max-h-48 overflow-y-auto border p-3 rounded-md">
                     {SIDEBAR_OPTIONS.map(opt => (
                       <label key={opt.id} className="flex items-center gap-2 text-sm">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           checked={permissions.includes(opt.id)}
                           onChange={() => togglePermission(opt.id)}
                         />
@@ -252,7 +252,7 @@ export function ManageMembersClient({
                   </div>
                 </div>
               )}
-              
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 Save Changes

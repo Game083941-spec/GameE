@@ -117,13 +117,13 @@ export function BuilderSidebar() {
       <div className="p-4 border-b">
         <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground mb-3">Add to Form</h3>
         <div className="flex bg-muted p-1 rounded-md">
-          <button 
+          <button
             className={`flex-1 text-xs font-medium py-1.5 rounded-sm transition-all ${activeTab === 'elements' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             onClick={() => setActiveTab('elements')}
           >
             Elements
           </button>
-          <button 
+          <button
             className={`flex-1 text-xs font-medium py-1.5 rounded-sm transition-all ${activeTab === 'templates' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
             onClick={() => setActiveTab('templates')}
           >

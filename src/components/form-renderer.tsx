@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,13 +21,34 @@ interface FormRendererProps {
 
 export function FormRenderer({ form, sections, fields, orgName }: FormRendererProps) {
   const router = useRouter();
-  const [responses, setResponses] = useState<Record<string, string>>({});
+  const [responses, setResponses] = useState<Record<string, string>>({});\n
+  useEffect(() => {
+    try {
+      const savedEmail = localStorage.getItem('autofill_email');
+      const savedPhone = localStorage.getItem('autofill_phone');
+      
+      if (savedEmail || savedPhone) {
+        const initialResponses: Record<string, string> = {};
+        fields.forEach(f => {
+          if (f.type === 'EMAIL' && savedEmail) {
+            initialResponses[f.id] = savedEmail;
+          } else if ((f.type === 'PHONE' || f.type === 'NUMBER' || f.label.toLowerCase().includes('phone') || f.label.toLowerCase().includes('number') || f.label.toLowerCase().includes('whatsapp')) && savedPhone) {
+            initialResponses[f.id] = savedPhone;
+          }
+        });
+        
+        if (Object.keys(initialResponses).length > 0) {
+          setResponses(prev => ({ ...prev, ...initialResponses }));
+        }
+      }
+    } catch (e) {}
+  }, [fields]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Group fields by section
   const fieldsBySection = sections.map(section => ({
     ...section,
     fields: fields.filter(f => f.section_id === section.id && f.type !== "IMAGE").sort((a, b) => a.order_index - b.order_index)
@@ -43,9 +64,19 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
+    setError("");\n
+    try {
+      const emailField = fields.find(f => f.type === 'EMAIL');
+      if (emailField && responses[emailField.id]) {
+        localStorage.setItem('autofill_email', responses[emailField.id]);
+      }
+      const phoneField = fields.find(f => f.type === 'PHONE' || f.type === 'NUMBER' || f.label.toLowerCase().includes('phone') || f.label.toLowerCase().includes('number') || f.label.toLowerCase().includes('whatsapp'));
+      if (phoneField && responses[phoneField.id]) {
+        localStorage.setItem('autofill_phone', responses[phoneField.id]);
+      }
+    } catch (e) {}
 
-    // Validate required fields
+
     for (const field of fields) {
       if (field.required && !responses[field.id]) {
         setError(`Please fill out all required fields. (${field.label} is missing)`);
@@ -54,7 +85,6 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       }
     }
 
-    // Check if there is a payment field
     const paymentField = fields.find(f => f.type === "PAYMENT");
     const amount = paymentField ? parseInt(paymentField.options?.[0]?.value || "0") : 0;
     const paymentRequired = amount > 0;
@@ -69,7 +99,6 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
 
     if (paymentRequired) {
       if (amount > 0) {
-        // 1. Create Razorpay Order
         const orderRes = await createRazorpayOrder(amount);
         if (orderRes.error) {
           setError(orderRes.error);
@@ -77,7 +106,6 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           return;
         }
 
-        // Handle Dev Mock Payment
         if (orderRes.mock) {
           setIsProcessing(true);
           const verifyRes = await verifyPayment(
@@ -87,142 +115,25 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
             result.submissionId,
             amount
           );
-          
+
           if (verifyRes.error) {
              setError(verifyRes.error);
              setIsSubmitting(false); setIsProcessing(false);
              return;
           }
-          
+
           setIsSuccess(true);
           setIsSubmitting(false);
           router.push(`/f/${form.id}/success`);
           return;
         }
 
-        // 2. Open Razorpay Checkout
-        const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-          amount: amount * 100,
-          currency: "INR",
-          name: orgName,
-          description: form.title,
-          order_id: orderRes.orderId,
-          handler: async function (response: any) {
-            setIsProcessing(true);
-            // 3. Verify Payment
-            const verifyRes = await verifyPayment(
-              response.razorpay_order_id,
-              response.razorpay_payment_id,
-              response.razorpay_signature,
-              result.submissionId,
-              amount
-            );
-
-            if (verifyRes.error) {
-              setError(verifyRes.error);
-              setIsSubmitting(false);
-              setIsProcessing(false);
-              return;
-            }
-
-            // 4. Send Confirmation Email (Find email field if it exists)
-            const emailField = fields.find(f => f.type === "EMAIL");
-            
-            if (emailField && responses[emailField.id]) {
-              const teamNameField = fields.find((f: any) => f.label.toLowerCase().includes("team"));
-              const teamName = teamNameField ? responses[teamNameField.id] : "N/A";
-              const playerNameField = fields.find((f: any) => f.type === "TEXT" && f.label.toLowerCase().includes("name"));
-              const playerName = playerNameField ? responses[playerNameField.id] : "Player";
-
-              try {
-                // Fire and forget emails so they don't block the UI if SMTP is slow
-                sendPaymentConfirmationEmail(
-                  responses[emailField.id],
-                  form.title,
-                  amount,
-                  response.razorpay_payment_id,
-                  teamName
-                ).catch(e => console.error("Failed to send payment email:", e));
-
-                sendRegistrationEmail(
-                  responses[emailField.id],
-                  playerName,
-                  teamName,
-                  form.title,
-                  result.submissionId,
-                  "Paid"
-                ).catch(e => console.error("Failed to send registration email:", e));
-              } catch (e) {
-                console.error("Failed to trigger emails:", e);
-              }
-            }
-
-            setIsProcessing(false);
-            setIsSuccess(true);
-            setIsSubmitting(false);
-            router.push(`/f/${form.id}/success`);
-          },
-          prefill: {
-            name: "Test User",
-            email: "test@example.com",
-            contact: "9999999999"
-          },
-          theme: {
-            color: "#10b981"
-          },
-          config: {
-            display: {
-              blocks: {
-                upi: {
-                  name: 'Pay with UPI (GPay, PhonePe, Paytm)',
-                  instruments: [
-                    {
-                      method: 'upi'
-                    }
-                  ]
-                },
-                other: {
-                  name: 'Other Payment Modes',
-                  instruments: [
-                    { method: 'card' },
-                    { method: 'netbanking' },
-                    { method: 'wallet' },
-                    { method: 'paylater' }
-                  ]
-                }
-              },
-              sequence: ['block.upi', 'block.other'],
-              preferences: {
-                show_default_blocks: false
-              }
-            }
-          }
-        };
-
-        try {
-          if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID) {
-            throw new Error("Razorpay API key is missing. Please configure it in your dashboard.");
-          }
-          if (!(window as any).Razorpay) {
-            throw new Error("Payment gateway is still loading or was blocked by an ad-blocker. Please disable ad-blockers and try again.");
-          }
-          const rzp = new (window as any).Razorpay(options);
-          rzp.on("payment.failed", function (response: any) {
-            setError(response.error.description || "Payment failed");
-            setIsSubmitting(false);
-            setIsProcessing(false);
-          });
-          rzp.open();
-        } catch (err: any) {
-          setError(err.message || "Failed to initialize payment gateway. Please try again.");
-          setIsSubmitting(false);
-        }
-        return; // Don't set success state yet, wait for callback
+        // Redirect to the provided Razorpay Payment Link
+        window.location.href = process.env.NEXT_PUBLIC_PAYMENT_LINK || "https://rzp.io/rzp/KCK7aEGK";
+        return;
       }
     }
 
-    // If no payment required
     const emailField = fields.find(f => f.type === "EMAIL");
     if (emailField && responses[emailField.id]) {
       const teamNameField = fields.find((f: any) => f.label.toLowerCase().includes("team"));
@@ -231,7 +142,6 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       const playerName = playerNameField ? responses[playerNameField.id] : "Player";
 
       try {
-        // Fire and forget email to prevent blocking the UI
         sendRegistrationEmail(
           responses[emailField.id],
           playerName,
@@ -256,20 +166,20 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
       <Card className="w-full max-w-2xl mx-auto mt-12 shadow-lg border-primary/20 overflow-hidden">
         <CardContent className="pt-16 pb-16 flex flex-col items-center justify-center text-center relative">
           <div className="absolute inset-0 bg-grid-white/5 bg-[size:20px_20px] pointer-events-none [mask-image:radial-gradient(ellipse_at_center,white,transparent)]" />
-          
+
           <div className="relative">
             <div className="h-24 w-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 relative">
               <div className="absolute inset-0 rounded-full border-4 border-primary/20 border-t-primary animate-spin" />
               {isSuccess ? <CheckCircle2 className="h-10 w-10 text-primary animate-in zoom-in duration-300" /> : <CreditCard className="h-8 w-8 text-primary animate-pulse" />}
             </div>
           </div>
-          
+
           <h2 className="text-3xl font-bold tracking-tight z-10 animate-in fade-in slide-in-from-bottom-2">
             {isSuccess ? "Redirecting..." : "Processing Payment..."}
           </h2>
-          
+
           <p className="text-muted-foreground text-lg max-w-md mt-4 z-10">
-            {isSuccess 
+            {isSuccess
               ? "Payment verified! Taking you to the receipt..."
               : "Please wait while we securely process your transaction. Do not close or refresh this page."}
           </p>
@@ -300,7 +210,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           <CardDescription className="text-base mt-2">{form.description}</CardDescription>
         )}
       </CardHeader>
-      
+
       <form onSubmit={handleSubmit}>
         <CardContent className="pt-8 space-y-12">
           {error && (
@@ -317,7 +227,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
                   {section.description && <p className="text-muted-foreground text-sm">{section.description}</p>}
                 </div>
               )}
-              
+
               <div className="space-y-8">
                 {section.fields.map((field: any) => (
                   <div key={field.id} className="space-y-3">
@@ -325,7 +235,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
                       {field.label}
                       {field.required && <span className="text-destructive">*</span>}
                     </Label>
-                    
+
                     {field.type === "TEXT" || field.type === "EMAIL" || field.type === "NUMBER" || field.type === "BGMI_UID" ? (
                       <Input
                         type={field.type === "EMAIL" ? "email" : field.type === "NUMBER" ? "number" : "text"}
@@ -353,7 +263,7 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
             </div>
           ))}
         </CardContent>
-        
+
         <CardFooter className="pt-8 pb-8 bg-muted/10 border-t flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground order-2 sm:order-1">
             Powered by <strong className="text-foreground">ESportHub</strong>

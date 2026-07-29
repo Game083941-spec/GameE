@@ -35,7 +35,6 @@ export function PromoBanner() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate an API call
     await new Promise((resolve) => setTimeout(resolve, 1200));
     setIsLoading(false);
     setIsSubmitted(true);
@@ -155,7 +154,6 @@ export function PromoBanner() {
           }}
         >
           {isSubmitted ? (
-            /* ── Success state ── */
             <div className="flex flex-col items-center justify-center py-8 text-center gap-4">
               <div
                 className="h-16 w-16 rounded-full flex items-center justify-center"
@@ -189,7 +187,6 @@ export function PromoBanner() {
               </Button>
             </div>
           ) : (
-            /* ── Form state ── */
             <>
               <DialogHeader className="mb-2">
                 <div className="flex items-center gap-2 mb-1">

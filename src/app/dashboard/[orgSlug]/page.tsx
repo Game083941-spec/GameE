@@ -35,7 +35,7 @@ export default async function OrgDashboardPage({
 
   const commissionRate = user?.user_metadata?.commission_rate || 5;
   const commissionMultiplier = commissionRate / 100;
-  
+
   const finalRevenue = realTotalRevenue * commissionMultiplier;
   const formattedRevenue = finalRevenue.toFixed(2);
 
@@ -100,7 +100,7 @@ export default async function OrgDashboardPage({
           </CardContent>
         </Card>
       </div>
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 min-h-[300px]">
           <CardHeader>
