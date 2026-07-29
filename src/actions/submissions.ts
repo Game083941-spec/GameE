@@ -27,11 +27,22 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     return { error: "This form has reached its maximum number of submissions and is now closed." };
   }
 
-  // Fetch fields to map UUID keys to human-readable labels for the JSON
-  const { data: formFields } = await supabase
-    .from("fields")
-    .select("id, label")
+  const { data: formSections } = await supabase
+    .from("sections")
+    .select("id")
     .eq("form_id", formId);
+
+  let formFields: any[] = [];
+  if (formSections && formSections.length > 0) {
+    const sectionIds = formSections.map(s => s.id);
+    const { data: fieldsData } = await supabase
+      .from("fields")
+      .select("id, label")
+      .in("section_id", sectionIds);
+    formFields = fieldsData || [];
+  } else {
+    formFields = null as any;
+  }
 
   const humanReadableResponses: Record<string, any> = {};
   let team_name = "";
