@@ -4,20 +4,20 @@ ESportHub is a comprehensive web application built for managing esports tourname
 
 ## 🚀 Key Features
 
-*   **Custom Form Builder:** Create dynamic registration forms for tournaments with custom fields (IGN, Discord, Email, Phone, etc.).
-*   **Payment Integration:** Seamlessly integrated with **Razorpay** to collect tournament entry fees securely via a native popup checkout.
-*   **Automated Webhooks:** Robust Razorpay webhook integration to ensure payments and registrations are recorded even if the user closes the browser early.
-*   **Team Management:** Automatically extracts and manages team information from form submissions, allowing organizations to view and organize participants.
-*   **Permanent Analytics Data:** Features an `analytics_teams` and `analytics_payments` system to ensure crucial registration and financial data is never lost, even if the original forms are deleted.
-*   **Role-Based Access Control:** Advanced roles including Super Admins, Organization Admins, Moderators, and Viewers.
-*   **Modern UI:** Built with Tailwind CSS and shadcn/ui for a premium, dark-themed gaming aesthetic.
+* **Custom Form Builder:** Create dynamic registration forms for tournaments with custom fields (IGN, Discord, Email, Phone, etc.).
+* **Payment Integration:** Seamlessly integrated with **Razorpay** to collect tournament entry fees securely via a native popup checkout.
+* **Automated Webhooks:** Robust Razorpay webhook integration to ensure payments and registrations are recorded even if the user closes the browser early.
+* **Team Management:** Automatically extracts and manages team information from form submissions, allowing organizations to view and organize participants.
+* **Permanent Analytics Data:** Features an `analytics_teams` and `analytics_payments` system to ensure crucial registration and financial data is never lost, even if the original forms are deleted.
+* **Role-Based Access Control:** Advanced roles including Super Admins, Organization Admins, Moderators, and Viewers.
+* **Modern UI:** Built with Tailwind CSS and shadcn/ui for a premium, dark-themed gaming aesthetic.
 
 ## 🛠️ Tech Stack
 
-*   **Frontend:** Next.js (App Router), React, Tailwind CSS, shadcn/ui, Lucide Icons.
-*   **Backend:** Next.js Server Actions.
-*   **Database & Auth:** Supabase (PostgreSQL, Row Level Security, Authentication).
-*   **Payments:** Razorpay API.
+* **Frontend:** Next.js (App Router), React, Tailwind CSS, shadcn/ui, Lucide Icons.
+* **Backend:** Next.js Server Actions.
+* **Database & Auth:** Supabase (PostgreSQL, Row Level Security, Authentication).
+* **Payments:** Razorpay API.
 
 ## ⚙️ Environment Setup
 
@@ -41,23 +41,24 @@ SUPER_ADMIN_EMAIL=your_super_admin_email
 
 ## 📦 Installation & Running Locally
 
-1.  Clone the repository.
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Run the development server:
-    ```bash
-    npm run dev
-    ```
-4.  Open [http://localhost:3000](http://localhost:3000) in your browser.
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🗄️ Database Schema Notes
 
-This project relies heavily on **Supabase Postgres Triggers** to automatically sync data. 
-*   When a `submission` is created, it syncs to `analytics_users`.
-*   When a `payment` is created, it syncs to `analytics_payments`.
-*   The `analytics_teams` table retains permanent records of all team registrations independent of the forms table.
+This project relies heavily on **Supabase Postgres Triggers** to automatically sync data.
+
+* When a `submission` is created, it syncs to `analytics_users`.
+* When a `payment` is created, it syncs to `analytics_payments`.
+* The `analytics_teams` table retains permanent records of all team registrations independent of the forms table.
 
 ## 🚀 Deployment
 

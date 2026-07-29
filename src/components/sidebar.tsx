@@ -147,7 +147,7 @@ export function Sidebar({
       {/* ── Logo ── */}
       <div className="p-4 border-b border-border/50 shrink-0">
         <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-lg">
-          <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
+          <Image src="/logo.svg" alt="Logo" width={28} height={28} className="rounded-md shadow-sm" priority />
           ESportHub
         </Link>
       </div>

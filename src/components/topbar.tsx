@@ -39,7 +39,7 @@ export function Topbar({ user, organizations = [], currentOrgSlug, isSuperAdmin 
         <SheetContent side="left" className="w-[280px]">
           <nav className="grid gap-4 text-lg font-medium">
             <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-              <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" priority />
+              <Image src="/logo.svg" alt="Logo" width={32} height={32} className="rounded-lg shadow-sm" priority />
               <span className="tracking-tight">ESportHub</span>
             </Link>
             <div className="grid gap-3 mt-4">
