@@ -128,8 +128,57 @@ export function FormRenderer({ form, sections, fields, orgName }: FormRendererPr
           return;
         }
 
-        // Removing Razorpay Payment Link logic
-        console.log("Payment Required, but no mock order Id generated.");
+        const emailFieldForPay = fields.find(f => f.type === 'EMAIL');
+        const phoneFieldForPay = fields.find(f => f.type === 'PHONE' || f.type === 'NUMBER' || f.label.toLowerCase().includes('phone') || f.label.toLowerCase().includes('number') || f.label.toLowerCase().includes('whatsapp'));
+        
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: amount * 100,
+          currency: "INR",
+          name: orgName || "Payment",
+          description: form.title,
+          order_id: orderRes.orderId,
+          handler: async function (response: any) {
+            setIsProcessing(true);
+            const verifyRes = await verifyPayment(
+              response.razorpay_order_id,
+              response.razorpay_payment_id,
+              response.razorpay_signature,
+              result.submissionId,
+              amount
+            );
+
+            if (verifyRes.error) {
+              setError(verifyRes.error);
+              setIsSubmitting(false);
+              setIsProcessing(false);
+              return;
+            }
+
+            setIsSuccess(true);
+            setIsSubmitting(false);
+            router.push(`/f/${form.id}/success`);
+          },
+          prefill: {
+            email: emailFieldForPay ? responses[emailFieldForPay.id] : undefined,
+            contact: phoneFieldForPay ? responses[phoneFieldForPay.id] : undefined,
+          },
+          theme: {
+            color: "#0f172a"
+          },
+          modal: {
+            ondismiss: function() {
+              setIsSubmitting(false);
+            }
+          }
+        };
+
+        const rzp1 = new (window as any).Razorpay(options);
+        rzp1.on('payment.failed', function (response: any){
+           setError(response.error.description || "Payment failed");
+           setIsSubmitting(false);
+        });
+        rzp1.open();
         return;
       }
     }
