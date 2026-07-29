@@ -11,6 +11,7 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     .from("forms")
     .select(`
       settings,
+      organization_id,
       submissions(count)
     `)
     .eq("id", formId)
@@ -118,6 +119,27 @@ export async function submitForm(formId: string, responses: Record<string, any>,
     
   if (analyticsError) {
     console.error("Analytics Error:", analyticsError);
+  }
+
+  // Insert into analytics_teams to keep a permanent record
+  if (formData.organization_id) {
+    const { error: teamAnalyticsError } = await supabase
+      .from("analytics_teams")
+      .insert({
+        form_id: formId,
+        organization_id: formData.organization_id,
+        team_name: team_name || (contact_email ? "Individual" : "Unknown"),
+        contact_email,
+        contact_phone,
+        in_game_name,
+        discord_tag,
+        payment_status: paymentRequired ? "PENDING" : "NOT_REQUIRED",
+        raw_data: humanReadableResponses
+      });
+      
+    if (teamAnalyticsError) {
+      console.error("Team Analytics Error:", teamAnalyticsError);
+    }
   }
 
   revalidateTag("form-submissions", "default");

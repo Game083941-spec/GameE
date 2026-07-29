@@ -13,9 +13,6 @@ async function fix() {
     .eq('contact_email', '');
 
   for (const team of teams) {
-    // If submission_id is not saved on the team, we can't easily find the answers,
-    // wait, I noticed submission_id is null on the teams!
-    // But we know the user used 'avneesh.tripathi.dev@gmail.com'.
     console.log(`Fixing team ${team.id}`);
     await supabase.from('teams').update({ contact_email: 'avneesh.tripathi.dev@gmail.com' }).eq('id', team.id);
   }

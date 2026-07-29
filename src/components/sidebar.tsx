@@ -15,6 +15,7 @@ import {
   LogOut,
   Bell,
   Megaphone,
+  Database,
 } from "lucide-react";
 import { logout } from "@/actions/auth";
 import Image from "next/image";
@@ -82,6 +83,13 @@ export function Sidebar({
       active: pathname === `/dashboard/${orgSlug}/teams`,
     },
     {
+      id: "analytics-teams",
+      href: `/dashboard/${orgSlug}/analytics-teams`,
+      label: "Permanent Teams",
+      icon: Database,
+      active: pathname === `/dashboard/${orgSlug}/analytics-teams`,
+    },
+    {
       id: "matches",
       href: `/dashboard/${orgSlug}/matches`,
       label: "Matches & History",
@@ -113,7 +121,7 @@ export function Sidebar({
   ];
 
   if (globalRole === "USER_ADMIN") {
-    const allowed = ["overview", "forms", "notifications", "teams", "adpage"];
+    const allowed = ["overview", "forms", "notifications", "teams", "analytics-teams", "adpage"];
     routes = routes.filter(route => allowed.includes(route.id));
   }
   else if (!isSuperAdmin && memberRole === "MODERATOR") {
